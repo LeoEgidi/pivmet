@@ -1,6 +1,6 @@
-Package: pivrel
+Package: pivmet
 Type: Package
-Title: Pivotal relabelling
+Title: Pivotal methods for relabelling and clustering
 Version: 0.1.0
 Author: Leonardo Egidi
 Maintainer: The package maintainer <legidi@units.it>
