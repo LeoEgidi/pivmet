@@ -13,6 +13,17 @@ Suggests: knitr,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
+Built: R 3.4.1; ; 2018-07-06 13:57:29 UTC; windows
+RemoteType: github
+RemoteHost: https://api.github.com
+RemoteRepo: MSFA
+RemoteUsername: LeoEgidi
+RemoteRef: master
+RemoteSha: 59e8616331302cc911ae13b6190580dcfee099b9
+GithubRepo: pivmet
+GithubUsername: LeoEgidi
+GithubRef: master
+GithubSHA1: 59e8616331302cc911ae13b6190580dcfee099b9
 Depends: MASS,
          runjags,
          rjags,
