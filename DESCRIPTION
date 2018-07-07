@@ -29,6 +29,7 @@ Depends: MASS,
          rjags,
          cluster,
          mclust,
+         rmarkdown,
          bayesmix,
          Rcmdr,
          mvtnorm
