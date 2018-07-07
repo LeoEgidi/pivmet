@@ -9,14 +9,14 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+LazyLoad: yes
 Suggests: knitr,
-    rmarkdown,
-    testthat
+    rmarkdown
 VignetteBuilder: knitr
 Built: R 3.4.1; ; 2018-07-06 13:57:29 UTC; windows
 RemoteType: github
 RemoteHost: https://api.github.com
-RemoteRepo: MSFA
+RemoteRepo: pivmet
 RemoteUsername: LeoEgidi
 RemoteRef: master
 RemoteSha: 59e8616331302cc911ae13b6190580dcfee099b9
@@ -29,7 +29,6 @@ Depends: MASS,
          rjags,
          cluster,
          mclust,
-         rmarkdown,
          bayesmix,
          Rcmdr,
          mvtnorm
