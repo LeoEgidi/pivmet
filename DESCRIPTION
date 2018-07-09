@@ -23,4 +23,12 @@ GithubRepo: pivmet
 GithubUsername: LeoEgidi
 GithubRef: master
 GithubSHA1: 59e8616331302cc911ae13b6190580dcfee099b9
+Depends: MASS,
+         runjags,
+         cluster,
+         mclust,
+         rmarkdown,
+         bayesmix,
+         Rcmdr,
+         mvtnorm
 RoxygenNote: 6.0.1
