@@ -1,7 +1,7 @@
 exportPattern("^[[:alpha:]]+")
 import(MASS)
 import(cluster)
-import(testthat)
+
 import(rmarkdown)
 import(runjags)
 import(Rcmdr)
