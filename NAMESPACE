@@ -8,4 +8,5 @@ import(mvtnorm)
 import(testthat)
 import(rmarkdown)
 import(runjags)
+import(rjags)
 
