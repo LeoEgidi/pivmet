@@ -1,4 +1,4 @@
 exportPattern("^[[:alpha:]]+")
-import(MASS, runjags, rjags, cluster, mclust, rmarkdown, bayesmix, Rcmdr, 
-  #testthat,
+import(MASS, runjags, rjags, cluster, mclust, rmarkdown, bayesmix, Rcmdr,
+  testthat,
   mvtnorm)
