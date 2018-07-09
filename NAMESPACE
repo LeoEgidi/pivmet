@@ -4,5 +4,5 @@ import(cluster)
 import(rmarkdown)
 import(runjags)
 import(Rcmdr)
-import(bayesmix)
+import(rjags)
 
