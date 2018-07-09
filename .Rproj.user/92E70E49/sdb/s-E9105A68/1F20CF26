@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: pivmet\nType: Package\nTitle: Pivotal methods for relabelling and clustering\nVersion: 0.1.0\nAuthor: Leonardo Egidi\nMaintainer: The package maintainer <legidi@units.it>\nDescription: More about what it does (maybe more than one line)\n    Use four spaces when indenting paragraphs within the Description.\nLicense: What license is it under?\nEncoding: UTF-8\nLazyData: true\nLazyLoad: yes\nSuggests: knitr,\n    rmarkdown\nVignetteBuilder: knitr\nRemoteType: github\nRemoteHost: https://api.github.com\nRemoteRepo: pivmet\nRemoteUsername: LeoEgidi\nRemoteRef: master\nRemoteSha: 59e8616331302cc911ae13b6190580dcfee099b9\nGithubRepo: pivmet\nGithubUsername: LeoEgidi\nGithubRef: master\nGithubSHA1: 59e8616331302cc911ae13b6190580dcfee099b9\nRoxygenNote: 6.0.1\n",
+    "created" : 1531151998035.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "974697660",
+    "id" : "1F20CF26",
+    "lastKnownWriteTime" : 1531153895,
+    "last_content_update" : 1531153895472,
+    "path" : "~/GitHub/pivmet/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}
