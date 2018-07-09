@@ -1,7 +1,5 @@
 exportPattern("^[[:alpha:]]+")
 import(MASS)
-import(runjags)
-import(rjags)
 import(cluster)
 import(mclust)
 import(bayesmix)
