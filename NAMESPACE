@@ -1,12 +1,3 @@
 exportPattern("^[[:alpha:]]+")
-import(MASS)
-import(cluster)
-import(mclust)
-import(bayesmix)
-import(Rcmdr)
-import(mvtnorm)
-import(testthat)
-import(rmarkdown)
-import(runjags)
-import(rjags)
+
 
