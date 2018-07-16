@@ -3,10 +3,10 @@ import(MASS)
 import(cluster)
 import(rmarkdown)
 import(runjags)
-import(Rcmdr)
 import(rjags)
 import(bayesmix)
 import(mvtnorm)
 import(mclust)
+importFrom(Rcmdr, KMeans)
 
 
