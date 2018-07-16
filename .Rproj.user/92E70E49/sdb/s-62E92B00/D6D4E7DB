@@ -1,14 +1,14 @@
 {
     "collab_server" : "",
-    "contents" : "exportPattern(\"^[[:alpha:]]+\")\nimport(MASS)\nimport(cluster)\nimport(rmarkdown)\nimport(runjags)\nimport(rjags)\nimport(bayesmix)\nimport(mvtnorm)\nimport(mclust)\nimport(RcmdrMisc, KMeans)\n\n\n",
+    "contents" : "exportPattern(\"^[[:alpha:]]+\")\nimport(MASS)\nimport(cluster)\nimport(rmarkdown)\nimport(runjags)\nimport(rjags)\nimport(bayesmix)\nimport(mvtnorm)\nimport(mclust)\nimportFrom(RcmdrMisc, KMeans)\n\n\n",
     "created" : 1531151099604.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "2921802467",
+    "hash" : "1239365095",
     "id" : "D6D4E7DB",
-    "lastKnownWriteTime" : 1531738972,
-    "last_content_update" : 1531738972626,
+    "lastKnownWriteTime" : 1531739156,
+    "last_content_update" : 1531739156099,
     "path" : "~/GitHub/pivmet/NAMESPACE",
     "project_path" : "NAMESPACE",
     "properties" : {
