@@ -12,7 +12,8 @@ LazyData: true
 LazyLoad: yes
 Suggests: knitr,
     rmarkdown
-Imports: RcmdrMisc
+Imports: RcmdrMisc,
+         bayesmix
 VignetteBuilder: knitr
 RemoteType: github
 RemoteHost: https://api.github.com
