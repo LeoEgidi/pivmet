@@ -7,6 +7,6 @@ import(rjags)
 import(bayesmix)
 import(mvtnorm)
 import(mclust)
-importFrom(Rcmdr, KMeans)
+import(RcmdrMisc, KMeans)
 
 
