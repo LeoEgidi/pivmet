@@ -12,7 +12,7 @@ LazyData: true
 LazyLoad: yes
 Suggests: knitr,
     rmarkdown
-Depends: Rcmdr
+Imports: Rcmdr
 VignetteBuilder: knitr
 RemoteType: github
 RemoteHost: https://api.github.com
