@@ -65,7 +65,7 @@
 #' #Univariate simulation
 #'
 #' N <- 250
-#' nMC <- 2000
+#' nMC <- 2500
 #' k <- 4
 #' p <- rep(1/k,k)
 #' x <- 3
