@@ -1,0 +1,410 @@
+#' JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.
+#'
+#' Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
+#' @param y N-dimensional data vector/matrix.
+#' @param k Number of mixture components.
+#' @param nMC Number of MCMC iterations for the JAGS function \code{run.jags}.
+#' @param piv.criterion The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See \code{Details} for a list of available pivotal methods.
+#' @param clustering The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. possible choices: \code{diana} (default), \code{hclust}.
+#'
+#' @details
+#' The function fits a Bayesian mixture model of the form:
+#' \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
+#' where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i\in\{1,\ldots,k \}}, and
+#' \deqn{P(Z_i=k)=\pi_k.}
+#' The likelihood of the model is then
+#' \deqn{L(\vy;\vmu,\vpi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_k f(y_i;\mu_k,\phi),}
+#'with \eqn{\vmu=(\mu_{1},\dots,\mu_{k})} component-specific parameters and \eqn{\vpi=(\pi_{1},\dots,\pi_{k})} mixture weights. Let \eqn{\nu} denote a permutation of \eqn{\{ 1,\ldots,k \}}, and let \eqn{\nu(\bm{\mu})= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})}, \eqn{ \nu(\bm{\pi})=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the corresponding permutations of \eqn{\vmu} and \eqn{\vpi}. Denote by \eqn{\mathcal{V}} the set of all the permutations of the indexes \eqn{\{1,\ldots,k \}}, the likelihood above is invariant under any permutation \eqn{\nu \in \mathcal{V}}, that is
+#' \deqn{
+#' L(\vy;\vmu,\vpi,\phi) = L(\vy;\nu(\bm{\mu}),\nu(\bm{\pi}),\phi).}
+#' As a consequence, the model is unidentified with respect to an arbitrary permutation of the labels.
+#' When Bayesian inference for the model is performed, if the prior distribution \eqn{p_0(\vmu,\vpi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\vmu,\vpi,\phi) = p_0(\nu(\bm{\mu}),\nu(\bm{\pi}),\phi)}, then
+#'\deqn{
+#' p(\vmu,\vpi,\phi|\vy) \propto p_0(\vmu,\vpi,\phi)L(\vy;\vmu,\vpi,\phi)}
+#' is multimodal with (at least) \eqn{k!} modes.
+#' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and \code{runjags} for bivariate Gaussian mixtures. After MCMC sampling,
+#' this function calls the \code{pivotal_selection()} function and yields the pivots obtained from one among four different
+#' methods: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff} and \code{MUS} (available only if \code{k < 5}).
+#'Denoting woth \eqn{C} a co-association matrix counting the number of times a pair of units belongs to the same group  across the MCMC sample, and let
+#' \eqn{j} be the group containing units \eqn{\mathcal J_j}, the user may chose \eqn{{i^*}\in\mathcal J_j} that maximizes one of the quantities
+#' \deqn{\sum_{p\in\mathcal J_j} c_{{i^*}p};  \quad }
+#' \deqn{ \sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.}
+#'These methods give the unit that maximizes the global within similarity (\code{maxsumint}) and the unit that maximizes the difference between global within and between similarities (\code{maxsumdiff}), respectively. Alternatively, we may choose \eqn{i^{*} \in\mathcal J_j}, which minimizes:
+#'  \deqn{\sum_{p\not\in\mathcal J_j} c_{ip}, }
+#' obtaining the most distant unit among the members that minimize the global dissimilarity between one group and all the others (\code{maxsumnoint}). The function \code{MUS} calls the MUS procedure when \code{k<5}.
+#'
+#'
+#'
+#' @return The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
+#'
+#' \item{\code{Freq}}{  Number of units corresponding to each group for the post-processed chains.}
+#' \item{\code{z} }{  Post-processed latent vector.}
+#' \item{\code{ris}}{  MCMC output array as provided by JAGS.}
+#' \item{\code{groupPost}}{ Post-processed group vector.}
+#' \item{ \code{mu_switch}}{  Post-processed MCMC chains for the mean parameters.}
+#' \item{\code{ mu_pre_switch_compl}}{ Pre-precessed MCMC chains for the mean parameters.}
+#' \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
+#' \item{\code{grr}}{Group vector allocation as provided by \code{diana} or \code{hclust}.}
+#' \item{\code{clust_sel}}{clustering solution obtained via \code{diana} or \code{hclust} function.}
+#' \item{\code{true.iter}}{ The number of MCMC iterations for which their number of groups exactly coincides with the prespecified number of groups \code{k}. }
+#'
+#'
+#' @author Leonardo Egidi \url{legidi@units.it}
+#' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
+#'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969, DOI 10.1007/s11222-017-  9774-2.
+#' @examples
+#' N <- 200
+#' k <- 4
+#' nMC <- 1000
+#' M1 <-c(-.5,8)
+#' M2 <- c(25.5,.1)
+#' M3 <- c(49.5,8)
+#' M4 <- c(63.0,.1)
+#' Mu <- matrix(rbind(M1,M2,M3,M4),c(4,2))
+#' stdev=cbind(rep(1,k), rep(200,k))
+#' Sigma.p1 <- matrix(c(1,0,0,1), nrow=2, ncol=2)
+#' Sigma.p2 <- matrix(c(200,0,0,200), nrow=2, ncol=2)
+#' W <- c(0.2,0.8)
+#' sim <- sim_mixture(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
+#' output_bayes <- bayesMCMC(sim$y, k, nMC)
+#'
+#'
+#' Fishery data
+#'
+#' data(fish)
+#' y <- fish[,1]
+#' k <- 5
+#' nMC <- 5000
+#' output_bayes <- bayesMCMC(y, k, nMC)
+#' @export
+
+
+
+
+
+bayesMCMC <- function(y, k, nMC, piv.criterion,
+  clustering){
+
+  # Conditions about data dimension----------------
+
+  if (is.vector(y)){
+    N <- length(y)
+    # JAGS code------------------------
+
+    # Initial values
+    mu_inits<- c()
+    clust_inits <- kmeans(y, k)$cluster
+    for (j in 1:k){
+      mu_inits[j]<-mean(y[clust_inits==j])
+    }
+    # Data
+    burn <- 1000
+
+    # Model
+    mod.mist.univ <- BMMmodel(y, k = k, initialValues = list(S0 = 2),
+      priors = list(kind = "independence", parameter = "priorsFish",
+        hierarchical = "tau"))
+    control <- JAGScontrol(variables = c("mu", "tau", "eta", "S"),
+      burn.in = burn, n.iter = nMC, seed = 10)
+    ogg.jags <- JAGSrun(y, model = mod.mist.univ, control = control)
+    # Parameters' initialization
+
+    J <- 3
+    mcmc.pars <- array(data = NA, dim = c(nMC-length(1:burn), k, J))
+    mcmc.pars[ , , 1] <- ogg.jags$results[-(1:burn), (N+k+1):(N+2*k)]
+    mcmc.pars[ , , 2] <- ogg.jags$results[-(1:burn), (N+2*k+1):(N+3*k)]
+    mcmc.pars[ , , 3] <- ogg.jags$results[-(1:burn), (N+1):(N+k)]
+
+    mu_pre_switch_compl <-  mcmc.pars[ , , 1]
+    tau_pre_switch_compl <-  mcmc.pars[ , , 2]
+    prob.st_pre_switch_compl <-  mcmc.pars[ , , 3]
+
+    mu <- mcmc.pars[,,1]
+    tau <- mcmc.pars[,,2]
+    prob.st <- mcmc.pars[,,3]
+    group <-  ogg.jags$results[-(1:burn), 1:N] #gruppi
+    FreqGruppiJags <- table(group)
+    numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
+
+    if (sum(numeffettivogruppi==k)==0){
+      return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
+      #return(1)
+    }
+
+    ##saved in the output
+    ris_prel <- ogg.jags$results[-(1:burn),]
+    ris <- ris_prel[numeffettivogruppi==k,]
+    true.iter <- nrow(ris)
+    group <- ris[,1:N]
+
+    group.orig <- group
+    verigruppi <- as.double(names(table(group)))
+
+    cont <- 0
+    for (verogruppo in verigruppi){
+      cont <- cont+1
+      group.orig[group==verogruppo] <- cont          #aggiorna contatore pivot
+    }
+    cont                                           #qualche dubbio su sta parte
+
+    k.orig <- k
+    if (cont>1){
+      k <- cont
+    }
+    mu <- mu[,verigruppi]
+    tau <- tau[,verigruppi]
+    prob.st <- prob.st[,verigruppi]
+
+    M <- nrow(group)
+    group <- group*0
+    mu_switch <- array(rep(0, true.iter*k), dim=c(true.iter,k))
+    z <- array(0,dim=c(N, k, true.iter))
+
+    for (i in 1:true.iter){
+      perm <- sample(1:k,k,replace=FALSE)
+      for (j in 1:k){
+        #post-processing
+        group[i,group.orig[i,]==j] <- perm[j]
+      }
+      mu_switch[i,] <- mu[i,perm]
+      tau[i,] <- tau[i,perm]
+      prob.st[i,] <- prob.st[i,perm]
+    }
+
+    for (i in 1:true.iter){
+      for (j in 1:N){
+        z[j,group[i,j],i] <- 1
+      }
+    }
+
+
+  }else if (is.matrix(y)){
+    N <- dim(y)[1]
+
+    # JAGS code------------------------
+
+    # Initial values
+    mu0 <- as.vector(c(0,0))
+    S2 <- matrix(c(1,0,0,1),nrow=2)/100000
+    S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+
+    # Data
+    dati.biv <- list(y = y, N = N, k = k, S2= S2, S3= S3, mu0=mu0,
+      onesRepNclust = rep(1,k))
+
+    # Model
+    mod.mist.biv<-"model{
+    # Likelihood:
+
+    for (i in 1:N){
+    yprev[i,1:2]<-y[i,1:2]
+    y[i,1:2] ~ dmnorm(muOfClust[clust[i],],tauOfClust)
+    clust[i] ~ dcat(pClust[1:k] )
+    }
+
+    # Prior:
+
+    for (g in 1:k) {
+    muOfClust[g,1:2] ~ dmnorm(mu0[],S2[,])}
+    tauOfClust[1:2,1:2] ~ dwish(S3[,],3)
+    Sigma[1:2,1:2] <- inverse(tauOfClust[,])
+    pClust[1:k] ~ ddirch( onesRepNclust)
+  }"
+
+
+    # Parameters' initialization
+    clust_inits <- KMeans(y, k)$cluster
+    #cutree(hclust(dist(y), "average"),k)
+    mu_inits <- matrix(0,k,2)
+    for (j in 1:k){
+      mu_inits[j,] <- cbind(mean(y[clust_inits==j,1]), mean(y[clust_inits==j,2]))
+    }
+    #Reorder mu_inits according to the x-coordinate
+    mu_inits <-
+      mu_inits[sort(mu_inits[,1], decreasing=FALSE, index.return=TRUE)$ix,]
+
+    init1.biv <- dump.format(list(muOfClust=mu_inits,
+      tauOfClust= matrix(c(15,0,0,15),ncol=2),
+      pClust=rep(1/k,k), clust=clust_inits))
+    moni.biv <- c("clust","muOfClust","tauOfClust","pClust")
+
+    mod   <- mod.mist.biv
+    dati  <- dati.biv
+    init1 <- init1.biv
+    moni  <- moni.biv
+
+    # Jags execution
+    ogg.jags <- run.jags(model=mod, data=dati, monitor=moni,
+      inits=init1, n.chains=3,plots=FALSE, thin=1,
+      sample=nMC, burnin=1000)
+    # Extraction
+    ris <- ogg.jags$mcmc[[1]]
+
+    # Post- process of the chains----------------------
+    group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
+    M <- nrow(group)
+    H <- list()
+
+    mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
+    for (i in 1:k){
+      H[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
+    }
+    for (i in 1:k){
+      mu_pre_switch_compl[,,i] <- as.matrix(H[[i]])
+    }
+    # Discard iterations
+    numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
+    ris <- ris[numeffettivogruppi==k,]
+    true.iter <- nrow(ris)
+
+    if (sum(numeffettivogruppi==k)==0){
+      return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
+      #return(1)
+    }else{
+      L<-list()
+      mu_pre_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+      for (i in 1:k){
+        L[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
+      }
+      for (i in 1:k){
+        mu_pre_switch[,,i] <- as.matrix(L[[i]])
+      }
+    }
+
+    group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
+    FreqGruppiJags <- table(group)
+    tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
+    prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+    group.orig <- group
+    verigruppi <- as.double(names(table(group)))
+    prob.st <- prob.st[,verigruppi]
+
+    mu_pre_switch <- mu_pre_switch[,,verigruppi]
+
+    # Switching Post
+    cont <- 0
+    for (l in verigruppi){
+      cont <- cont+1
+      group.orig[group==l] <- cont
+    }
+    k.orig <- k
+    if (cont > 1){
+      k <- cont
+    }
+    mu_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+    group <- group*0
+    z <- array(0,dim=c(N, k, true.iter))
+
+    for (i in 1:true.iter){
+      perm <- sample(1:k,k,replace=FALSE)
+      for (j in 1:k){
+        #post-processing
+        group[i,group.orig[i,]==j] <- perm[j]
+      }
+      mu_switch[i,,] <- mu_pre_switch[i,,perm]
+      #tau[i,] <- tau[i,perm]
+      prob.st[i,] <- prob.st[i,perm]
+    }
+
+    for (i in 1:true.iter){
+      for (j in 1:N){
+        z[j,group[i,j],i] <- 1
+      }
+    }
+
+}
+
+  FreqGruppiJagsPERM <- table(group)
+  Freq <- cbind(FreqGruppiJags,FreqGruppiJagsPERM)
+
+
+
+  # Similarity matrix based on MCMC sampling------------------------
+  nz <- dim(z)[1]
+  M <- dim(z)[3]
+  C <- matrix(1,nz,nz)
+  zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
+
+  for (i in 1:(nz-1)){
+    for (j in (i+1):nz){
+      C[i,j] <- sum(zm[i,]==zm[j,])/M
+      C[j,i] <- C[i,j]
+    }
+  }
+  matdissim <- 1-C
+  diag(matdissim) <- 0
+
+  # Clustering on dissimilarity matrix-------------
+
+  if (missing(clustering)){
+    #clustering <- "diana"
+    gr  <- diana(matdissim,diss=TRUE)
+    grr <- cutree(gr, k)
+  }else if(clustering =="diana"){
+    gr  <- diana(matdissim,diss=TRUE)
+    grr <- cutree(gr, k)
+  }else if(clustering == "hclust"){
+    gr  <- hclust(as.dist(matdissim))
+    grr <- cutree(gr, k)
+  }
+
+  available_met <- 3
+
+  piv.criterion.choices <- c("maxsumint", "maxsumnoint",
+    "maxsumdiff")
+
+  if (missing(piv.criterion)){
+    piv.criterion <- "maxsumdiff"
+  }
+
+  if (piv.criterion=="maxsumint"||
+      piv.criterion=="maxsumnoint"||
+      piv.criterion=="maxsumdiff" ){
+
+    piv.index <- (1:3)[piv.criterion.choices==piv.criterion]
+    piv.index.pivotal <- c(1,2,3)
+    available_met <- 3
+    x <- c(1:available_met)
+    prec.par.1 <- min(min(table(grr))-1,5)
+    clust  <- lapply(x, pivotal_selection,
+      k=k, gIndex=as.vector(grr),
+      C=C, n=nz, ZM=zm,
+      available_met = available_met)
+
+    clust_sel <- clust[[piv.index.pivotal[piv.index]]]
+  }else if(piv.criterion=="MUS"){
+      if (k <=4 & sum(C==0)!=0){
+          available_met <- 4
+          x <- c(1:available_met)
+          prec.par.1 <- min(min(table(grr))-1,5)
+          mus_res    <- MUS(C, grr, prec.par.1)
+         clust  <- lapply(x, pivotal_selection,
+             k=k, gIndex=as.vector(grr),
+             C=C, n=nz, ZM=zm,
+             maxima=mus_res$maxima,
+             available_met = available_met)
+         clust_sel <- clust[[4]]
+    }
+  }else{
+
+    x <- c(1:available_met)
+    clust  <- lapply(x, pivotal_selection,
+      k=k, gIndex=as.vector(grr),
+      C=C, n=nz, ZM=zm,
+      available_met = available_met)
+    clust_sel <- clust[[3]]
+  }
+  PivotIndex <- list()
+  #for(i in 1:length(x)){
+    PivotIndex[[1]] <- clust_sel$Cg
+  #}
+
+
+  return(list( Freq=Freq, z=z, Mu = mu_inits,
+    ris=ris, groupPost=group,
+    mu_switch=mu_switch,
+    mu_pre_switch_compl=mu_pre_switch_compl,
+    C=C, grr=grr, clust_sel =clust_sel,
+    true.iter = true.iter,
+    piv.criterion = piv.criterion))
+  }
