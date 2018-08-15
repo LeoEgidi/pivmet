@@ -148,7 +148,7 @@
 #'              true.means= output_bayes$Mu)
 #'
 #'
-#'
+#' @rdname pivotal_relabelling
 #' @export
 
 pivotal_relabelling<-function(mu_switch, group, clustering,
