@@ -75,8 +75,9 @@ In order for the pivot method to be applicable, we need to exclude iterations #'
 
 #Univariate simulation
 
-N <- 200
-k <- 4
+N <- 250
+nMC <- 2500
+k <- 3
 p <- rep(1/k,k)
 x <- 3
 stdev <- cbind(rep(1,k), rep(200,k))
@@ -156,7 +157,6 @@ plot_pivotal(y= sim$y,
              mu_switch=output_bayes$mu_switch,
              n.iter=relab_est$Final_it,
              true.means= output_bayes$Mu)
-
 
 
 }
