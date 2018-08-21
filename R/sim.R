@@ -1,15 +1,15 @@
 #' Generate Data from a Nested Mixture
 #'
-#' Simulate N observations from a nested mixture model with k pre-specified Components.
+#' Simulate N observations from a nested mixture model with k pre-specified components.
 #'
 #'
-#' @param N Sample size, data dimension.
-#' @param k Number of mixture components.
-#' @param Mu Initial mean vector/matrix.
-#' @param stdev Initial standard deviations (for univariate mixtures).
-#' @param Sigma.p1 Covariance matrix for the first mixture level.
-#' @param Sigma.p2 Covariance matrix for the second mixture level.
-#' @param W Mixture weights for the two levels,vector.
+#' @param N sample size, data dimension.
+#' @param k number of mixture components.
+#' @param Mu initial mean vector/matrix.
+#' @param stdev initial standard deviations (for univariate mixtures).
+#' @param Sigma.p1 covariance matrix for the first mixture level.
+#' @param Sigma.p2 covariance matrix for the second mixture level.
+#' @param W mixture weights for the two levels,vector.
 #' @return
 #'
 #' \code{y}  Data values.
@@ -23,7 +23,7 @@
 #' M1 <- c(-.5,8)
 #' M2 <- c(25.5,.1)
 #' M3 <- c(49.5,8)
-#' Mu <- matrix(rbind(M1,M2,M3,M3),c(k,2))
+#' Mu <- matrix(rbind(M1,M2,M3),c(k,2))
 #' stdev <- cbind(rep(1,k), rep(200,k))
 #' Sigma.p1 <- matrix(c(stdev[1,1],0,0,stdev[1,1]),
 #' nrow=2, ncol=2)

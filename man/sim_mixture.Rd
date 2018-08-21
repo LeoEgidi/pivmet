@@ -7,25 +7,25 @@
 sim_mixture(N, k, Mu, stdev, Sigma.p1, Sigma.p2, W)
 }
 \arguments{
-\item{N}{Sample size, data dimension.}
+\item{N}{sample size, data dimension.}
 
-\item{k}{Number of mixture components.}
+\item{k}{number of mixture components.}
 
-\item{Mu}{Initial mean vector/matrix.}
+\item{Mu}{initial mean vector/matrix.}
 
-\item{stdev}{Initial standard deviations (for univariate mixtures).}
+\item{stdev}{initial standard deviations (for univariate mixtures).}
 
-\item{Sigma.p1}{Covariance matrix for the first mixture level.}
+\item{Sigma.p1}{covariance matrix for the first mixture level.}
 
-\item{Sigma.p2}{Covariance matrix for the second mixture level.}
+\item{Sigma.p2}{covariance matrix for the second mixture level.}
 
-\item{W}{Mixture weights for the two levels,vector.}
+\item{W}{mixture weights for the two levels,vector.}
 }
 \value{
 \code{y}  Data values.
 }
 \description{
-Simulate N observations from a nested mixture model with k pre-specified Components.
+Simulate N observations from a nested mixture model with k pre-specified components.
 }
 \examples{
 
@@ -36,7 +36,7 @@ k <- 3
 M1 <- c(-.5,8)
 M2 <- c(25.5,.1)
 M3 <- c(49.5,8)
-Mu <- matrix(rbind(M1,M2,M3,M3),c(k,2))
+Mu <- matrix(rbind(M1,M2,M3),c(k,2))
 stdev <- cbind(rep(1,k), rep(200,k))
 Sigma.p1 <- matrix(c(stdev[1,1],0,0,stdev[1,1]),
 nrow=2, ncol=2)
