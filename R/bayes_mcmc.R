@@ -5,10 +5,10 @@
 #' @param k Number of mixture components.
 #' @param nMC Number of MCMC iterations for the JAGS function execution.
 #' @param piv.criterion The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See \code{Details} for a thorough and detailed list of available pivotal methods.
-#' @param clustering The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. possible choices: \code{diana} (default), \code{hclust}.
+#' @param clustering The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. Possible choices: \code{diana} (default), \code{hclust}.
 #'
 #' @details
-#' The function fits a Bayesian mixture model of the form:
+#' The function fits a Bayesian Gaussian mixture model of the form:
 #' \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
 #' where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i\in\{1,\ldots,k \}}, and
 #' \deqn{P(Z_i=k)=\pi_k.}
@@ -71,6 +71,7 @@
 #'
 #' Fishery data
 #'
+#' library(bayesmix)
 #' data(fish)
 #' y <- fish[,1]
 #' k <- 5

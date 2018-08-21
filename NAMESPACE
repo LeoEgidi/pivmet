@@ -1,5 +1,5 @@
 exportPattern("^[[:alpha:]]+")
-export(pivotal_relabelling)
+export(piv_rel)
 export(piv_MCMC)
 export(plot_pivotal)
 export(piv_sim)

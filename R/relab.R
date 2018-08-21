@@ -64,47 +64,46 @@
 #'
 #' #Univariate simulation
 #'
-#' N <- 250
+#' N   <- 250
 #' nMC <- 2500
-#' k <- 3
-#' p <- rep(1/k,k)
-#' x <- 3
+#' k   <- 3
+#' p   <- rep(1/k,k)
+#' x   <- 3
 #' stdev <- cbind(rep(1,k), rep(200,k))
-#' Mu <- seq(-trunc(k/2)*x,trunc(k/2)*x,length=k)
-#' W <- c(0.2,0.8)
-#' sim <- sim_mixture(N,k,Mu,stdev,W=W)
-#' output_bayes <- bayesMCMC(sim$y, k, nMC)
-#' relab_est <-
-#' pivotal_relabelling(mu_switch = output_bayes$mu_switch,
-#'                     group = output_bayes$groupPost,
-#'                     clustering= output_bayes$clust_sel,
-#'                     Mu=output_bayes$Mu,
+#' Mu    <- seq(-trunc(k/2)*x,trunc(k/2)*x,length=k)
+#' W     <- c(0.2,0.8)
+#' sim   <- sim_mixture(N,k,Mu,stdev,W=W)
+#' res   <- bayesMCMC(sim$y, k, nMC)
+#' rel   <- piv_rel(mu_switch = res$mu_switch,
+#'                     group = res$groupPost,
+#'                     clustering= res$clust_sel,
+#'                     Mu =res$Mu,
 #'                     nMC = nMC)
 #'
 #'
 #' plot_pivotal(y= sim$y,
-#'              est = relab_est$mu_rel_median,
-#'              chains=relab_est$mu_rel_complete,
+#'              est = rel$mu_rel_median,
+#'              chains=rel$mu_rel_complete,
 #'              type="chains",
-#'              mu_switch=output_bayes$mu_switch,
-#'              n.iter=relab_est$Final_it,
-#'              true.means= output_bayes$Mu)
+#'              mu_switch=res$mu_switch,
+#'              n.iter=rel$Final_it,
+#'              true.means= res$Mu)
 #'
 #' plot_pivotal(y= sim$y,
-#'              est = relab_est$mu_rel_median,
-#'              chains=relab_est$mu_rel_complete,
+#'              est = rel$mu_rel_median,
+#'              chains=rel$mu_rel_complete,
 #'              type="estimates",
-#'              mu_switch=output_bayes$mu_switch,
-#'              n.iter=relab_est$Final_it,
-#'              true.means= output_bayes$Mu)
+#'              mu_switch = res$mu_switch,
+#'              n.iter=rel$Final_it,
+#'              true.means= res$Mu)
 #'
 #' plot_pivotal(y= sim$y,
-#'              est = relab_est$mu_rel_median,
-#'              chains=relab_est$mu_rel_complete,
+#'              est = rel$mu_rel_median,
+#'              chains=rel$mu_rel_complete,
 #'              type="estimates_hist",
-#'              mu_switch=output_bayes$mu_switch,
-#'              n.iter=relab_est$Final_it,
-#'              true.means= output_bayes$Mu)
+#'              mu_switch = res$mu_switch,
+#'              n.iter = rel$Final_it,
+#'              true.means= res$Mu)
 #'
 #'
 #' #Bivariate simulation
@@ -123,35 +122,34 @@
 #'                    nrow=2, ncol=2)
 #' W <- c(0.2,0.8)
 #' sim <- sim_mixture(N,k,Mu,stdev,Sigma.p1,Sigma.p2,W)
-#' output_bayes <- bayesMCMC(sim$y, k, nMC)
-#' relab_est <-
-#' pivotal_relabelling(mu_switch=output_bayes$mu_switch,
-#'                  group=output_bayes$groupPost,
-#'                  clustering=output_bayes$clust_sel,
-#'                  Mu=output_bayes$Mu,
+#' res <- bayesMCMC(sim$y, k, nMC)
+#' rel <- piv_rel(mu_switch=res$mu_switch,
+#'                  group=res$groupPost,
+#'                  clustering=res$clust_sel,
+#'                  Mu=res$Mu,
 #'                  nMC = nMC)
 #'
 #' plot_pivotal(y= sim$y,
-#'              est = relab_est$mu_rel_median,
-#'              chains=relab_est$mu_rel_complete,
+#'              est = rel$mu_rel_median,
+#'              chains=rel$mu_rel_complete,
 #'              type="chains",
-#'              mu_switch=output_bayes$mu_switch,
-#'              n.iter=relab_est$Final_it,
-#'              true.means= output_bayes$Mu)
+#'              mu_switch=res$mu_switch,
+#'              n.iter=rel$Final_it,
+#'              true.means= res$Mu)
 #'
 #' plot_pivotal(y= sim$y,
-#'              est = relab_est$mu_rel_median,
-#'              chains=relab_est$mu_rel_complete,
+#'              est = rel$mu_rel_median,
+#'              chains=rel$mu_rel_complete,
 #'              type="estimates_hist",
-#'              mu_switch=output_bayes$mu_switch,
-#'              n.iter=relab_est$Final_it,
-#'              true.means= output_bayes$Mu)
+#'              mu_switch=res$mu_switch,
+#'              n.iter=rel$Final_it,
+#'              true.means= res$Mu)
 #'
 #'
-#' @rdname pivotal_relabelling
+#' #@rdname piv_rel
 #' @export
 
-pivotal_relabelling<-function(mu_switch, group, clustering,
+piv_rel<-function(mu_switch, group, clustering,
   Mu, nMC ){
 
   true.iter <- dim(mu_switch)[1]

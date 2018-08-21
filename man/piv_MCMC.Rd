@@ -15,7 +15,7 @@ piv_MCMC(y, k, nMC, piv.criterion, clustering)
 
 \item{piv.criterion}{The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See \code{Details} for a thorough and detailed list of available pivotal methods.}
 
-\item{clustering}{The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. possible choices: \code{diana} (default), \code{hclust}.}
+\item{clustering}{The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. Possible choices: \code{diana} (default), \code{hclust}.}
 }
 \value{
 The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
@@ -35,7 +35,7 @@ The function gives the MCMC output, the clustering solutions and the pivotal ind
 Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 }
 \details{
-The function fits a Bayesian mixture model of the form:
+The function fits a Bayesian Gaussian mixture model of the form:
 \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
 where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i\in\{1,\ldots,k \}}, and
 \deqn{P(Z_i=k)=\pi_k.}
@@ -79,6 +79,7 @@ res <- piv_MCMC(sim$y, k, nMC)
 
 Fishery data
 
+library(bayesmix)
 data(fish)
 y <- fish[,1]
 k <- 5
