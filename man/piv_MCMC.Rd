@@ -83,7 +83,7 @@ data(fish)
 y <- fish[,1]
 k <- 5
 nMC <- 5000
-res <- bayesMCMC(y, k, nMC)
+res <- piv_MCMC(y, k, nMC)
 }
 \references{
 Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture

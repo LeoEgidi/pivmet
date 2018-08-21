@@ -75,7 +75,7 @@
 #' y <- fish[,1]
 #' k <- 5
 #' nMC <- 5000
-#' res <- bayesMCMC(y, k, nMC)
+#' res <- piv_MCMC(y, k, nMC)
 #' @export
 
 
