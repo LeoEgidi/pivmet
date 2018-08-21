@@ -25,7 +25,7 @@ sim_mixture(N, k, Mu, stdev, Sigma.p1, Sigma.p2, W)
 \code{y}  Data values.
 }
 \description{
-Simulate a Nested Mixture with k Prespecified Components.
+Simulate N observations from a nested mixture model with k pre-specified Components.
 }
 \examples{
 

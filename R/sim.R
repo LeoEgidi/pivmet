@@ -1,6 +1,6 @@
 #' Generate Data from a Nested Mixture
 #'
-#' Simulate a Nested Mixture with k Prespecified Components.
+#' Simulate N observations from a nested mixture model with k pre-specified Components.
 #'
 #'
 #' @param N Sample size, data dimension.
