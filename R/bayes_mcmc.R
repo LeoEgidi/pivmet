@@ -3,8 +3,8 @@
 #' Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y N-dimensional data vector/matrix.
 #' @param k Number of mixture components.
-#' @param nMC Number of MCMC iterations for the JAGS function \code{run.jags}.
-#' @param piv.criterion The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See \code{Details} for a list of available pivotal methods.
+#' @param nMC Number of MCMC iterations for the JAGS function execution.
+#' @param piv.criterion The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See \code{Details} for a thorough and detailed list of available pivotal methods.
 #' @param clustering The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. possible choices: \code{diana} (default), \code{hclust}.
 #'
 #' @details
@@ -53,20 +53,20 @@
 #' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 #'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969, DOI 10.1007/s11222-017-  9774-2.
 #' @examples
-#' N <- 200
-#' k <- 4
+#' N   <- 200
+#' k   <- 4
 #' nMC <- 1000
-#' M1 <-c(-.5,8)
-#' M2 <- c(25.5,.1)
-#' M3 <- c(49.5,8)
-#' M4 <- c(63.0,.1)
-#' Mu <- matrix(rbind(M1,M2,M3,M4),c(4,2))
-#' stdev=cbind(rep(1,k), rep(200,k))
-#' Sigma.p1 <- matrix(c(1,0,0,1), nrow=2, ncol=2)
-#' Sigma.p2 <- matrix(c(200,0,0,200), nrow=2, ncol=2)
+#' M1  <-c(-.5,8)
+#' M2  <- c(25.5,.1)
+#' M3  <- c(49.5,8)
+#' M4  <- c(63.0,.1)
+#' Mu  <- matrix(rbind(M1,M2,M3,M4),c(4,2))
+#' stdev    <- cbind(rep(1,k), rep(200,k))
+#' Sigma.p1 <- matrix(c(stdev[1,1],0,0,stdev[1,1]), nrow=2, ncol=2)
+#' Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]), nrow=2, ncol=2)
 #' W <- c(0.2,0.8)
-#' sim <- sim_mixture(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
-#' output_bayes <- bayesMCMC(sim$y, k, nMC)
+#' sim <- piv_sim(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
+#' res <- piv_MCMC(sim$y, k, nMC)
 #'
 #'
 #' Fishery data
@@ -75,14 +75,14 @@
 #' y <- fish[,1]
 #' k <- 5
 #' nMC <- 5000
-#' output_bayes <- bayesMCMC(y, k, nMC)
+#' res <- bayesMCMC(y, k, nMC)
 #' @export
 
 
 
 
 
-bayesMCMC <- function(y, k, nMC, piv.criterion,
+piv_MCMC <- function(y, k, nMC, piv.criterion,
   clustering){
 
   # Conditions about data dimension----------------
