@@ -77,9 +77,8 @@ sim <- piv_sim(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
 res <- piv_MCMC(sim$y, k, nMC)
 
 
-Fishery data
+Fishery data (bayesmix package)
 
-library(bayesmix)
 data(fish)
 y <- fish[,1]
 k <- 5
