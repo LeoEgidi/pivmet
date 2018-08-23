@@ -29,6 +29,7 @@ Fishery data
 library(bayesmix)
 data(fish)
 y <- fish[,1]
+N <- length(y)
 k <- 5
 nMC <- 5000
 res <- piv_MCMC(y, k, nMC)
@@ -36,23 +37,14 @@ rel <- piv_rel(res$mu_switch, res$groupPost, res$clust_sel,
                                Mu=res$Mu,
                                nMC = nMC)
 
-piv_plot(y, rel$mu_rel_median,
-            rel$mu_rel_complete,
-            type="chains",
-            res$mu_switch,
-            rel$Final_it, res$Mu)
+piv_plot(y, rel$mu_rel_median, rel$mu_rel_complete,
+type="chains", res$mu_switch, rel$Final_it, res$Mu)
 
-piv_plot(y, rel$mu_rel_median,
-            rel$mu_rel_complete,
-            type="estimates",
-            res$mu_switch,
-            rel$Final_it, output_bayes$Mu)
+piv_plot(y, rel$mu_rel_median, rel$mu_rel_complete,
+type="estimates", res$mu_switch, rel$Final_it, res$Mu)
 
-piv_plot(y, rel$mu_rel_median,
-            rel$mu_rel_complete,
-            type="estimates_hist",
-            res$mu_switch,
-            rel$Final_it, res$Mu)
+piv_plot(y, rel$mu_rel_median, rel$mu_rel_complete,
+type="estimates_hist", res$mu_switch, rel$Final_it, res$Mu)
 
 
 }
