@@ -1,0 +1,637 @@
+---
+title: "K-means clustering using the MUS algorithm"
+author: "Leonardo Egidi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: ref.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In this vignette we explore the K-means algorithm performed using the MUS algorithm through the function `MUSKMeans` of the `pivreb` package.
+
+## MUS algorithm: how it works, and why
+
+MUS algorithm described in @egidi2018mus is a sequential procedure for extracting identity submatrices of small rank and pivotal units from large and sparse matrices. The procedure has already
+been satisfactorily applied for solving the label switching problem in Bayesian mixture
+models [@egidi2018relabelling]. We present here a real case for applying our procedure.
+
+- Consider to build a *co-association* matrix $C$, by taking the co-occurrences of pairs of $n$ units in
+the same cluster/group among the total number of partitions. For instance, this matrix could be constructed from a MCMC output in Bayesian micture models.
+
+- Suppose we want to detect the **pivotal units**, as the observations that *are as far away from each
+other as possible* according to the co-association matrix. Units which are very distant from each other are likely to have
+zero co-occurrences.
+
+- The resulting units---hereafter pivots---have the desirable property to be representative of the group they belong to.
+
+With the function `MUS` the user may detect pivotal units from a co-association matrix `matsim`, obtained through $H$ different partitions, whose units may belong to $K$ groups, expressed by the argument `clusters`.
+
+```{r mus_alg, echo =FALSE}
+MUS <- function(matsim, clusters, prec_par){
+
+  #matsim: matsim di similarit?
+  #clusters: gruppi partizione clustering
+  #prec_par: parametro di precisione. Indica la numerosit? del sottoinsieme da cui
+  #pescare i pivots
+
+  #clusters<-c()
+  #clusters<-as.vector(clusters_list[[ind_id]])
+  coppie<-which(matsim==0, arr.ind = TRUE) #estraggo le coppie
+  ordine<-sort(table(which(matsim==0, arr.ind = TRUE)), decreasing=TRUE) #ordino i pptenziali pivot
+  new_lista_ord<-c()
+  lista_ord<-as.double(names(ordine))
+  subgroups<-matrix(NA,length(unique(clusters)), prec_par)
+  for (g in 1:length(unique(clusters))) {
+    subgroups[g,]<-lista_ord[clusters[lista_ord]==g][1:prec_par]
+    if (all(is.na(subgroups[g,]))==TRUE){
+      subgroups[g, 1:min(prec_par,sum(clusters==g))]<-which(clusters==g)[1:min(prec_par,sum(clusters==g))]
+    }
+  }
+  p_star<-c()
+  P<-c()
+  insieme_card_p<-c()
+
+  if (length(lista_ord)<= prec_par*length(unique(clusters))){
+    tol <-seq(0.01, 0.1,length.out= 10)
+    sel_tol<-c()
+    for (i in 1:10){
+    sel_tol[i]<- sum(matsim<=tol[i])
+    }
+    coppie<-which(matsim==0 | matsim<=sel_tol[1], arr.ind = TRUE) #estraggo le coppie
+    ordine<-sort(table(which(matsim==0 |matsim<=sel_tol[1], arr.ind = TRUE)), decreasing=TRUE) #ordino i pptenziali pivot
+    new_lista_ord<-c()
+    lista_ord<-as.double(names(ordine))
+    subgroups<-matrix(NA,length(unique(clusters)), prec_par)
+    for (g in 1:length(unique(clusters))) {
+      subgroups[g,]<-lista_ord[clusters[lista_ord]==g][1:prec_par]
+      if (all(is.na(subgroups[g,]))==TRUE){
+        subgroups[g, 1:min(prec_par,sum(clusters==g))]<-which(clusters==g)[1:min(prec_par,sum(clusters==g))]
+      }
+    }
+  }
+
+
+  contatore<-rep(0,min(length(lista_ord), prec_par*length(unique(clusters))))
+
+  if (length(unique(clusters))==2){
+    for (u in 1:min(length(lista_ord), (prec_par*length(unique(clusters))))){
+      p_star[u]<-lista_ord[u]
+      P<-coppie[,2][coppie[,1]==p_star[u]& clusters[coppie[,2]]!=clusters[p_star[u]]]
+      card_p<-length(P)
+      insieme_card_p[u]<-card_p
+      #step.two<-coppie[,2][coppie[,1]==p_star[u]]
+      if (insieme_card_p[u]>1){
+        for ( p in 1 :(insieme_card_p[u]-1)){
+
+            if (matsim[P[p],p_star[u]]==0 && clusters[P[p]]!=clusters[p_star[u]] ){
+
+              contatore[u]=contatore[u]+1
+            }
+
+        }
+
+      }
+      #u=u+1
+
+
+
+    }
+  }else if (length(unique(clusters))==3){
+
+
+    # for (u in 1:min(length(lista_ord),(prec_par*length(unique(clusters)))) ){
+    #   p_star[u]<-lista_ord[u]
+    #   P<-coppie[,2][coppie[,1]==p_star[u]& clusters[coppie[,2]]!=clusters[p_star[u]]]
+    #   card_p<-length(P)
+    #   insieme_card_p[u]<-card_p
+    #   #step.two<-coppie[,2][coppie[,1]==p_star[u]]if (u<=(prec_par*length(unique(clusters)))  ){
+    #
+    #   #if (u<=card_p){
+    #     if (insieme_card_p[u]==2){
+    #
+    #       if (matsim[P[1],P[2]]==0 && clusters[P[1]]!=clusters[P[2]] &&
+    #           clusters[p_star[u]]!= clusters[P[2]]){
+    #
+    #         contatore[u]=contatore[u]+1
+    #       }
+    #
+    #     }else if(insieme_card_p[u]>2){
+    #     for ( p in 1 :(insieme_card_p[u]-1)){
+    #       for (o in (p+1):insieme_card_p[u]){
+    #
+    #
+    #           if (matsim[P[p],P[o]]==0 && clusters[P[p]]!=clusters[P[o]] &&
+    #               clusters[p_star[u]]!= clusters[P[o]]){
+    #
+    #           contatore[u]=contatore[u]+1
+    #         }
+    #
+    #       }
+    #     }
+    #
+    #   }
+    #   #u=u+1
+    # #}else{ break }
+    # }
+
+    matrice_ord <- cbind(lista_ord, clusters[lista_ord])
+    p_star[1:prec_par] <- matrice_ord[ clusters[lista_ord]== unique(clusters)[1], 1][1:prec_par]
+    p_star[(prec_par+1):(2*prec_par)  ] <- matrice_ord[ clusters[lista_ord]== unique(clusters)[2],1] [1:prec_par]
+    p_star[((2*prec_par)+1):(3*prec_par)  ] <- matrice_ord[clusters[lista_ord]== unique(clusters)[3],1][1:prec_par]
+
+    for (u in 1:min(length(lista_ord),(prec_par*length(unique(clusters)))) ){
+
+
+      P<-coppie[,2][coppie[,1]==p_star[u]& clusters[coppie[,2]]!=clusters[p_star[u]]]
+      card_p<-length(P)
+      insieme_card_p[u]<-card_p
+      #step.two<-coppie[,2][coppie[,1]==p_star[u]]if (u<=(prec_par*length(unique(clusters)))  ){
+
+      #if (u<=card_p){
+      if (insieme_card_p[u]==2){
+
+        if (matsim[P[1],P[2]]==0 && clusters[P[1]]!=clusters[P[2]] &&
+            clusters[p_star[u]]!= clusters[P[2]]){
+
+          contatore[u]=contatore[u]+1
+        }
+
+      }else if(insieme_card_p[u]>2){
+        for ( p in 1 :(insieme_card_p[u]-1)){
+          for (o in (p+1):insieme_card_p[u]){
+
+
+            if (matsim[P[p],P[o]]==0 &&
+                clusters[P[p]]!=clusters[P[o]] &&
+                clusters[p_star[u]]!= clusters[P[o]]){
+
+              contatore[u]=contatore[u]+1
+            }
+
+          }
+        }
+
+      }
+      #u=u+1
+      #}else{ break }
+    }
+
+
+  }else{
+
+    new_lista_ord<-c(subgroups[1,],subgroups[2,], subgroups[3,], subgroups[4,])
+    for (u in 1:min(length(lista_ord), (prec_par*length(unique(clusters)))) ){
+
+      #p_star[u]<-new_lista_ord[u]
+      p_star<-new_lista_ord[is.na(new_lista_ord)==FALSE]
+      P<-coppie[,2][coppie[,1]==p_star[u]& clusters[coppie[,2]]!=clusters[p_star[u]]]
+      card_p<-length(P)
+      insieme_card_p[u]<-card_p
+
+
+      if (insieme_card_p[u]>2){
+
+        a<-combn(P,2)[,apply(combn(P,2),2,function(x) sum((identical(matsim[x, x], diag(2))) & (length(unique(clusters[x]))==2)))==1]
+        aa<-t(a)
+
+        if (dim(aa)[1]==0){
+          contatore[u]<-0
+        }else{
+
+        custom<-function(x)
+        {
+          #rip_matr<-c(0,0,0)
+          y<-0
+          rip_matr<-matrix(NA, 1,3)
+          lista_rip<-list()
+          for (p in 1:length(P)) {
+
+            if (identical(matsim[c(x, P[p]),c(x,P[p])], diag(3)) && clusters[P[p]]!=clusters[x]){
+
+              y<-y+1
+
+              if (y!=0){
+              lista_rip[[y]]<-sort(c(x, P[p]))}
+            }}
+
+
+
+          if (y!=0){
+            rip_matr<-matrix(NA, y,3)
+
+
+          for (j in 1:y){
+            rip_matr[j,]<-lista_rip[[j]]
+          }
+
+          new_y<-nrow(t(apply(rip_matr,1,function(x) unique(x))))
+          }else{new_y=0}
+
+
+
+
+          return(list(new_y=new_y, rip_matr=rip_matr ) )
+
+        }
+
+        fg<-list()
+
+        for (row in 1:nrow(aa)){
+          fg[[row]]<-custom(aa[row,])$rip_matr
+        }
+
+        fg_matrix<-matrix(rep(NA,3), ncol=3)
+        #fg_matrix<-matrix(fg[[1]], nrow= nrow(fg[[1]]), ncol=3)
+
+        for (r in 1:(length(fg))){
+          fg_matrix<-rbind(fg_matrix, fg[[r]])
+        }
+
+        fg_matrix<-subset(fg_matrix, apply(fg_matrix,1, function(x)  identical(is.na(x), rep(FALSE,3)  )  ))
+
+
+
+        contatore[u]<-nrow(unique.matrix(fg_matrix, incomparables = FALSE, 1))
+          #sum(apply(aa,1, custom))
+        ###########################
+
+        #sol 2: provata. Lenta! ##################
+        # contatore[u]<-sum(apply(combn(P,3),2, function(x) sum(identical(matsim[x, x], diag(3))
+        # & length(unique(clusters[x]))==3)))
+
+        #################################
+
+      } }
+      #u=u+1
+
+    }
+  }
+
+  tabella<-cbind(p_star, clusters[p_star], insieme_card_p, contatore)
+
+
+
+  massimi<-c()
+
+  if (length(unique(tabella[,2]))<length(unique(clusters))){
+    massimi<-rep(NA,length(unique(clusters)) )
+
+  return(list(massimi=massimi))
+  }else{
+
+
+
+  p<-c()
+  for (g in 1:length(unique(clusters))){
+    massimi[g]<- subset(tabella, tabella[,2]==g)[which.max(subset(tabella[,4], tabella[,2]==g)),1]
+  }
+  return(list(tabella=tabella,
+              massimi=massimi,
+              contatore=contatore
+              #,
+              #new=new_lista_ord[is.na(new_lista_ord)==FALSE
+               ))
+
+  }}
+
+
+
+
+MUSKMeans <- function(x, centers, piv.criterion,
+  iter.mus, prec.par,
+  alg.type, iter.max, num.seeds){
+  #check on optional parameters
+  if (missing(piv.criterion)){
+    if (centers<=4 ){
+      piv.criterion <- "MUS"
+    }else{
+      piv.criterion <- "maxsumdiff"
+    }
+  }
+  if (missing(iter.mus)){
+    iter.mus <- 1000
+  }
+
+  if (missing(alg.type)){
+    alg.type <- "KMeans"
+  }
+
+  #type of clustering for initial clusters' assignment
+  if (alg.type=="hclust"){
+    cl <-cutree(hclust(dist(x), "average"),centers)
+  }else if (alg.type=="KMeans"){
+    cl <- KMeans(x,centers)$cluster
+  }else if(alg.type=="kmeans"){
+    cl <- kmeans(x,centers)$cluster
+  }
+
+  # tuning of precision MUS parameter
+  if (missing(prec.par)){
+    prec.par <- min( min(table(cl))-1, 5 )
+  }
+
+  #compute iter.mus different partitions
+  if (is.vector(x)){
+    n <- length(x)
+  }else{
+    n <- dim(x)[1]
+  }
+  H <- iter.mus
+  a <- matrix(NA, H, n)
+
+  for (h in 1:H){
+    a[h,] <- kmeans(x,centers)$cluster
+  }
+  sim_matr <- matrix(1, n,n)
+
+  for (i in 1:(n-1)){
+    for (j in (i+1):n){
+      sim_matr[i,j] <- sum(a[,i]==a[,j])/H
+      sim_matr[j,i] <- sim_matr[i,j]
+    }
+  }
+
+  if (centers <=4){
+    if (piv.criterion=="MUS"){
+
+      #MUS algorithm
+      prec.par <- prec.par
+      mus_res  <- MUS(sim_matr, cl, prec.par)
+      pivots   <- mus_res$massimi
+    }else if (piv.criterion!="MUS"){
+
+      #Other pivotal criteria
+      z <- array(0,dim=c(n, centers, H))
+      for (i in 1:H){
+        for (j in 1:n){
+          z[j,a[i,j],i] <- 1
+        }
+      }
+      zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
+      piv_sel <- pivotal_selection(Obj=c(1:7),
+        k=centers, gIndex=cl,
+        matsim=sim_matr, n=n, ZM=zm, massimi=c(1:centers),
+        available_met = 7)
+      if (piv.criterion=="maxsumint"){
+        pivots <- piv_sel$Cg[,2]
+      }else if(piv.criterion=="maxsumnoint"){
+        pivots <- piv_sel$Cg[,5]
+      }else if(piv.criterion=="maxsumdiff"){
+        pivots <- piv_sel$Cg[,6]
+      }
+    }
+  }else{
+    z <- array(0,dim=c(n, centers, H))
+    for (i in 1:H){
+      for (j in 1:n){
+        z[j,a[i,j],i] <- 1
+      }
+    }
+    zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
+    piv_sel <- pivotal_selection(Obj=c(1:6),
+      k=centers, gIndex=cl,
+      matsim=sim_matr, n=n, ZM=zm, massimi=pivots,
+      available_met = 6)
+    if (piv.criterion=="maxsumint"){
+      pivots <- piv_sel$Cg[,2]
+    }else if(piv.criterion=="maxsumnoint"){
+      pivots <- piv_sel$Cg[,5]
+    }else if(piv.criterion=="maxsumdiff"){
+      pivots <- piv_sel$Cg[,6]
+    }
+  }
+
+  #Initial seeding
+  if(is.vector(x)){
+    dim_x <- 1
+    start <- c()
+    for (k in 1:centers){
+      start[k] <- as.double(x[pivots[k]])
+    }
+  }else if(is.matrix(x)){
+    dim_x <- dim(x)[2]
+    start <- matrix(NA, centers, dim_x )
+    for (k in 1:centers){
+      start[k,] <- as.double(x[pivots[k],])
+    }
+  }
+
+
+  #MUSKmeans
+  d_mus   <- KMeans(x, centers=start)
+
+  return(list(cluster=d_mus$cluster,
+    centers=d_mus$centers,
+    totss=d_mus$totss,
+    withinss=d_mus$withinss,
+    tot.withinss=d_mus$tot.withinss,
+    betweenss=d_mus$betweenss,
+    size=d_mus$size,
+    iter=d_mus$iter,
+    ifaults=d_mus$ifault,
+    pivots = pivots,
+    piv.criterion = piv.criterion))
+}
+
+
+
+```
+
+
+```{r mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+
+library(Rcmdr)
+library(mvtnorm)
+#generate some data
+
+set.seed(123)
+n  <- 620
+centers  <- 3
+n1 <- 20
+n2 <- 100
+n3 <- 500
+x  <- matrix(NA, n,2)
+truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
+
+for (i in 1:n1){
+ x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))}
+for (i in 1:n2){
+ x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
+for (i in 1:n3){
+ x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
+
+H <- 1000
+a <- matrix(NA, H, n)
+
+  for (h in 1:H){
+    a[h,] <- kmeans(x,centers)$cluster
+  }
+
+#build the similarity matrix
+sim_matr <- matrix(1, n,n)
+ for (i in 1:(n-1)){
+    for (j in (i+1):n){
+      sim_matr[i,j] <- sum(a[,i]==a[,j])/H
+      sim_matr[j,i] <- sim_matr[i,j]
+    }
+  }
+
+cl <- KMeans(x, centers)$cluster
+mus_alg <- MUS(matsim= sim_matr, clusters = cl, prec_par = 5)
+
+
+```
+
+
+
+
+## MUSKMeans
+
+Qiote often, classical K-means fails in recognizing the *true* groups:
+
+```{r kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
+ kmeans_res <- KMeans(x, centers)
+
+```
+
+
+
+```{r kmeans_plots, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
+
+colors_cluster <- c("grey", "darkolivegreen3", "coral")
+colors_centers <- c("black", "darkgreen", "firebrick")
+
+colors_cluster=c("grey", "darkolivegreen3", "coral")
+ colors_centers=c("black", "darkgreen", "firebrick")
+ 
+ plot(x, col = colors_cluster[truegroup]
+                 ,bg= colors_cluster[truegroup], pch=21,
+                  xlab="y[,1]",
+                  ylab="y[,2]", cex.lab=1.5,
+                  main="True data", cex.main=1.5)
+ 
+ 
+ 
+plot(x, col = colors_cluster[kmeans_res$cluster], 
+      bg=colors_cluster[kmeans_res$cluster], pch=21, xlab="y[,1]", ylab="y[,2]",
+      cex.lab=1.5,main="K-means",  cex.main=1.5)
+ points(kmeans_res$centers, col = colors_centers[1:centers], pch = 8, cex = 2)
+
+
+
+```
+
+
+In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm. The function `MUSKMeans` works as the classical `kmeans` function, with some optional arguments
+
+```{r musk, fig.show='hold'}
+musk_res <- MUSKMeans(x, centers)
+```
+
+```{r musk_plots, echo=FALSE, fig.show='hold'}
+#par(mfrow=c(1,2), pty="s")
+colors_cluster <- c("grey", "darkolivegreen3", "coral")
+colors_centers <- c("black", "darkgreen", "firebrick")
+plot(x, col = colors_cluster[truegroup],
+   bg= colors_cluster[truegroup], pch=21, xlab="x[,1]",
+   ylab="x[,2]", cex.lab=1.5,
+   main="True data", cex.main=1.5)
+
+plot(x, col = colors_cluster[musk_res$cluster],
+   bg=colors_cluster[musk_res$cluster], pch=21, xlab="x[,1]",
+   ylab="x[,2]", cex.lab=1.5,
+   main="MUSK-means", cex.main=1.5)
+points(x[musk_res$pivots[1],1], x[musk_res$pivots[1],2],
+   pch=24, col=colors_centers[1],bg=colors_centers[1],
+   cex=1.5)
+points(x[musk_res$pivots[2],1], x[musk_res$pivots[2],2],
+   pch=24,  col=colors_centers[2], bg=colors_centers[2],
+   cex=1.5)
+points(x[musk_res$pivots[3],1], x[musk_res$pivots[3],2],
+   pch=24, col=colors_centers[3], bg=colors_centers[3],
+   cex=1.5)
+points(musk_res$centers, col = colors_centers[1:centers],
+   pch = 8, cex = 2)
+
+```
+
+<!-- If we repeat this procedure several times, we may plot the group recognition among the simulated -->
+
+<!-- ```{r cycle, echo =FALSE, message=FALSE, warning =FALSE, fig.show='animate', interval=0.3} -->
+
+<!-- library(animation) -->
+<!-- library(plyr) -->
+
+<!-- oopt = ani.options( nmax = 10) -->
+
+<!-- for (j in 1:ani.options("nmax")){ -->
+<!-- n  <- 620 -->
+<!-- centers  <- 3 -->
+<!-- n1 <- 20 -->
+<!-- n2 <- 100 -->
+<!-- n3 <- 500 -->
+<!-- x  <- matrix(NA, n,2) -->
+<!-- truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3)) -->
+
+<!-- for (i in 1:n1){ -->
+<!--  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))} -->
+<!-- for (i in 1:n2){ -->
+<!--  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))} -->
+<!-- for (i in 1:n3){ -->
+<!--  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))} -->
+
+<!-- musk_res <- MUSKMeans(x, centers) -->
+
+
+<!-- par(mfrow=c(1,2), pty="s") -->
+<!-- colors_cluster <- c("grey", "darkolivegreen3", "coral") -->
+<!-- colors_centers <- c("black", "darkgreen", "firebrick") -->
+<!-- plot(x, col = colors_cluster[truegroup], -->
+<!--    bg= colors_cluster[truegroup], pch=21, xlab="x[,1]", -->
+<!--    ylab="x[,2]", cex.lab=1.5, -->
+<!--    main="True data", cex.main=1.5) -->
+
+<!-- plot(x, col = colors_cluster[musk_res$cluster], -->
+<!--    bg=colors_cluster[musk_res$cluster], pch=21, xlab="x[,1]", -->
+<!--    ylab="x[,2]", cex.lab=1.5, -->
+<!--    main="MUSK-means", cex.main=1.5) -->
+<!-- points(x[musk_res$pivots[1],1], x[musk_res$pivots[1],2], -->
+<!--    pch=24, col=colors_centers[1],bg=colors_centers[1], -->
+<!--    cex=1.5) -->
+<!-- points(x[musk_res$pivots[2],1], x[musk_res$pivots[2],2], -->
+<!--    pch=24,  col=colors_centers[2], bg=colors_centers[2], -->
+<!--    cex=1.5) -->
+<!-- points(x[musk_res$pivots[3],1], x[musk_res$pivots[3],2], -->
+<!--    pch=24, col=colors_centers[3], bg=colors_centers[3], -->
+<!--    cex=1.5) -->
+<!-- points(musk_res$centers, col = colors_centers[1:centers], -->
+<!--    pch = 8, cex = 2) -->
+<!-- ani.pause() -->
+<!-- } -->
+
+<!-- ``` -->
+
+The function `MUSKMeans` has optional arguments:
+
+- `piv.criterion` With this argument the user may choose among four different pivotal criteria, listed in @egidi2018relabelling: `MUS`, `maxsumint`, `maxsumnoint`, `maxsumdiff`. `MUS` is the default criterion when `centers` $\le$ 4, whereas `maxsumdiff` is the default method when `centers` > 4.
+
+- `iter.mus` This is the number of different partitions used for building the co-association matrix $C$. Default is $10^3$.
+
+- `prec.par` With this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ \underset{k}{\min} \ n_{k}-1, 5   \}$, where $n_k$ is the number of units belonging to the group $k, \ k=1,\ldots,K$.
+
+- `alg.type` This is the clustering technique applied to the raw data such that the partition is given in input to the `MUS` algorithm. A robust choice is required here---by default, `KMeans` is used.
+
+
+
+## References
+
