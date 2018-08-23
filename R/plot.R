@@ -12,7 +12,6 @@
 #'
 #' Fishery data
 #'
-#' library(bayesmix)
 #' data(fish)
 #' y <- fish[,1]
 #' N <- length(y)
