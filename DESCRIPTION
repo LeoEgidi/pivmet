@@ -13,7 +13,7 @@ LazyLoad: yes
 Suggests: knitr,
     rmarkdown
 Imports: RcmdrMisc,
-         bayesmix
+         bayesmix, mvtnorm, cluster, mclust, runjags, rjags, MASS
 VignetteBuilder: knitr
 RemoteType: github
 RemoteHost: https://api.github.com
