@@ -41,7 +41,7 @@
 #'for (i in 1:n3){
 #'  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
 #'
-#'res <- MUSKMeans(x, k)
+#'res <- piv_KMeans(x, k)
 #'
 #'
 #'par(mfrow=c(1,2), pty="s")
@@ -70,7 +70,7 @@
 
 
 
-MUSKMeans <- function(x, centers, piv.criterion,
+piv_KMeans <- function(x, centers, piv.criterion,
   iter.mus, prec.par,
   alg.type, iter.max, num.seeds){
   #check on optional parameters

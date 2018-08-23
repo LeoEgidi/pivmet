@@ -81,31 +81,6 @@
 #'                     nMC = nMC)
 #'
 #'
-#' plot_pivotal(y= sim$y,
-#'              est = rel$mu_rel_median,
-#'              chains=rel$mu_rel_complete,
-#'              type="chains",
-#'              mu_switch=res$mu_switch,
-#'              n.iter=rel$Final_it,
-#'              true.means= res$Mu)
-#'
-#' plot_pivotal(y= sim$y,
-#'              est = rel$mu_rel_median,
-#'              chains=rel$mu_rel_complete,
-#'              type="estimates",
-#'              mu_switch = res$mu_switch,
-#'              n.iter=rel$Final_it,
-#'              true.means= res$Mu)
-#'
-#' plot_pivotal(y= sim$y,
-#'              est = rel$mu_rel_median,
-#'              chains=rel$mu_rel_complete,
-#'              type="estimates_hist",
-#'              mu_switch = res$mu_switch,
-#'              n.iter = rel$Final_it,
-#'              true.means= res$Mu)
-#'
-#'
 #' #Bivariate simulation
 #'
 #' N <- 200
@@ -129,7 +104,7 @@
 #'                  Mu=res$Mu,
 #'                  nMC = nMC)
 #'
-#' plot_pivotal(y= sim$y,
+#' piv_plot(y= sim$y,
 #'              est = rel$mu_rel_median,
 #'              chains=rel$mu_rel_complete,
 #'              type="chains",
@@ -137,7 +112,7 @@
 #'              n.iter=rel$Final_it,
 #'              true.means= res$Mu)
 #'
-#' plot_pivotal(y= sim$y,
+#' piv_plot(y= sim$y,
 #'              est = rel$mu_rel_median,
 #'              chains=rel$mu_rel_complete,
 #'              type="estimates_hist",

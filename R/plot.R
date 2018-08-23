@@ -17,36 +17,34 @@
 #' y <- fish[,1]
 #' k <- 5
 #' nMC <- 5000
-#' output_bayes <- bayesMCMC(y, k, nMC)
-#' relab_est <- pivotal_relabelling(output_bayes$mu_switch,
-#'                                output_bayes$groupPost,
-#'                                output_bayes$clust_sel,
-#'                                Mu=output_bayes$Mu,
+#' res <- piv_MCMC(y, k, nMC)
+#' rel <- piv_rel(res$mu_switch, res$groupPost, res$clust_sel,
+#'                                Mu=res$Mu,
 #'                                nMC = nMC)
 #'
-#'plot_pivotal(y, relab_est$mu_rel_median,
-#'             relab_est$mu_rel_complete,
+#' piv_plot(y, rel$mu_rel_median,
+#'             rel$mu_rel_complete,
 #'             type="chains",
-#'             output_bayes$mu_switch,
-#'             relab_est$Final_it, output_bayes$Mu)
+#'             res$mu_switch,
+#'             rel$Final_it, res$Mu)
 #'
-#'plot_pivotal(y, relab_est$mu_rel_median,
-#'             relab_est$mu_rel_complete,
+#' piv_plot(y, rel$mu_rel_median,
+#'             rel$mu_rel_complete,
 #'             type="estimates",
-#'             output_bayes$mu_switch,
-#'             relab_est$Final_it, output_bayes$Mu)
+#'             res$mu_switch,
+#'             rel$Final_it, output_bayes$Mu)
 #'
-#'plot_pivotal(y, relab_est$mu_rel_median,
-#'             relab_est$mu_rel_complete,
+#' piv_plot(y, rel$mu_rel_median,
+#'             rel$mu_rel_complete,
 #'             type="estimates_hist",
-#'             output_bayes$mu_switch,
-#'             relab_est$Final_it, output_bayes$Mu)
+#'             res$mu_switch,
+#'             rel$Final_it, res$Mu)
 #'
 #'
 #' @export
 
 
-plot_pivotal <- function(y, est, chains,
+piv_plot <- function(y, est, chains,
   type, mu_switch, n.iter, true.means ){
   colori <- c("red", "green", "violet", "blue")
 
