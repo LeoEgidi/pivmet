@@ -2,7 +2,7 @@
 % Please edit documentation in R/relab.R
 \name{piv_rel}
 \alias{piv_rel}
-\title{Perfrom the pivotal relabelling step and compute the relabelled posterior estimates}
+\title{Perfroming the pivotal relabelling step and computing the relabelled posterior estimates}
 \usage{
 piv_rel(mu_switch, group, clustering, Mu, nMC)
 }
@@ -11,11 +11,11 @@ piv_rel(mu_switch, group, clustering, Mu, nMC)
 
 \item{group}{The units' group membership obtained after post-processing the chain.}
 
-\item{clustering}{The output from clustering (\code{diana} or \code{HClust}).}
+\item{clustering}{The output from clustering (\code{diana} or \code{hclust}).}
 
 \item{Mu}{the true means (or an estimate for them).}
 
-\item{nMC}{the number of total MCMC iterations (given in input for the function \code{BayesMCMC}).}
+\item{nMC}{the number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).}
 }
 \value{
 This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
@@ -23,53 +23,35 @@ This function gives the relabelled posterior estimates--both mean and medians--o
 \item{\code{mu_rel_mean}}{ Estimated posterior means}
 \item{\code{mu_rel_median}}{ Estimated posterior medians}
 \item{\code{mu_rel_complete}}{Complete relabelled chains}
+\item{\code{Final_It}}{The final number of valid iterations}
 }
 \description{
-This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2017) and to obtain the relabelled posterior estimates.
+This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
 }
 \details{
-Prototypical models in which the label switching problem arises are mixture models, where for a sample \eqn{\vy=(y_1,\ldots,y_n)} we assume
+Prototypical models in which the label switching problem arises are mixture models, where for a sample \eqn{y=(y_1,\ldots,y_n)} we assume
  \deqn{
 (Y_i|Z_i=j) \sim f(y;\mu_j,\phi),
 }
-where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d.\ random variables, \eqn{g=j,\dots,k},
-\eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i\in\{1,\ldots,k\}},
+where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k},
+\eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k}},
 and
 \deqn{
 P(Z_i=k)=\pi_k.
 }
-we assume that an MCMC sample is obtained from the posterior distribution for model above--for instance via \code{bayesMCMC} function--with a prior distribution which is labelling invariant.
-We denote as \eqn{\{\ca{\theta}:h=1,\ldots,H\}} the sample for the parameter \eqn{\theta}
-=(\vmu,\vpi,\phi)\}, \eqn{H} being the number of MCMC iterations.
-We assume that also a MCMC sample for the variable \eqn{Z} is obtained and denote it by  \eqn{\{\ca{Z}:h=1,\ldots,H\}}.
-Let, then, \eqn{\mathcal J_1,\ldots,\mathcal J_{k}} be a partition, obtained via \code{diana} or \code{hclust}.
-Furthermore, suppose that we can find \eqn{k} units, \eqn{i_1,\ldots,i_{k}}, one
+
+This model is unidentified with respect to an arbitrary permutation of the labels \eqn{1,...,k}. Relabelling means permuting
+the labels at each iteration of the Markov chain in such
+a way that the relabelled chain can be used to draw inferences
+on component-specific parameters.
+
+
+We assume here that an MCMC sample is obtained from the posterior distribution for model above--for instance via \code{piv_MCMC} function--with a prior distribution which is labelling invariant.
+Furthermore, suppose that we can find \eqn{k} units, one
 for each group, which are (pairwise) separated with (posterior) probability one
 (that is, the posterior probability of any two of them being in the same group
-is zero). In terms of the matrix \eqn{C} with elements \eqn{c_{ip}=P(Z_i=Z_p|\mathcal y
-)}, the \eqn{k\times k} submatrix with only the rows and columns correspondi
-ng to \eqn{i_1,\ldots,i_{k}}, will be the identity matrix.
-It is then straightforward to use the \eqn{k} units, called pivots in what follows, to identify the groups and to relabel the chains: for each \eqn{h=1,\ldots, H} and \eqn{j=1
-, \ldots,k}, set
-\deqn{
-\ca{\mu_j}=\ca{\mu_{\ca{Z_{i_j}}}};
-}
-\deqn{
-\ca{Z_i}=j \mbox{ for } i:\ca{Z_i}=\ca{Z_{i_j}}.
-}
-First, although the model is based on a mixture of \eqn{k} components, each iteration of the chain may imply a different number of non-empty groups (that is, it may be that \eqn{[Z_i]_h\neq k\;\; \forall i} for some \eqn{j,h}); let then \eqn{\ca{k}\leq k} be the number of non-empty groups at iteration \eqn{h},
-\deqn{
- \ca{k} = \#\{j: \ca{Z_i}=j\mbox{ for some }i\},
- }
-where \eqn{\#A} is the cardinality of the set \eqn{A}.
-If \eqn{\ca{k}<k} for some \eqn{h}, there cannot be \eqn{k} perfectly separated units, and so there cannot be \eqn{k} pivots.
-Hence, the relabelling procedure outlined above can be used only for the subset of the chain for which \eqn{\ca{k}=k}; let it be \eqn{\hh_k=\{h:\ca{k}= k\}}, the \code{true.iter} argument.
-Even if \eqn{k} non-empty groups are available, however, there may not be \eqn{k} perfectly separated units. Let us define
-\deqn{
- \hh^{*}_k=\{ h\in\hh_k : \exists r,s \mbox{ s.t. } \ca{Z_{i_r}}=\ca{Z_{i_s}} \}
- }
-that is, the set of iterations where (at least) two pivots are in the same group.
-In order for the pivot method to be applicable, we need to exclude iterations #'\eqn{\hh^*_k}; that is, we can perform the pivot relabelling on \eqn{\hh_k-\hh_k^*}.
+is zero).
+It is then straightforward to use the \eqn{k} units, called pivots in what follows, to identify the groups and to relabel the chains (see the vignette for thorough details).
 }
 \examples{
 

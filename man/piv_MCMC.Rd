@@ -37,28 +37,21 @@ Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains 
 \details{
 The function fits a Bayesian Gaussian mixture model of the form:
 \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
-where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i\in\{1,\ldots,k \}}, and
+where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k }}, and
 \deqn{P(Z_i=k)=\pi_k.}
 The likelihood of the model is then
-\deqn{L(\vy;\vmu,\vpi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_k f(y_i;\mu_k,\phi),}
-with \eqn{\vmu=(\mu_{1},\dots,\mu_{k})} component-specific parameters and \eqn{\vpi=(\pi_{1},\dots,\pi_{k})} mixture weights. Let \eqn{\nu} denote a permutation of \eqn{\{ 1,\ldots,k \}}, and let \eqn{\nu(\bm{\mu})= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})}, \eqn{ \nu(\bm{\pi})=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the corresponding permutations of \eqn{\vmu} and \eqn{\vpi}. Denote by \eqn{\mathcal{V}} the set of all the permutations of the indexes \eqn{\{1,\ldots,k \}}, the likelihood above is invariant under any permutation \eqn{\nu \in \mathcal{V}}, that is
+\deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_k f(y_i;\mu_k,\phi),}
+with \eqn{\mu=(\mu_{1},\dots,\mu_{k})} component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})} mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }}, and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})}, \eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the corresponding permutations of \eqn{\mu} and \eqn{\pi}. Denote by \eqn{V} the set of all the permutations of the indexes \eqn{{1,\ldots,k }}, the likelihood above is invariant under any permutation \eqn{\nu \in V}, that is
 \deqn{
-L(\vy;\vmu,\vpi,\phi) = L(\vy;\nu(\bm{\mu}),\nu(\bm{\pi}),\phi).}
+L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\phi).}
 As a consequence, the model is unidentified with respect to an arbitrary permutation of the labels.
-When Bayesian inference for the model is performed, if the prior distribution \eqn{p_0(\vmu,\vpi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\vmu,\vpi,\phi) = p_0(\nu(\bm{\mu}),\nu(\bm{\pi}),\phi)}, then
+When Bayesian inference for the model is performed, if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\pi,\phi) = p_0(\nu(\mu),\nu(\pi),\phi)}, then
 \deqn{
-p(\vmu,\vpi,\phi|\vy) \propto p_0(\vmu,\vpi,\phi)L(\vy;\vmu,\vpi,\phi)}
+p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 is multimodal with (at least) \eqn{k!} modes.
-The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and \code{runjags} for bivariate Gaussian mixtures. After MCMC sampling,
+The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags} package for bivariate Gaussian mixtures. After MCMC sampling,
 this function calls the \code{pivotal_selection()} function and yields the pivots obtained from one among four different
-methods: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff} and \code{MUS} (available only if \code{k < 5}).
-Denoting woth \eqn{C} a co-association matrix counting the number of times a pair of units belongs to the same group  across the MCMC sample, and let
-\eqn{j} be the group containing units \eqn{\mathcal J_j}, the user may chose \eqn{{i^*}\in\mathcal J_j} that maximizes one of the quantities
-\deqn{\sum_{p\in\mathcal J_j} c_{{i^*}p};  \quad }
-\deqn{ \sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.}
-These methods give the unit that maximizes the global within similarity (\code{maxsumint}) and the unit that maximizes the difference between global within and between similarities (\code{maxsumdiff}), respectively. Alternatively, we may choose \eqn{i^{*} \in\mathcal J_j}, which minimizes:
- \deqn{\sum_{p\not\in\mathcal J_j} c_{ip}, }
-obtaining the most distant unit among the members that minimize the global dissimilarity between one group and all the others (\code{maxsumnoint}). The function \code{MUS} calls the MUS procedure when \code{k<5}.
+methods: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff} and \code{MUS} (available only if \code{k < 5}) (see the vignette for thorough details)
 }
 \examples{
 N   <- 200

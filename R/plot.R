@@ -2,9 +2,9 @@
 #'
 #' Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
 #' @param y Data vector or matrix.
-#' @param est Pivotal estimates as provided by \code{pivotal_relabelling}.
-#' @param type Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}.
-#' @param n.iter Number of valid MCMC iterations as provided by \code{pivotal relabelling}.
+#' @param est Pivotal estimates as provided by \code{piv_rel}.
+#' @param type Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"estimates_hist"}.
+#' @param n.iter Number of valid MCMC iterations as provided by \code{piv rel}.
 #' @param switch.means  Post-processed chains.
 #' @param true.means An estimate for the true means.
 #'
@@ -21,25 +21,25 @@
 #' rel <- piv_rel(res$mu_switch, res$groupPost, res$clust_sel,
 #'                                Mu=res$Mu,
 #'                                nMC = nMC)
+#' piv_plot(y, res, rel, "chains")
 #'
-#' piv_plot(y, rel$mu_rel_median, rel$mu_rel_complete,
-#' type="chains", res$mu_switch, rel$Final_it, res$Mu)
+#' piv_plot(y, res, rel, "estimates")
 #'
-#' piv_plot(y, rel$mu_rel_median, rel$mu_rel_complete,
-#' type="estimates", res$mu_switch, rel$Final_it, res$Mu)
-#'
-#' piv_plot(y, rel$mu_rel_median, rel$mu_rel_complete,
-#' type="estimates_hist", res$mu_switch, rel$Final_it, res$Mu)
+#' piv_plot(y, res, rel, "estimates_hist")
 #'
 #'
 #' @export
 
 
-piv_plot <- function(y, est, chains,
-  type, mu_switch, n.iter, true.means ){
+piv_plot <- function(y, res, rel, type ){
   colori <- c("red", "green", "violet", "blue")
+  est <- rel$mu_rel_median
+  chains <-rel$mu_rel_complete
+  mu_switch <- res$mu_switch
+  n.iter <- rel$Final_It
+  true.means <- res$Mu
 
-  if (type=="chains" ){
+if (type=="chains" ){
     if (length(dim(mu_switch))==2){
 
       k <- dim(mu_switch)[2]
