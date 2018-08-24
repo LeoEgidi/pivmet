@@ -4,20 +4,16 @@
 \alias{piv_plot}
 \title{Plotting outputs from pivotal relabelling}
 \usage{
-piv_plot(y, res, rel, type)
+piv_plot(y, mcmc, rel_est, type)
 }
 \arguments{
 \item{y}{Data vector or matrix.}
 
+\item{mcmc}{The ouptut of the raw MCMC sampling.}
+
+\item{rel_est}{Pivotal estimates as provided by \code{piv_rel}.}
+
 \item{type}{Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"estimates_hist"}.}
-
-\item{est}{Pivotal estimates as provided by \code{piv_rel}.}
-
-\item{n.iter}{Number of valid MCMC iterations as provided by \code{piv rel}.}
-
-\item{switch.means}{Post-processed chains.}
-
-\item{true.means}{An estimate for the true means.}
 }
 \description{
 Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
@@ -32,9 +28,7 @@ N <- length(y)
 k <- 5
 nMC <- 5000
 res <- piv_MCMC(y, k, nMC)
-rel <- piv_rel(res$mu_switch, res$groupPost, res$clust_sel,
-                               Mu=res$Mu,
-                               nMC = nMC)
+rel <- piv_rel(mcmc=res, nMC = nMC)
 piv_plot(y, res, rel, "chains")
 
 piv_plot(y, res, rel, "estimates")

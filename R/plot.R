@@ -3,7 +3,7 @@
 #' Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
 #' @param y Data vector or matrix.
 #' @param mcmc The ouptut of the raw MCMC sampling.
-#' @param est Pivotal estimates as provided by \code{piv_rel}.
+#' @param rel_est Pivotal estimates as provided by \code{piv_rel}.
 #' @param type Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"estimates_hist"}.
 #'
 #' @examples
@@ -27,12 +27,12 @@
 #' @export
 
 
-piv_plot <- function(y, mcmc, est, type ){
+piv_plot <- function(y, mcmc, rel_est, type ){
   colori <- c("red", "green", "violet", "blue")
-  est <- est$mu_rel_median
-  chains <-est$mu_rel_complete
-  mu_switch <- est$mu_switch
-  n.iter <- est$Final_It
+  est <- rel_est$mu_rel_median
+  chains <- rel_est$mu_rel_complete
+  mu_switch <- rel_est$mu_switch
+  n.iter <- rel_est$Final_It
   true.means <- mcmc$Mu
 
 if (type=="chains" ){

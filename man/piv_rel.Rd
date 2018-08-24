@@ -4,18 +4,12 @@
 \alias{piv_rel}
 \title{Perfroming the pivotal relabelling step and computing the relabelled posterior estimates}
 \usage{
-piv_rel(mu_switch, group, clustering, Mu, nMC)
+piv_rel(mcmc, nMC)
 }
 \arguments{
-\item{mu_switch}{The post-processed MCMC chains for the mean parameters.}
+\item{mcmc}{The output of the MCMC sampling from \code{piv_MCMC}.}
 
-\item{group}{The units' group membership obtained after post-processing the chain.}
-
-\item{clustering}{The output from clustering (\code{diana} or \code{hclust}).}
-
-\item{Mu}{the true means (or an estimate for them).}
-
-\item{nMC}{the number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).}
+\item{nMC}{The number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).}
 }
 \value{
 This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
@@ -67,11 +61,7 @@ Mu    <- seq(-trunc(k/2)*x,trunc(k/2)*x,length=k)
 W     <- c(0.2,0.8)
 sim   <- piv_sim(N,k,Mu,stdev,W=W)
 res   <- piv_MCMC(sim$y, k, nMC)
-rel   <- piv_rel(mu_switch = res$mu_switch,
-                    group = res$groupPost,
-                    clustering= res$clust_sel,
-                    Mu =res$Mu,
-                    nMC = nMC)
+rel   <- piv_rel(mcmc=res, nMC = nMC)
 
 
 #Bivariate simulation
@@ -91,30 +81,13 @@ Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]),
 W <- c(0.2,0.8)
 sim <- piv_sim(N,k,Mu,stdev,Sigma.p1,Sigma.p2,W)
 res <- piv_MCMC(sim$y, k, nMC)
-rel <- piv_rel(mu_switch=res$mu_switch,
-                 group=res$groupPost,
-                 clustering=res$clust_sel,
-                 Mu=res$Mu,
-                 nMC = nMC)
+rel <- piv_rel(mcmc = res, nMC = nMC)
 
-piv_plot(y= sim$y,
-             est = rel$mu_rel_median,
-             chains=rel$mu_rel_complete,
-             type="chains",
-             mu_switch=res$mu_switch,
-             n.iter=rel$Final_it,
-             true.means= res$Mu)
-
-piv_plot(y= sim$y,
-             est = rel$mu_rel_median,
-             chains=rel$mu_rel_complete,
-             type="estimates_hist",
-             mu_switch=res$mu_switch,
-             n.iter=rel$Final_it,
-             true.means= res$Mu)
+piv_plot(y=sim$y, mcmc=res, rel_est = rel, type="chains")
+piv_plot(y=sim$y, mcmc=res, rel_est = rel,
+         type="estimates_hist")
 
 
-#@rdname piv_rel
 }
 \references{
 Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture

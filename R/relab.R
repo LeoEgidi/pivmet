@@ -75,8 +75,9 @@
 #' res <- piv_MCMC(sim$y, k, nMC)
 #' rel <- piv_rel(mcmc = res, nMC = nMC)
 #'
-#' piv_plot(y=sim$y, mcmc=res, est = rel, type="chains")
-#' piv_plot(y=sim$y, mcmc=res, est = rel, type="estimates_hist")
+#' piv_plot(y=sim$y, mcmc=res, rel_est = rel, type="chains")
+#' piv_plot(y=sim$y, mcmc=res, rel_est = rel,
+#'          type="estimates_hist")
 #'
 #'
 #' @export
