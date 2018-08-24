@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette we explore the K-means algorithm performed using the MUS algorithm and other pivotal methods through the function `piv_KMeans` of the `pivmet` package:
+In this vignette we explore the K-means algorithm performed using the MUS algorithm and other pivotal methods through the function `piv_KMeans` of the `pivmet` package. First of all, we load the package:
 
 ```{r load, warning =FALSE, message=FALSE}
 library(pivmet)
@@ -25,26 +25,40 @@ library(pivmet)
 
 
 
-## MUS algorithm: how it works, and why
+## Pivotal algorithms: how they works, and why
+
+ We present here a real case for applying our procedure. Given $n$ units $y_1,\ldots,y_n$:
+
+- consider to build a *co-association* matrix $C$, by taking the co-occurrences of pairs of $n$ units in
+the same cluster/group among the total number of partitions. For instance, this matrix could be constructed from a MCMC output arising from Bayesian mixture models;
+
+- suppose we want to detect the **pivotal units**, as the observations that *are as far away from each
+other as possible* according to the co-association matrix. Units which are very distant from each other are likely to have
+zero co-occurrences;
+
+- the resulting units---hereafter pivots---have the desirable property to be representative of the group they belong to.
+
+We propose four alternative methods for achieving this task. Let $j$ be the group containing units $\mathcal J_j$, the user may chose ${i^*}\in\mathcal J_j$ that maximizes one of the quantities:
+
+\begin{align*}
+& \sum_{p\in\mathcal J_j} c_{{i^*}p}  \\
+& \sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.
+\end{align*}
+
+These methods give the unit that maximizes the global within similarity (`maxsumint`) and the unit that maximizes the difference between global within and between similarities (`maxsumdiff`), respectively. Alternatively, we may choose $i^{*} \in\mathcal J_j$, which minimizes:
+
+$$\sum_{p\not\in\mathcal J_j} c_{i^{*}p},$$
+
+obtaining the most distant unit among the members that minimize the global dissimilarity between one group and all the others (`maxsumnoint`).
+
 
 MUS algorithm described in @egidi2018mus is a sequential procedure for extracting identity submatrices of small rank and pivotal units from large and sparse matrices. The procedure has already
 been satisfactorily applied for solving the label switching problem in Bayesian mixture
-models [@egidi2018relabelling]. We present here a real case for applying our procedure.
+models [@egidi2018relabelling].
 
-- Consider to build a *co-association* matrix $C$, by taking the co-occurrences of pairs of $n$ units in
-the same cluster/group among the total number of partitions. For instance, this matrix could be constructed from a MCMC output in Bayesian micture models.
-
-- Suppose we want to detect the **pivotal units**, as the observations that *are as far away from each
-other as possible* according to the co-association matrix. Units which are very distant from each other are likely to have
-zero co-occurrences.
-
-- The resulting units---hereafter pivots---have the desirable property to be representative of the group they belong to.
-
-With the function `MUS` the user may detect pivotal units from a co-association matrix `matsim`, obtained through $H$ different partitions, whose units may belong to $K$ groups, expressed by the argument `clusters`.
+With the function `MUS` the user may detect pivotal units from a co-association matrix `C`, obtained through $H$ different partitions, whose units may belong to $k$ groups, expressed by the argument `clusters`. We remark here that MUS algorithm may be performed only when $k <5$.
 
 ```{r mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE}
-
-
 #generate some data
 
 set.seed(123)
@@ -87,14 +101,12 @@ mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 
 
 
-
 ## piv_KMeans
 
-Qiote often, classical K-means fails in recognizing the *true* groups:
+Quite often, classical K-means fails in recognizing the *true* groups:
 
 ```{r kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
  kmeans_res <- KMeans(x, centers)
-
 ```
 
 
@@ -103,9 +115,6 @@ Qiote often, classical K-means fails in recognizing the *true* groups:
 
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
 colors_centers <- c("black", "darkgreen", "firebrick")
-
-colors_cluster=c("grey", "darkolivegreen3", "coral")
- colors_centers=c("black", "darkgreen", "firebrick")
  
  plot(x, col = colors_cluster[truegroup]
                  ,bg= colors_cluster[truegroup], pch=21,
@@ -113,14 +122,11 @@ colors_cluster=c("grey", "darkolivegreen3", "coral")
                   ylab="y[,2]", cex.lab=1.5,
                   main="True data", cex.main=1.5)
  
- 
- 
-plot(x, col = colors_cluster[kmeans_res$cluster], 
-      bg=colors_cluster[kmeans_res$cluster], pch=21, xlab="y[,1]", ylab="y[,2]",
-      cex.lab=1.5,main="K-means",  cex.main=1.5)
- points(kmeans_res$centers, col = colors_centers[1:centers], pch = 8, cex = 2)
-
-
+ plot(x, col = colors_cluster[kmeans_res$cluster], 
+      bg=colors_cluster[kmeans_res$cluster], pch=21, xlab="y[,1]",
+   ylab="y[,2]", cex.lab=1.5,main="K-means",  cex.main=1.5)
+ points(kmeans_res$centers, col = colors_centers[1:centers], 
+   pch = 8, cex = 2)
 
 ```
 
@@ -128,7 +134,7 @@ plot(x, col = colors_cluster[kmeans_res$cluster],
 In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments
 
 ```{r musk, fig.show='hold'}
-musk_res <- piv_KMeans(x, centers)
+piv_res <- piv_KMeans(x, centers)
 ```
 
 ```{r musk_plots, echo=FALSE, fig.show='hold'}
@@ -140,20 +146,20 @@ plot(x, col = colors_cluster[truegroup],
    ylab="x[,2]", cex.lab=1.5,
    main="True data", cex.main=1.5)
 
-plot(x, col = colors_cluster[musk_res$cluster],
-   bg=colors_cluster[musk_res$cluster], pch=21, xlab="x[,1]",
+plot(x, col = colors_cluster[piv_res$cluster],
+   bg=colors_cluster[piv_res$cluster], pch=21, xlab="x[,1]",
    ylab="x[,2]", cex.lab=1.5,
-   main="MUSK-means", cex.main=1.5)
-points(x[musk_res$pivots[1],1], x[musk_res$pivots[1],2],
+   main="piv_K-means", cex.main=1.5)
+points(x[piv_res$pivots[1],1], x[piv_res$pivots[1],2],
    pch=24, col=colors_centers[1],bg=colors_centers[1],
    cex=1.5)
-points(x[musk_res$pivots[2],1], x[musk_res$pivots[2],2],
+points(x[piv_res$pivots[2],1], x[piv_res$pivots[2],2],
    pch=24,  col=colors_centers[2], bg=colors_centers[2],
    cex=1.5)
-points(x[musk_res$pivots[3],1], x[musk_res$pivots[3],2],
+points(x[piv_res$pivots[3],1], x[piv_res$pivots[3],2],
    pch=24, col=colors_centers[3], bg=colors_centers[3],
    cex=1.5)
-points(musk_res$centers, col = colors_centers[1:centers],
+points(piv_res$centers, col = colors_centers[1:centers],
    pch = 8, cex = 2)
 
 ```
@@ -162,13 +168,13 @@ points(musk_res$centers, col = colors_centers[1:centers],
 
 The function `piv_KMeans` has optional arguments:
 
-- `piv.criterion` With this argument the user may choose among four different pivotal criteria, listed in @egidi2018relabelling: `MUS`, `maxsumint`, `maxsumnoint`, `maxsumdiff`. `MUS` is the default criterion when `centers` $\le$ 4, whereas `maxsumdiff` is the default method when `centers` > 4.
+- `piv.criterion`: one among the four different pivotal criteria described above and listed in @egidi2018relabelling: `MUS`, `maxsumint`, `maxsumnoint`, `maxsumdiff`. `MUS` is the default criterion when `centers` $\le$ 4, whereas `maxsumdiff` is the default method when `centers` > 4.
 
-- `iter.mus` This is the number of different partitions used for building the co-association matrix $C$. Default is $10^3$.
+- `iter.mus`: the number of different partitions used for building the co-association matrix $C$. Default is $10^3$.
 
-- `prec.par` With this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ \underset{k}{\min} \ n_{k}-1, 5   \}$, where $n_k$ is the number of units belonging to the group $k, \ k=1,\ldots,K$.
+- `prec.par`: with this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ \underset{k}{\min} \ n_{k}-1, 5   \}$, where $n_k$ is the number of units belonging to the group $k, \ k=1,\ldots,K$.
 
-- `alg.type` This is the clustering technique applied to the raw data such that the partition is given in input to the `MUS` algorithm. A robust choice is required here---by default, `KMeans` is used.
+- `alg.type`: the clustering technique applied to the raw data such that the partition is given in input to the `MUS` algorithm. A robust choice is required here---by default, `KMeans` is used.
 
 
 

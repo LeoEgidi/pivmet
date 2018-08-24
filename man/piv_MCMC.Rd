@@ -13,7 +13,7 @@ piv_MCMC(y, k, nMC, piv.criterion, clustering)
 
 \item{nMC}{Number of MCMC iterations for the JAGS function execution.}
 
-\item{piv.criterion}{The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See \code{Details} for a thorough and detailed list of available pivotal methods.}
+\item{piv.criterion}{The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See the vignette for a thorough and detailed list of available pivotal methods.}
 
 \item{clustering}{The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. Possible choices: \code{diana} (default), \code{hclust}.}
 }
