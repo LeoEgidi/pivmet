@@ -1,12 +1,8 @@
 #' Perfroming the pivotal relabelling step and computing the relabelled posterior estimates
 #'
 #' This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
-#'
-#' @param mu_switch The post-processed MCMC chains for the mean parameters.
-#' @param group The units' group membership obtained after post-processing the chain.
-#' @param clustering The output from clustering (\code{diana} or \code{hclust}).
-#' @param Mu the true means (or an estimate for them).
-#' @param nMC the number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).
+#' @param mcmc The output of the MCMC sampling from \code{piv_MCMC}.
+#' @param nMC The number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).
 #'
 #'@details
 #'Prototypical models in which the label switching problem arises are mixture models, where for a sample \eqn{y=(y_1,\ldots,y_n)} we assume
@@ -57,11 +53,7 @@
 #' W     <- c(0.2,0.8)
 #' sim   <- piv_sim(N,k,Mu,stdev,W=W)
 #' res   <- piv_MCMC(sim$y, k, nMC)
-#' rel   <- piv_rel(mu_switch = res$mu_switch,
-#'                     group = res$groupPost,
-#'                     clustering= res$clust_sel,
-#'                     Mu =res$Mu,
-#'                     nMC = nMC)
+#' rel   <- piv_rel(mcmc=res, nMC = nMC)
 #'
 #'
 #' #Bivariate simulation
@@ -81,11 +73,7 @@
 #' W <- c(0.2,0.8)
 #' sim <- piv_sim(N,k,Mu,stdev,Sigma.p1,Sigma.p2,W)
 #' res <- piv_MCMC(sim$y, k, nMC)
-#' rel <- piv_rel(mu_switch=res$mu_switch,
-#'                  group=res$groupPost,
-#'                  clustering=res$clust_sel,
-#'                  Mu=res$Mu,
-#'                  nMC = nMC)
+#' rel <- piv_rel(mcmc = res, nMC = nMC)
 #'
 #' piv_plot(y=sim$y, mcmc=res, est = rel, type="chains")
 #' piv_plot(y=sim$y, mcmc=res, est = rel, type="estimates_hist")
@@ -93,8 +81,12 @@
 #'
 #' @export
 
-piv_rel<-function(mu_switch, group, clustering,
-  Mu, nMC ){
+piv_rel<-function(mcmc, nMC ){
+
+  mu_switch <- mcmc$mu_switch
+  group <-  mcmc$groupPost
+  clustering <- mcmc$clust_sel
+  Mu <- mcmc$Mu
 
   true.iter <- dim(mu_switch)[1]
   groupD <- array(NA, dim=c(true.iter, N))

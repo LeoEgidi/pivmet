@@ -16,9 +16,7 @@
 #' k <- 5
 #' nMC <- 5000
 #' res <- piv_MCMC(y, k, nMC)
-#' rel <- piv_rel(res$mu_switch, res$groupPost, res$clust_sel,
-#'                                Mu=res$Mu,
-#'                                nMC = nMC)
+#' rel <- piv_rel(mcmc=res, nMC = nMC)
 #' piv_plot(y, res, rel, "chains")
 #'
 #' piv_plot(y, res, rel, "estimates")
@@ -31,11 +29,11 @@
 
 piv_plot <- function(y, mcmc, est, type ){
   colori <- c("red", "green", "violet", "blue")
-  est <- rel$mu_rel_median
-  chains <-rel$mu_rel_complete
-  mu_switch <- res$mu_switch
-  n.iter <- rel$Final_It
-  true.means <- res$Mu
+  est <- est$mu_rel_median
+  chains <-est$mu_rel_complete
+  mu_switch <- est$mu_switch
+  n.iter <- est$Final_It
+  true.means <- mcmc$Mu
 
 if (type=="chains" ){
     if (length(dim(mu_switch))==2){
