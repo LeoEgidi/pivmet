@@ -49,7 +49,7 @@ if (type=="chains" ){
         main=paste("Rel. chains"), cex.main=0.8)
     }else{
       k <- dim(mu_switch)[3]
-      par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(2,2,2,1))
+      par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(2,3.5,2,1))
       matplot(mu_switch[,1,], type="l", xlab="Iterations",
         ylab=expression(mu[1]), main="Raw MCMC chains",
         cex.main=0.8 )
@@ -69,43 +69,7 @@ if (type=="chains" ){
         main=paste("Rel. chains"), cex.main=0.8)
     }
 
-  }
-  #else if(type=="chains" & all(pivotal.criterion, c(1:6))){
-  #   if (length(dim(mu_switch))==2){
-  #
-  #     k <- dim(mu_switch)[2]
-  #     par(mfrow=c(3,2), oma=c(0,0,0,0))
-  #
-  #     #plot the relabeled
-  #     for (j in 1:6){
-  #     matplot(chains[[pivotal.criterion[j]]], type="l",
-  #       xlab="Iterations",
-  #       ylab=expression(mu),
-  #       main=paste("Relabelled chains: method", pivotal.criterion[j]))
-  #     }
-  #
-  #   }else{
-  #     par(mfrow=c(3,4))
-  #
-  #     for (j in 1:6){
-  #     #plot the first relabelled component
-  #     matplot(chains[[pivotal.criterion[j]]][,1,],type="l",
-  #       xlab="Iterations",
-  #       ylab=expression(mu[1]),
-  #       main=paste("Rel. method ", pivotal.criterion[j]))
-  #
-  #     #plot the second relabelled component
-  #     matplot(chains[[pivotal.criterion[j]]][,2,],type="l",
-  #       xlab="Iterations",
-  #       ylab=expression(mu[2]),
-  #       main=paste("Rel. method ", pivotal.criterion[j]) )
-  #     }
-  #
-  #   }
-  #
-  #
-  #}
-  else if (type=="estimates"){
+  }else if (type=="estimates"){
     if (length(dim(mu_switch))==2){
       switch.means <- colMeans(mu_switch)
       par(mfrow=c(1,2), oma=c(0,0,0,0), las=1, yaxt="n")
@@ -143,7 +107,7 @@ if (type=="chains" ){
       par(yaxt="s")
       axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
     }else{
-      par(mfrow=c(1,2), oma =c(0,0,0,0))
+      par(mfrow=c(1,2), oma =c(0,0,0,0), pty ="s")
       colori<-c("red", "green", "violet", "blue")
 
       l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
@@ -155,15 +119,15 @@ if (type=="chains" ){
       plot(true.means, xlim=c( min(true.means, est)-2,
         max(true.means,est)+2  ),
         ylim=c(u1,u2), main="Raw MCMC output",
-        xlab=expression(mu[1]), ylab=expression(mu[2]), pch =3)
+        xlab=expression(mu[1]), ylab=expression(mu[2]), pch =3,
+        cex.main = 0.8)
       points(t(apply(mu_switch, c(2,3), mean)), col="red")
-      #for (j in 1:k)
-      # points(output_bayes$mu_switch[,,j], col=colori[j])
       #plot relabelled estimates
       plot(true.means, xlim=c( min(true.means, est)-1,
         max(true.means, est)+1  ), ylim=c(u1,u2),
         xlab=expression(mu[1]), ylab=expression(mu[2]),
-        main="Relabelled",  pch=3, bg=2)
+        main="Relabelled",  pch=3, bg=2,
+        cex.main = 0.8)
       points(est, col="red")
     }
   }else if(type=="estimates_hist"){
