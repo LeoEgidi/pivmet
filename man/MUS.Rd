@@ -22,3 +22,25 @@ Finding the pivotal units through a sequential search in the symmetric matrix C
 \details{
 See the vignette.
 }
+\examples{
+N <- 20
+H <- 1000
+a <- matrix(NA, H, N)
+
+for (h in 1:H){
+   a[h,] <- kmeans(x,centers)$cluster
+}
+# build the similarity matrix
+sim_matr <- matrix(1, N,N)
+for (i in 1:(N-1)){
+  for (j in (i+1):N){
+     sim_matr[i,j] <- sum(a[,i]==a[,j])/H
+     sim_matr[j,i] <- sim_matr[i,j]
+     }
+}
+
+cl <- KMeans(x, centers)$cluster
+mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
+
+
+}

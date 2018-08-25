@@ -12,7 +12,7 @@
 #'
 #' \item{\code{maxima}}{ The \code{k} maxima units}
 #'
-#' @example
+#' @examples
 #'N <- 20
 #'H <- 1000
 #'a <- matrix(NA, H, N)
@@ -20,10 +20,10 @@
 #'for (h in 1:H){
 #'    a[h,] <- kmeans(x,centers)$cluster
 #'}
-#' build the similarity matrix
-#' sim_matr <- matrix(1, n,n)
-#' for (i in 1:(n-1)){
-#'   for (j in (i+1):n){
+#' # build the similarity matrix
+#' sim_matr <- matrix(1, N,N)
+#' for (i in 1:(N-1)){
+#'   for (j in (i+1):N){
 #'      sim_matr[i,j] <- sum(a[,i]==a[,j])/H
 #'      sim_matr[j,i] <- sim_matr[i,j]
 #'      }
@@ -33,7 +33,7 @@
 #' mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 #'
 #'
-#'
+#'@export
 
 
 #############################################
