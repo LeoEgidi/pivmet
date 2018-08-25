@@ -23,7 +23,7 @@
 #' p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 #' is multimodal with (at least) \eqn{k!} modes.
 #' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags} package for bivariate Gaussian mixtures. After MCMC sampling,
-#' this function calls the \code{pivotal_selection()} function and yields the pivots obtained from one among four different
+#' this function calls the \code{piv_sel()} function and yields the pivots obtained from one among four different
 #' methods: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff} and \code{MUS} (available only if \code{k < 5}) (see the vignette for thorough details)
 #'
 #' @return The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
@@ -357,7 +357,7 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
     available_met <- 3
     x <- c(1:available_met)
     prec.par.1 <- min(min(table(grr))-1,5)
-    clust  <- lapply(x, pivotal_selection,
+    clust  <- lapply(x, piv_sel,
       k=k, gIndex=as.vector(grr),
       C=C, n=nz, ZM=zm,
       available_met = available_met)
@@ -369,7 +369,7 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
           x <- c(1:available_met)
           prec.par.1 <- min(min(table(grr))-1,5)
           mus_res    <- MUS(C, grr, prec.par.1)
-         clust  <- lapply(x, pivotal_selection,
+         clust  <- lapply(x, piv_sel,
              k=k, gIndex=as.vector(grr),
              C=C, n=nz, ZM=zm,
              maxima=mus_res$maxima,
@@ -379,7 +379,7 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
   }else{
 
     x <- c(1:available_met)
-    clust  <- lapply(x, pivotal_selection,
+    clust  <- lapply(x, piv_sel,
       k=k, gIndex=as.vector(grr),
       C=C, n=nz, ZM=zm,
       available_met = available_met)

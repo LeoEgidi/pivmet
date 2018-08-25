@@ -160,50 +160,13 @@ if (type=="chains" ){
       #for (j in 1:k)
       # points(output_bayes$mu_switch[,,j], col=colori[j])
       #plot relabelled estimates
-      plot(true.means, xlim=c( min(true.means, switch.means)-1,
-        max(true.means, switch.means)+1  ), ylim=c(u1,u2),
+      plot(true.means, xlim=c( min(true.means, est)-1,
+        max(true.means, est)+1  ), ylim=c(u1,u2),
         xlab=expression(mu[1]), ylab=expression(mu[2]),
         main="Relabelled",  pch=3, bg=2)
       points(est, col="red")
     }
-  }
-  # else if (type=="estimates" & all(pivotal.criterion, c(1:6))){
-  #     if (length(dim(mu_switch))==2){
-  #       par(mfrow=c(3,2), oma=c(0,0,0,0))
-  #       for (j in 1:6){
-  #         plot( true.means, rep(0.3,length(true.means)),
-  #           axes = FALSE , ylab="",ylim=c(0,1),
-  #           xlim=c( min(true.means, est[,pivotal.criterion[j]])-2,
-  #             max(true.means, est[,pivotal.criterion[j]])+2  ),
-  #           main=paste("Rel. estimates, method", pivotal.criterion[j] ))
-  #         points(est[,pivotal.criterion[j]],
-  #           rep(0, length(true.means)), col="red")
-  #         axis(1)
-  #         axis(1, col = "black", tcl = 0)
-  #         par(yaxt="n")
-  #         axis(2)
-  #         par(yaxt="s")
-  #         axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
-  #       }
-  #     }else{
-  #     par(mfrow=c(3,2), oma=c(0,0,0,0))
-  #     l1<-(3/2)*min(Mu[,1])-max(Mu[,1])/2+5
-  #     l2<-(3/2)*max(Mu[,1])-min(Mu[,1])/2-5
-  #     u1<-(3/2)*min(Mu[,2])-max(Mu[,2])/2
-  #     u2<-(3/2)*max(Mu[,2])-min(Mu[,2])/2
-  #
-  #
-  #      for (j in 1:6){
-  #      plot(Mu, xlim=c(l1,l2), ylim=c(u1,u2),
-  #        xlab=expression(mu[1]), ylab=expression(mu[2]),
-  #        main=paste("Relabelled - method", pivotal.criterion[j], sep=" "),
-  #        pch=3, bg=2)
-  #      points(est[,,pivotal.criterion[j]], col="red")
-  #      }
-  #   }
-  #
-  #   }
-  else if(type=="estimates_hist"){
+  }else if(type=="estimates_hist"){
     if (length(dim(mu_switch))==2){
       par(mfrow=c(1,2))
       hist(y, breaks=40, prob = TRUE,

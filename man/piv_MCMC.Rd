@@ -50,7 +50,7 @@ When Bayesian inference for the model is performed, if the prior distribution \e
 p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 is multimodal with (at least) \eqn{k!} modes.
 The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags} package for bivariate Gaussian mixtures. After MCMC sampling,
-this function calls the \code{pivotal_selection()} function and yields the pivots obtained from one among four different
+this function calls the \code{piv_sel()} function and yields the pivots obtained from one among four different
 methods: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff} and \code{MUS} (available only if \code{k < 5}) (see the vignette for thorough details)
 }
 \examples{
