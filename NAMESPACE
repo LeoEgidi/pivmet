@@ -1,6 +1,7 @@
 exportPattern("^[[:alpha:]]+")
 export(piv_rel)
 export(piv_MCMC)
+export(piv_sel)
 export(piv_plot)
 export(piv_sim)
 export(MUS)

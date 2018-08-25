@@ -1,13 +1,13 @@
 #'Pivotal Selection via Co-Association Matrix
 #'
 #'
-#'Pivotal selection function - Find the pivots according to four different
-#'methods involving a co-association matrix C.
+#'Finding the pivots according to four different
+#'methods involving a co-association matrix C. This is an internal function launched by \code{piv_MCMC}.
 #'@param Obj Numerical string for the allowed pivotal criterion.
 #'@param k The number of mixture components/groups.
 #'@param gIndex Clusters' allocation.
 #'@param C Co-association matrix.
-#'@param n Data samle size
+#'@param n Data sample size
 #'@param ZM Auxiliary matrix used for building \code{C}.
 #'@param available_met Available criteria methods (integer).
 #'@param maxima Initial assignment for MUS algorithm.
@@ -21,7 +21,7 @@
 #'
 
 
-pivotal_selection<-function(Obj, k, gIndex, C, n, ZM, maxima, available_met){
+piv_sel<-function(Obj, k, gIndex, C, n, ZM, maxima, available_met){
 
   if (missing(maxima)){
     maxima=c(1:k)

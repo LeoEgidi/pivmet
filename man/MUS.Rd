@@ -2,20 +2,23 @@
 % Please edit documentation in R/mus.R
 \name{MUS}
 \alias{MUS}
-\title{Finds the pivotal units through a sequential search in the similarity matrix}
+\title{MUS algorithm}
 \usage{
 MUS(C, clusters, prec_par)
 }
 \arguments{
 \item{C}{Square symmetrix matrix with value bounded in \code{[0,1]}. For instance, a co-association matrix resulting from clustering ensembles.}
 
-\item{clusters}{An initial group assignment for the \code{N} statistical units in \code{K} groups.}
+\item{clusters}{An initial group assignment for the \code{N} statistical units in \code{k} groups.}
 
-\item{prec_par}{A precision parameter for exploring a greater number of algorithm solutions.}
+\item{prec_par}{A precision parameter for exploring a greater number of algorithm solutions. Default value is 5.}
 }
 \value{
 \item{\code{maxima}}{ The \code{k} maxima units}
 }
 \description{
-Finds the pivotal units through a sequential search in the similarity matrix
+Finding the pivotal units through a sequential search in the symmetric matrix C
+}
+\details{
+See the vignette.
 }

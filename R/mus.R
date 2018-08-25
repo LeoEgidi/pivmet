@@ -1,13 +1,39 @@
+#'MUS algorithm
 #'
-#'
-#' Finds the pivotal units through a sequential search in the similarity matrix
+#' Finding the pivotal units through a sequential search in the symmetric matrix C
 #'
 #' @param C Square symmetrix matrix with value bounded in \code{[0,1]}. For instance, a co-association matrix resulting from clustering ensembles.
-#' @param clusters An initial group assignment for the \code{N} statistical units in \code{K} groups.
-#' @param prec_par  A precision parameter for exploring a greater number of algorithm solutions.
+#' @param clusters An initial group assignment for the \code{N} statistical units in \code{k} groups.
+#' @param prec_par  A precision parameter for exploring a greater number of algorithm solutions. Default value is 5.
+#' @details
+#' See the vignette.
+#'
 #' @return
 #'
 #' \item{\code{maxima}}{ The \code{k} maxima units}
+#'
+#' @example
+#'N <- 20
+#'H <- 1000
+#'a <- matrix(NA, H, N)
+#'
+#'for (h in 1:H){
+#'    a[h,] <- kmeans(x,centers)$cluster
+#'}
+#' build the similarity matrix
+#' sim_matr <- matrix(1, n,n)
+#' for (i in 1:(n-1)){
+#'   for (j in (i+1):n){
+#'      sim_matr[i,j] <- sum(a[,i]==a[,j])/H
+#'      sim_matr[j,i] <- sim_matr[i,j]
+#'      }
+#'}
+#'
+#' cl <- KMeans(x, centers)$cluster
+#' mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
+#'
+#'
+#'
 
 
 #############################################
