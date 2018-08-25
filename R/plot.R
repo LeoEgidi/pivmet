@@ -49,7 +49,7 @@ if (type=="chains" ){
         main=paste("Rel. chains"), cex.main=0.8)
     }else{
       k <- dim(mu_switch)[3]
-      par(mfrow=c(2,2), oma=c(0,0,0,0))
+      par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(2,2,2,1))
       matplot(mu_switch[,1,], type="l", xlab="Iterations",
         ylab=expression(mu[1]), main="Raw MCMC chains",
         cex.main=0.8 )
