@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 In this vignette we explore the relabelling pivotal method proposed in @egidi2018relabelling through the `pivmet` package. First of all, we load the package:
 
-```{r load}
+```{r load, warning =FALSE, message = FALSE}
 library(pivmet)
 ```
 
@@ -39,7 +39,8 @@ There are two main functions designed for our procedure:
 Suppose $\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{k}\mathcal{N}_{2}(\boldsymbol{\mu}_{k}, \boldsymbol{\Sigma})$. We may generate Gaussian mixture data through the function `piv_sim`, specifying the desired number of groups $k$. The argument `W` handles the weights for a nested mixture, in which each $j$-th component is in turn modelled as a two-component mixture.
 
 
-```{r nested}
+```{r nested, fig.align ='center'}
+set.seed(50)
 N  <- 200
 k  <- 3
 nMC <- 2000
@@ -100,7 +101,7 @@ The function `piv_rel` performs the procedure above, and for such task it only n
 rel <- piv_rel(mcmc=res, nMC = nMC)
 piv_plot(y = y, mcmc = res, rel_est = rel, type = "chains")
 piv_plot(y = y, mcmc = res, rel_est = rel, type = "estimates")
-piv_plot(y = y, mcmc = res, rel_est = rel, type = "estimates_hist")
+piv_plot(y = sim$y, mcmc = res, rel_est = rel, type = "estimates_hist")
 ```
 
 
