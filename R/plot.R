@@ -37,7 +37,7 @@ if (type=="chains" ){
     if (length(dim(mu_switch))==2){
 
       k <- dim(mu_switch)[2]
-      par(mfrow=c(1,2), oma=c(1,1,1,1))
+      par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(2,4,2,1))
       #plot
       matplot(mu_switch, type="l", xlab="Iterations",
         ylab=expression(mu), main="Raw MCMC chains",
@@ -49,7 +49,7 @@ if (type=="chains" ){
         main=paste("Rel. chains"), cex.main=0.8)
     }else{
       k <- dim(mu_switch)[3]
-      par(mfrow=c(2,2), oma=c(1,1,1,1), mar =c(2,3.5,2,1))
+      par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(2,4,2,1))
       matplot(mu_switch[,1,], type="l", xlab="Iterations",
         ylab=expression(mu[1]), main="Raw MCMC chains",
         cex.main=0.8 )
@@ -72,7 +72,7 @@ if (type=="chains" ){
   }else if (type=="estimates"){
     if (length(dim(mu_switch))==2){
       switch.means <- colMeans(mu_switch)
-      par(mfrow=c(1,2), oma=c(1,1,1,1), las=1, yaxt="n")
+      par(mfrow=c(1,2), oma=c(0,0,0,0), las=1, yaxt="n")
       # raw estimates
       plot( true.means, rep(0.3,length(true.means)),
         axes = FALSE , ylab="",ylim=c(0,1),
@@ -107,7 +107,7 @@ if (type=="chains" ){
       par(yaxt="s")
       axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
     }else{
-      par(mfrow=c(1,2), oma =c(1,1,1,1), pty ="s")
+      par(mfrow=c(1,2), oma =c(0,0,0,0), pty ="s")
       colori<-c("red", "green", "violet", "blue")
 
       l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
@@ -142,7 +142,7 @@ if (type=="chains" ){
       points(est, rep(0, length(true.means)),
         col="red", pch=21,  bg="red")
     }else{
-      par(mfrow=c(1,1), mar=c(3,3,2,1), oma =c(1,1,1,1))
+      par(mfrow=c(1,1), mar=c(3,3,2,1), oma =c(0,0,0,0))
       #   NBiv_mix <- function(x, y, k, rho, mu_x, mu_y,
       #     sigma_1x, sigma_1y, sigma_2x,sigma_2y, p){
       #     a <- (2*pi*sigma_1x*sigma_1y*sqrt(1-rho^2))^(-1)
