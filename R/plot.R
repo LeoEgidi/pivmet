@@ -18,9 +18,7 @@
 #' res <- piv_MCMC(y, k, nMC)
 #' rel <- piv_rel(mcmc=res, nMC = nMC)
 #' piv_plot(y, res, rel, "chains")
-#'
 #' piv_plot(y, res, rel, "estimates")
-#'
 #' piv_plot(y, res, rel, "estimates_hist")
 #'
 #'
@@ -31,7 +29,7 @@ piv_plot <- function(y, mcmc, rel_est, type ){
   colori <- c("red", "green", "violet", "blue")
   est <- rel_est$mu_rel_median
   chains <- rel_est$mu_rel_complete
-  mu_switch <- rel_est$mu_switch
+  mu_switch <- mcmc$mu_switch
   n.iter <- rel_est$Final_It
   true.means <- mcmc$Mu
 
@@ -148,13 +146,13 @@ if (type=="chains" ){
       par(mfrow=c(1,2), oma =c(0,0,0,0))
       colori<-c("red", "green", "violet", "blue")
 
-      l1<-(3/2)*min(Mu[,1])-max(Mu[,1])/2+5
-      l2<-(3/2)*max(Mu[,1])-min(Mu[,1])/2-5
-      u1<-(3/2)*min(Mu[,2])-max(Mu[,2])/2
-      u2<-(3/2)*max(Mu[,2])-min(Mu[,2])/2
+      l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
+      l2<-(3/2)*max(true.means[,1])-min(true.means[,1])/2-5
+      u1<-(3/2)*min(true.means[,2])-max(true.means[,2])/2
+      u2<-(3/2)*max(true.means[,2])-min(true.means[,2])/2
 
       #plot the raw MCMC estimates
-      plot(Mu, xlim=c( min(true.means, est)-2,
+      plot(true.means, xlim=c( min(true.means, est)-2,
         max(true.means,est)+2  ),
         ylim=c(u1,u2), main="Raw MCMC output",
         xlab=expression(mu[1]), ylab=expression(mu[2]))
@@ -162,7 +160,7 @@ if (type=="chains" ){
       #for (j in 1:k)
       # points(output_bayes$mu_switch[,,j], col=colori[j])
       #plot relabelled estimates
-      plot(Mu, xlim=c( min(true.means, switch.means)-1,
+      plot(true.means, xlim=c( min(true.means, switch.means)-1,
         max(true.means, switch.means)+1  ), ylim=c(u1,u2),
         xlab=expression(mu[1]), ylab=expression(mu[2]),
         main="Relabelled",  pch=3, bg=2)

@@ -30,9 +30,7 @@ nMC <- 5000
 res <- piv_MCMC(y, k, nMC)
 rel <- piv_rel(mcmc=res, nMC = nMC)
 piv_plot(y, res, rel, "chains")
-
 piv_plot(y, res, rel, "estimates")
-
 piv_plot(y, res, rel, "estimates_hist")
 
 
