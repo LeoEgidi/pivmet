@@ -155,7 +155,7 @@ if (type=="chains" ){
       plot(true.means, xlim=c( min(true.means, est)-2,
         max(true.means,est)+2  ),
         ylim=c(u1,u2), main="Raw MCMC output",
-        xlab=expression(mu[1]), ylab=expression(mu[2]))
+        xlab=expression(mu[1]), ylab=expression(mu[2]), pch =3)
       points(t(apply(mu_switch, c(2,3), mean)), col="red")
       #for (j in 1:k)
       # points(output_bayes$mu_switch[,,j], col=colori[j])
