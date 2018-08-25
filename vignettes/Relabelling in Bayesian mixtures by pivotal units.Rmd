@@ -1,5 +1,5 @@
 ---
-title: "Dealing with label switching: relabelling in Bayesian mixtures by pivotal units"
+title: "Dealing with label switching: relabelling in Bayesian mixture models by pivotal units"
 author: "Leonardo Egidi"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -40,7 +40,7 @@ Suppose $\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{k}\mathcal{N}_{2}(\boldsymbol{
 
 
 ```{r nested}
-N  <- 2000
+N  <- 200
 k  <- 3
 nMC <- 2000
 M1 <- c(-45,8)
