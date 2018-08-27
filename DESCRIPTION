@@ -28,3 +28,4 @@ GithubUsername: LeoEgidi
 GithubRef: master
 GithubSHA1: 59e8616331302cc911ae13b6190580dcfee099b9
 RoxygenNote: 6.0.1
+BuildManual: yes
