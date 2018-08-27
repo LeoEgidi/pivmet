@@ -8,7 +8,7 @@
 #'
 #' @examples
 #'
-#' Fishery data
+#' # Fishery data
 #'
 #' data(fish)
 #' y <- fish[,1]

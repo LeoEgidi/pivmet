@@ -60,7 +60,7 @@
 #' res <- piv_MCMC(sim$y, k, nMC)
 #'
 #'
-#' Fishery data (bayesmix package)
+#' # Fishery data (bayesmix package)
 #'
 #' data(fish)
 #' y <- fish[,1]
