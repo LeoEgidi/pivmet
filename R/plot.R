@@ -107,7 +107,7 @@ if (type=="chains" ){
       par(yaxt="s")
       axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
     }else{
-      par(mfrow=c(1,2), oma =c(0,0,0,0),  mar=c(2,4,2,1))
+      par(mfrow=c(1,2), oma =c(0,0,0,0),  mar=c(5,4,2,0.7))
       colori<-c("red", "green", "violet", "blue")
 
       l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
@@ -118,16 +118,16 @@ if (type=="chains" ){
       #plot the raw MCMC estimates
       plot(true.means, xlim=c( min(true.means, est)-2,
         max(true.means,est)+2  ),
-        ylim=c(u1,u2), main="Raw MCMC output",
+        ylim=c(u1,u2), main="Raw MCMC",
         xlab=expression(mu[1]), ylab=expression(mu[2]), pch =3,
-        cex.main = 0.8)
+        cex.main = 0.7)
       points(t(apply(mu_switch, c(2,3), mean)), col="red")
       #plot relabelled estimates
       plot(true.means, xlim=c( min(true.means, est)-1,
         max(true.means, est)+1  ), ylim=c(u1,u2),
         xlab=expression(mu[1]), ylab=expression(mu[2]),
         main="Relabelled",  pch=3, bg=2,
-        cex.main = 0.8)
+        cex.main = 0.7)
       points(est, col="red")
     }
   }else if(type=="estimates_hist"){
