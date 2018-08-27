@@ -20,7 +20,7 @@ Plot and visualize MCMC outputs, posterior relabelled chains and estimates and d
 }
 \examples{
 
-Fishery data
+# Fishery data
 
 data(fish)
 y <- fish[,1]

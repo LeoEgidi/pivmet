@@ -29,7 +29,7 @@ Simulate N observations from a nested Gaussian mixture model with k pre-specifie
 }
 \examples{
 
-Bivariate mixture simulation with three components
+# Bivariate mixture simulation with three components
 
 N  <- 2000
 k  <- 3
