@@ -12,8 +12,7 @@ LazyData: true
 LazyLoad: yes
 Depends: R, mvtnorm, bayesmix, RcmdrMisc, 
          cluster, mclust, runjags, rjags, MASS
-Suggests: knitr,
-    rmarkdown
+Suggests: knitr
 Imports: RcmdrMisc,
          bayesmix, mvtnorm, cluster, mclust, runjags, rjags, MASS
 VignetteBuilder: knitr
