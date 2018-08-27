@@ -13,7 +13,20 @@
 #' \item{\code{maxima}}{ The \code{k} maxima units}
 #'
 #' @examples
-#'N <- 20
+#'N <- 620
+#'centers  <- 3
+#'n1 <- 20
+#'n2 <- 100
+#'n3 <- 500
+#' # generate data
+#'x  <- matrix(NA, N,2)
+#'truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
+#'for (i in 1:n1){
+#'  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))}
+#'for (i in 1:n2){
+#'  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
+#'for (i in 1:n3){
+#'  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
 #'H <- 1000
 #'a <- matrix(NA, H, N)
 #'
