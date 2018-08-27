@@ -13,8 +13,6 @@ LazyLoad: yes
 Depends: R, mvtnorm, bayesmix, RcmdrMisc, 
          cluster, mclust, runjags, rjags, MASS
 Suggests: knitr
-Imports: RcmdrMisc,
-         bayesmix, mvtnorm, cluster, mclust, runjags, rjags, MASS
 VignetteBuilder: knitr
 RemoteType: github
 RemoteHost: https://api.github.com
