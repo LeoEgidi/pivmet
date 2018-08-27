@@ -24,15 +24,19 @@ library(pivmet)
 ```
 
 
-There are two main functions designed for our procedure: 
+There are two main functions designed for our procedure. The function `piv_MCMC`: 
 
-- `piv_MCMC`: 
-
-- performs MCMC sampling for Gaussian mixture models launching the `JAGSrun` function of the `bayesmix` package for univariate models or the `run.jags` function of the `runjags` package for bivariate models; - post-processes the chains and randomly swithes their values; 
-- builds a co-association matrix $C$ for the $N$ statistical units, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations;
-- extracts some pivotal units via the internal function `piv_sel`, one for each of the pre-specified $k$ groups.
-
-- `piv_rel`: performs the relabelling algorithm using the $k$ pivotal units as groups identifiers. It yields the relabelled chains and the corresponding posterior estimates.
+  +  performs MCMC sampling for Gaussian mixture models launching the `JAGSrun` function of the `bayesmix` package for univariate models or the `run.jags` function of the `runjags` package for bivariate models;
+  
+  + post-processes the chains and randomly swithes their values; 
+  
+  + builds a co-association matrix $C$ for the $N$ statistical units, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations;
+  
+  + extracts some pivotal units via the internal function `piv_sel`, one for each of the pre-specified $k$ groups.
+  
+  The function `piv_rel`: 
+  
+  + performs the relabelling algorithm using the $k$ pivotal units as groups identifiers. It yields the relabelled chains and the corresponding posterior estimates.
 
 ## Example: bivariate data
 
@@ -59,7 +63,7 @@ sim <- piv_sim(N = N, k = k, Mu = Mu,
 plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 ```
 
-The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of component ```k``` and number of MCMC iterations ```nMC```. It performs JAGS sampling using the ```bayesmix``` package for univariate data and ```runjags``` package for bivariate data. After $H$ MCMC iterations, the function implements a clustering procedure on $k$ groups---through the optional argument `clustering` the user may choose among agglomerative or divisive hierarchical clustering---. Using the latent formulation for mixture models, we denote with $[Z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. The function builds a co-association matrix $C$ across the MCMC sample with generic element:
+The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of component ```k``` and number of MCMC iterations ```nMC```. It performs JAGS sampling using the ```bayesmix``` package for univariate data and ```runjags``` package for bivariate data. After $H$ MCMC iterations, the function implements a clustering procedure on $k$ groups, and through the optional argument `clustering` the user may choose among agglomerative or divisive hierarchical clustering. Using the latent formulation for mixture models, we denote with $[Z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. The function builds a co-association matrix $C$ across the MCMC sample with generic element:
 
 $$c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[Z_i]_h=[Z_p]_h|,$$
 
@@ -70,7 +74,7 @@ same group is zero). We call them *pivots*, and denote them with: $i_1,\ldots,i_
 
 -  $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}$ (`maxsumint`);
 
-- $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`maxsumdiff`);
+- $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`maxsumdiff`, default method);
 
 - $i^{*}$ that minimizes $\sum_{p \not\in J_j}c_{ip}$ (`maxsumnoint`).
 

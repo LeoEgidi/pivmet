@@ -107,7 +107,7 @@ if (type=="chains" ){
       par(yaxt="s")
       axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
     }else{
-      par(mfrow=c(1,2), oma =c(0,0,0,0), pty ="s")
+      par(mfrow=c(1,2), oma =c(0,0,0,0), pty ="s", mar=c(5,4,2,1))
       colori<-c("red", "green", "violet", "blue")
 
       l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
