@@ -7,3 +7,8 @@ R pivmet package for pivotal relabelling and pivotal seeding for the Kmeans algo
 
 See the vignettes in the vignettes folder for exploring how the package works!
 
+PAY ATTENTION! BEFORE INSTALLING: make sure to download the JAGS program at
+https://sourceforge.net/projects/mcmc-jags/.
+
+If you not install it, you can not install pivmet from GitHub.
+
