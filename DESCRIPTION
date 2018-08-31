@@ -10,6 +10,8 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 LazyLoad: yes
+Imports: mvtnorm, bayesmix, RcmdrMisc, 
+         cluster, mclust, runjags, rjags, MASS
 Depends: R, mvtnorm, bayesmix, RcmdrMisc, 
          cluster, mclust, runjags, rjags, MASS
 Suggests: knitr
