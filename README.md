@@ -5,5 +5,5 @@ R pivmet package for pivotal relabelling and pivotal seeding for the Kmeans algo
 
 - Pivotal initialization of the popular KMeans algorithm via MUS algorithm (Egidi et al. 2018b)
 
-See the vignette in the Vignettes folder for exploring how the package works!
+See the vignettes in the vignettes folder for exploring how the package works!
 
