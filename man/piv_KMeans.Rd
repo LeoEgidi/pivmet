@@ -4,8 +4,8 @@
 \alias{piv_KMeans}
 \title{K-means Clustering Using MUS algorithm}
 \usage{
-piv_KMeans(x, centers, piv.criterion, iter.mus, prec.par, alg.type, iter.max,
-  num.seeds)
+piv_KMeans(x, centers, piv.criterion, iter.mus, prec.par, alg.type,
+  iter.max, num.seeds)
 }
 \arguments{
 \item{x}{A numeric matrix of data, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
