@@ -1,39 +1,71 @@
 #'MUS algorithm
 #'
-#' Finding the pivotal units through a sequential search in the symmetric matrix C
+#' Perform Maxima Units Search (MUS) algorithm on a large and sparse matrix in
+#' order to find a set of pivotal units through a sequential search
+#' in the given matrix.
 #'
-#' @param C Square symmetrix matrix with value bounded in \code{[0,1]}. For instance, a co-association matrix resulting from clustering ensembles.
-#' @param clusters An initial group assignment for the \code{N} statistical units in \code{k} groups.
-#' @param prec_par  A precision parameter for exploring a greater number of algorithm solutions. Default value is 5.
+#' @param C  \code{NxN} matrix with a non-negligible number of zeros.
+#' For instance, a similarity matrix estimated from a \code{NxD} data matrix whose rows
+#' are statistical units, or a co-association matrix resulting from clustering
+#' ensembles.
+#' @param clusters A vector of integers from \code{1:k} (with \code{k <= 4})
+#' indicating a partition of the \code{N} units resulting from clustering.
+#' @param prec_par=5  The maximum number of alternative pivots for each group.
 #' @details
-#' See the vignette.
+#'
+#' Consider $H$ distinct partitions of a set of \code{N} $d$-dimensional statistical units into \code{k}
+#' groups determined by some
+#' clustering technique.  A $N \times N$ co-association matrix
+#' $C$ with generic element $c_{i,j}=n_{i,j}/H$ can be constructed,
+#' where $n_{i,j}$ is the number of times the $i$-th and the $j$-th unit
+#' are assigned to the same cluster with respect to the clustering ensemble. Units which are very distant
+#' from each other are likely to have zero co-occurrences; as a consequence, $C$ is
+#' a square symmetric matrix expected  to contain a non-negligible number of zeros.
+#' The main task of the MUS algorithm is to detect submatrices of small rank from the co-association matrix
+#' and extract those units---pivots---such
+#' that the $k \times k$ submatrix of $C$, determined by only the pivotal rows
+#' and columns indexes, is identical or nearly identical. Practically, the resulting units
+#' have the desirable property to be representative of
+#' the group they belong to.
 #'
 #' @return
 #'
-#' \item{\code{maxima}}{ The \code{k} maxima units}
+#' \item{\code{pivots}}{ The \code{k} pivotal units}
+#'
+#' @references Egidi,L.,Pappad\`a,R.,Pauli,F.,Torelli,N. (2018).
+#'  Maxima Units Search(MUS) algorithm:
+#' methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) Studies in
+#' Theoretical and Applied Statistics,
+#' Springer Proceedings in Mathematics \& Statistics 227, pp. 71–81.
+#'
+#'
 #'
 #' @examples
-#'N <- 620
-#'centers  <- 3
-#'n1 <- 20
-#'n2 <- 100
-#'n3 <- 500
-#' # generate data
-#'x  <- matrix(NA, N,2)
-#'truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
-#'for (i in 1:n1){
-#'  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))}
-#'for (i in 1:n2){
-#'  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
-#'for (i in 1:n3){
-#'  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
-#'H <- 1000
-#'a <- matrix(NA, H, N)
+#' # Data generated from a mixture of three bivariate Gaussian distributions
 #'
-#'for (h in 1:H){
+#' N <- 620
+#' centers  <- 3
+#' n1 <- 20
+#' n2 <- 100
+#' n3 <- 500
+#' x  <- matrix(NA, N,2)
+#' truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
+#'
+#' for (i in 1:n1){
+#'  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))}
+#' for (i in 1:n2){
+#'  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
+#' for (i in 1:n3){
+#'  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
+#' # Build a similarity matrix from clustering ensembles
+#'
+#' H <- 1000
+#' a <- matrix(NA, H, N)
+#'
+#' for (h in 1:H){
 #'    a[h,] <- kmeans(x,centers)$cluster
-#'}
-#' # build the similarity matrix
+#' }
+#'
 #' sim_matr <- matrix(1, N,N)
 #' for (i in 1:(N-1)){
 #'   for (j in (i+1):N){
@@ -42,8 +74,13 @@
 #'      }
 #'}
 #'
+#' # Obtain a clustering solution via kmeans with multiple random seeds
+#'
 #' cl <- KMeans(x, centers)$cluster
-#' mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
+#'
+#' # Find three pivots
+#'
+#' mus_alg <- MUS(C = sim_matr, clusters = cl)
 #'
 #'
 #'@export
