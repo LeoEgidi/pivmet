@@ -8,11 +8,17 @@ piv_KMeans(x, centers, piv.criterion, iter.mus = 1000, prec.par = 5,
   alg.type = "KMeans", iter.max = 10, num.seeds = 10)
 }
 \arguments{
-\item{x}{A numeric matrix of data, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
+\item{x}{A \code{NxD} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
 
 \item{centers}{The number of clusters in the solution.}
 
-\item{piv.criterion}{The pivotal criterion used for detecting pivotal units. If \code{centers <= 4}, default method is \code{MUS}. If \code{centers > 4}, the user may choose among the following: \code{maxsumint, maxsumnoint, maxsumdiff}.}
+\item{piv.criterion}{The pivotal criterion used for identifying one pivot
+for each group. Possible choices are: \code{MUS, maxsumint, maxsumnoint, maxsumdiff}.
+The default method is . Alternative methods
+can be selected among the following ones:
+If \code{centers <= 4}, the default method is \code{MUS};
+otherwise, the default method is \code{maxsumdiff} (see the details and
+the vignette).}
 
 \item{iter.mus}{The number of different ensembles for the MUS algorithm (if NULL, default is 1000)}
 

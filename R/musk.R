@@ -5,11 +5,10 @@
 #' @param x A \code{NxD} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).
 #' @param centers The number of clusters in the solution.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
-#' for each group. Possible choices are: \code{MUS, maxsumint, maxsumnoint, maxsumdiff}.
-#' The default method is . Alternative methods
-#' can be selected among the following ones:
-#' If \code{centers <= 4}, the default method is \code{MUS};
-#' otherwise, the default method is \code{maxsumdiff} (see the details and
+#' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+#' "maxsumdiff"}.
+#' If \code{centers <= 4}, the default method is \code{"MUS"};
+#' otherwise, the default method is \code{"maxsumdiff"} (see the details and
 #' the vignette).
 #' @param iter.max The maximum number of iterations allowed.
 #' @param num.seeds	The number of different starting random seeds to use. Each random seed results in a different k-means solution.
@@ -83,7 +82,7 @@
 
 piv_KMeans <- function(x,
                        centers,
-                       piv.criterion,
+                       piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
                        iter.mus = 1000,
                        prec.par = 5,
                        alg.type = "KMeans",
