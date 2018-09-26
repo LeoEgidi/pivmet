@@ -2,29 +2,33 @@
 % Please edit documentation in R/musk.R
 \name{piv_KMeans}
 \alias{piv_KMeans}
-\title{K-means Clustering Using MUS algorithm}
+\title{K-means Clustering Using Pivotal Algorithms For Seeding}
 \usage{
-piv_KMeans(x, centers, piv.criterion, iter.mus = 1000, prec.par = 5,
-  alg.type = "KMeans", iter.max = 10, num.seeds = 10)
+piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
+  piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
+  H = 1000, ...)
 }
 \arguments{
-\item{x}{A \code{NxD} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
+\item{x}{A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
 
 \item{centers}{The number of clusters in the solution.}
 
+\item{alg.type}{The clustering algorithm for the initial partition of the
+\eqn{N} units into the desired number of clusters.
+Possible choices are \code{"KMeans"} and \code{"hclust"}.}
+
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
-for each group. Possible choices are: \code{MUS, maxsumint, maxsumnoint, maxsumdiff}.
-The default method is . Alternative methods
-can be selected among the following ones:
-If \code{centers <= 4}, the default method is \code{MUS};
-otherwise, the default method is \code{maxsumdiff} (see the details and
+for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+"maxsumdiff"}.
+If \code{centers <= 4}, the default method is \code{"MUS"};
+otherwise, the default method is \code{"maxsumdiff"} (see the details and
 the vignette).}
 
-\item{iter.mus}{The number of different ensembles for the MUS algorithm (if NULL, default is 1000)}
+\item{H}{If \code{MUS} is selected, this is the number of
+distinct k-means partitions used for building a \eqn{N \times N}
+co-association matrix.}
 
-\item{prec.par}{The precision parameter used in the MUS algorithm}
-
-\item{alg.type}{The type of clustering used for the initial seeding. Possible choices: \code{kmeans}, \code{KMeans}, \code{hclust}.}
+\item{...}{Optional arguments.}
 
 \item{iter.max}{The maximum number of iterations allowed.}
 
@@ -42,10 +46,14 @@ A list with components
 \item{\code{size}}{ The number of points in each cluster.}
 \item{\code{iter}}{The number of (outer) iterations.}
 \item{\code{ifault}}{integer: indicator of a possible algorithm problem – for experts.}
-\item{\code{pivots}}{The pivotal units identified by the MUS algorithm}
+\item{\code{pivots}}{The pivotal units identified by the selected pivotal criterion.}
 }
 \description{
-Perform k-means clustering on a data matrix using MUS algorithm for seeding initialization.
+Perform classical k-means clustering on a data matrix using pivots as
+initial centers.
+}
+\details{
+
 }
 \examples{
 
@@ -70,6 +78,7 @@ for (i in 1:n3){
 
 res <- piv_KMeans(x, k)
 
+# Plot the data and the clustering solution
 
 par(mfrow=c(1,2), pty="s")
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
@@ -82,7 +91,7 @@ plot(x, col = colors_cluster[truegroup],
 plot(x, col = colors_cluster[res$cluster],
    bg=colors_cluster[res$cluster], pch=21, xlab="x[,1]",
    ylab="x[,2]", cex.lab=1.5,
-   main="MUSK-means", cex.main=1.5)
+   main="piv_KMeans", cex.main=1.5)
 points(x[res$pivots[1],1], x[res$pivots[1],2],
    pch=24, col=colors_centers[1],bg=colors_centers[1],
    cex=1.5)
