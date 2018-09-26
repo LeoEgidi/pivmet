@@ -4,7 +4,7 @@
 \alias{MUS}
 \title{MUS algorithm}
 \usage{
-MUS(C, clusters, prec_par)
+MUS(C, clusters, prec_par = 5)
 }
 \arguments{
 \item{C}{\code{NxN} matrix with a non-negligible number of zeros.
@@ -15,7 +15,7 @@ ensembles.}
 \item{clusters}{A vector of integers from \code{1:k} (with \code{k <= 4})
 indicating a partition of the \code{N} units resulting from clustering.}
 
-\item{prec_par=5}{The maximum number of alternative pivots for each group.}
+\item{prec_par}{Optional argument. The maximum number of alternative pivots for each group.}
 }
 \value{
 \item{\code{pivots}}{ The \code{k} pivotal units}

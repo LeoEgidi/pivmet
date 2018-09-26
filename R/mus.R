@@ -42,7 +42,7 @@
 #'  Maxima Units Search(MUS) algorithm:
 #' methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) Studies in
 #' Theoretical and Applied Statistics,
-#' Springer Proceedings in Mathematics \& Statistics 227, pp. 71–81.
+#' Springer Proceedings in Mathematics \& Statistics 227, pp. 71–-81.
 #'
 #'
 #'
