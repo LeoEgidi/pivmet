@@ -2,9 +2,15 @@
 #'
 #' Perform k-means clustering on a data matrix using MUS algorithm for seeding initialization.
 #'
-#' @param x A numeric matrix of data, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).
+#' @param x A \code{NxD} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).
 #' @param centers The number of clusters in the solution.
-#' @param piv.criterion The pivotal criterion used for detecting pivotal units. If \code{centers <= 4}, default method is \code{MUS}. If \code{centers > 4}, the user may choose among the following: \code{maxsumint, maxsumnoint, maxsumdiff}.
+#' @param piv.criterion The pivotal criterion used for identifying one pivot
+#' for each group. Possible choices are: \code{MUS, maxsumint, maxsumnoint, maxsumdiff}.
+#' The default method is . Alternative methods
+#' can be selected among the following ones:
+#' If \code{centers <= 4}, the default method is \code{MUS};
+#' otherwise, the default method is \code{maxsumdiff} (see the details and
+#' the vignette).
 #' @param iter.max The maximum number of iterations allowed.
 #' @param num.seeds	The number of different starting random seeds to use. Each random seed results in a different k-means solution.
 #' @param iter.mus The number of different ensembles for the MUS algorithm (if NULL, default is 1000)
