@@ -4,8 +4,8 @@
 \alias{piv_KMeans}
 \title{K-means Clustering Using MUS algorithm}
 \usage{
-piv_KMeans(x, centers, piv.criterion, iter.mus, prec.par, alg.type,
-  iter.max, num.seeds)
+piv_KMeans(x, centers, piv.criterion, iter.mus = 1000, prec.par = 5,
+  alg.type = "KMeans", iter.max = 10, num.seeds = 10)
 }
 \arguments{
 \item{x}{A numeric matrix of data, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
@@ -42,6 +42,9 @@ A list with components
 Perform k-means clustering on a data matrix using MUS algorithm for seeding initialization.
 }
 \examples{
+
+# Data generated from a mixture of three bivariate Gaussian distributions
+
 n  <- 620
 k  <- 3
 n1 <- 20
@@ -56,6 +59,8 @@ for (i in 1:n2){
  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
 for (i in 1:n3){
  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
+
+# Apply piv_KMeans with MUS as pivotal criterion
 
 res <- piv_KMeans(x, k)
 
