@@ -1,8 +1,9 @@
-#' K-means Clustering Using MUS algorithm
+#' K-means Clustering Using Pivotal Algorithms For Seeding
 #'
-#' Perform k-means clustering on a data matrix using MUS algorithm for seeding initialization.
+#' Perform classical k-means clustering on a data matrix using pivots as
+#' initial centers.
 #'
-#' @param x A \code{NxD} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).
+#' @param x A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).
 #' @param centers The number of clusters in the solution.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
@@ -12,9 +13,13 @@
 #' the vignette).
 #' @param iter.max The maximum number of iterations allowed.
 #' @param num.seeds	The number of different starting random seeds to use. Each random seed results in a different k-means solution.
-#' @param iter.mus The number of different ensembles for the MUS algorithm (if NULL, default is 1000)
-#' @param prec.par The precision parameter used in the MUS algorithm
-#' @param alg.type The type of clustering used for the initial seeding. Possible choices: \code{kmeans}, \code{KMeans}, \code{hclust}.
+#' @param H If \code{MUS} is selected, this is the number of
+#' distinct k-means partitions used for building a \eqn{N \times N}
+#' co-association matrix.
+#' @param alg.type The clustering algorithm for the initial partition of the
+#' \eqn{N} units into the desired number of clusters.
+#' Possible choices are \code{"KMeans"} and \code{"hclust"}.
+#' @param ... Optional arguments.
 #'
 #'@return A list with components
 #'
@@ -27,7 +32,10 @@
 #'\item{\code{size}}{ The number of points in each cluster.}
 #'\item{\code{iter}}{The number of (outer) iterations.}
 #'\item{\code{ifault}}{integer: indicator of a possible algorithm problem – for experts.}
-#'\item{\code{pivots}}{The pivotal units identified by the MUS algorithm}
+#'\item{\code{pivots}}{The pivotal units identified by the selected pivotal criterion.}
+#'
+#'@details
+#'
 #'
 #'@author Leonardo Egidi \url{legidi@units.it}
 #'@examples
@@ -53,6 +61,7 @@
 #'
 #'res <- piv_KMeans(x, k)
 #'
+#' # Plot the data and the clustering solution
 #'
 #'par(mfrow=c(1,2), pty="s")
 #'colors_cluster <- c("grey", "darkolivegreen3", "coral")
@@ -65,7 +74,7 @@
 #'plot(x, col = colors_cluster[res$cluster],
 #'    bg=colors_cluster[res$cluster], pch=21, xlab="x[,1]",
 #'    ylab="x[,2]", cex.lab=1.5,
-#'    main="MUSK-means", cex.main=1.5)
+#'    main="piv_KMeans", cex.main=1.5)
 #'points(x[res$pivots[1],1], x[res$pivots[1],2],
 #'    pch=24, col=colors_centers[1],bg=colors_centers[1],
 #'    cex=1.5)
@@ -82,12 +91,10 @@
 
 piv_KMeans <- function(x,
                        centers,
+                       alg.type = c("KMeans", "hclust"),
                        piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
-                       iter.mus = 1000,
-                       prec.par = 5,
-                       alg.type = "KMeans",
-                       iter.max = 10,
-                       num.seeds = 10){
+                       H = 1000,
+                       ...){
   #check on optional parameters
   if (missing(piv.criterion)){
     if (centers<=4 ){
@@ -96,8 +103,8 @@ piv_KMeans <- function(x,
       piv.criterion <- "maxsumdiff"
     }
   }
-  if (missing(iter.mus)){
-    iter.mus <- 1000
+  if (missing(H)){
+    H <- 1000
   }
 
   if (missing(alg.type)){
@@ -118,13 +125,13 @@ piv_KMeans <- function(x,
     prec.par <- min( min(table(cl))-1, 5 )
   }
 
-  #compute iter.mus different partitions
+  #compute H different partitions
   if (is.vector(x)){
     n <- length(x)
   }else{
     n <- dim(x)[1]
   }
-  H <- iter.mus
+
   a <- matrix(NA, H, n)
 
   for (h in 1:H){
@@ -206,7 +213,8 @@ piv_KMeans <- function(x,
 
 
   #MUSKmeans
-  d_mus   <- KMeans(x, centers=start)
+  d_mus   <- KMeans(x, centers=start, iter.max = iter.max,
+                    num.seeds = num.seeds)
 
   return(list(cluster=d_mus$cluster,
     centers=d_mus$centers,

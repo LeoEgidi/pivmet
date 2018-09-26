@@ -9,7 +9,7 @@
 #' are statistical units, or a co-association matrix resulting from clustering
 #' ensembles.
 #' @param clusters A vector of integers from \code{1:k} (with \code{k <= 4})
-#' indicating a partition of the \code{N} units resulting from clustering.
+#' indicating a partition of the \eqn{N} units resulting from clustering.
 #' @param prec_par  Optional argument. The maximum number of alternative pivots for each group.
 #' @details
 #'
