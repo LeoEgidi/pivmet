@@ -26,18 +26,24 @@ order to find a set of pivotal units through a sequential search
 in the given matrix.
 }
 \details{
-Consider $H$ distinct partitions of a set of \code{N} $d$-dimensional statistical units into \code{k}
+Consider \eqn{H} distinct partitions of a set of \eqn{N} \eqn{d}-dimensional
+statistical units into \eqn{k}
 groups determined by some
-clustering technique.  A $N \times N$ co-association matrix
-$C$ with generic element $c_{i,j}=n_{i,j}/H$ can be constructed,
-where $n_{i,j}$ is the number of times the $i$-th and the $j$-th unit
-are assigned to the same cluster with respect to the clustering ensemble. Units which are very distant
-from each other are likely to have zero co-occurrences; as a consequence, $C$ is
+clustering technique.  A \eqn{N \times N} co-association matrix
+\eqn{C} with generic element \eqn{c_{i,j}=n_{i,j}/H} can be constructed,
+where \eqn{n_{i,j}} is the number of times the \eqn{i}-th and the \eqn{j}-th unit
+are assigned to the same cluster with respect to the clustering ensemble.
+Units which are very distant
+from each other are likely to have zero co-occurrences; as a consequence,
+ \eqn{C} is
 a square symmetric matrix expected  to contain a non-negligible number of zeros.
-The main task of the MUS algorithm is to detect submatrices of small rank from the co-association matrix
+The main task of the MUS algorithm is to detect submatrices of small
+rank from the co-association matrix
 and extract those units---pivots---such
-that the $k \times k$ submatrix of $C$, determined by only the pivotal rows
-and columns indexes, is identical or nearly identical. Practically, the resulting units
+that the \eqn{k \times k} submatrix of \eqn{C},
+determined by only the pivotal rows
+and columns indexes, is identical or nearly identical.
+Practically, the resulting units
 have the desirable property to be representative of
 the group they belong to.
 }
@@ -58,6 +64,7 @@ for (i in 1:n2){
  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
 for (i in 1:n3){
  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
+
 # Build a similarity matrix from clustering ensembles
 
 H <- 1000
@@ -86,7 +93,7 @@ mus_alg <- MUS(C = sim_matr, clusters = cl)
 
 }
 \references{
-Egidi,L.,Pappad\`a,R.,Pauli,F.,Torelli,N. (2018).
+Egidi,L., Pappad\`a,R., Pauli,F., Torelli,N. (2018).
  Maxima Units Search(MUS) algorithm:
 methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) Studies in
 Theoretical and Applied Statistics,
