@@ -26,6 +26,9 @@
 #'
 #'@author Leonardo Egidi \url{legidi@units.it}
 #'@examples
+#'
+#' # Data generated from a mixture of three bivariate Gaussian distributions
+#'
 #'n  <- 620
 #'k  <- 3
 #'n1 <- 20
@@ -40,6 +43,8 @@
 #'  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
 #'for (i in 1:n3){
 #'  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
+#'
+#' # Apply piv_KMeans with MUS as pivotal criterion
 #'
 #'res <- piv_KMeans(x, k)
 #'
@@ -70,9 +75,14 @@
 
 
 
-piv_KMeans <- function(x, centers, piv.criterion,
-  iter.mus, prec.par,
-  alg.type, iter.max, num.seeds){
+piv_KMeans <- function(x,
+                       centers,
+                       piv.criterion,
+                       iter.mus = 1000,
+                       prec.par = 5,
+                       alg.type = "KMeans",
+                       iter.max = 10,
+                       num.seeds = 10){
   #check on optional parameters
   if (missing(piv.criterion)){
     if (centers<=4 ){
