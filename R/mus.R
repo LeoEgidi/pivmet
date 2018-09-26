@@ -10,7 +10,7 @@
 #' ensembles.
 #' @param clusters A vector of integers from \code{1:k} (with \code{k <= 4})
 #' indicating a partition of the \code{N} units resulting from clustering.
-#' @param prec_par=5  The maximum number of alternative pivots for each group.
+#' @param prec_par  Optional argument. The maximum number of alternative pivots for each group.
 #' @details
 #'
 #' Consider \eqn{H} distinct partitions of a set of \eqn{N} \eqn{d}-dimensional
@@ -97,7 +97,7 @@
 #MUS algorithm
 ###########################################
 
-MUS <- function(C, clusters, prec_par){
+MUS <- function(C, clusters, prec_par = 5){
 
   #C: C di similarit?
   #clusters: gruppi partizione clustering
