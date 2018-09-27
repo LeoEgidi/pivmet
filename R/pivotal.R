@@ -3,10 +3,9 @@
 #'
 #'Finding the pivots according to three different
 #'methods involving a co-association matrix C.
-#'@param k The number of mixture components/groups.
-#'@param gIndex Clusters' allocation.
 #'@param C Co-association matrix.
-#'@param N Data sample size
+#'@param k The number of clusters.
+#'@param cl Clusters' allocation.
 #'@param ZM Auxiliary matrix used for building \code{C}.
 #'
 #'
@@ -47,15 +46,15 @@
 #'
 
 
-piv_sel<-function( k, gIndex, C, N, ZM){
+piv_sel<-function( C, k, clusters, ZM){
 
-
+N <- dim(C)[1]
 Cg1 <- rep(NA, k)
 Cg  <- matrix(NA, ncol=3, nrow=k)
 
  for (g.i in 1:k){
-    com.gi  <-  (1:n)[gIndex==g.i]
-    com.ngi <-  (1:n)[gIndex!=g.i]
+    com.gi  <-  (1:n)[clusters==g.i]
+    com.ngi <-  (1:n)[clusters!=g.i]
     ind.gi  <- c()
     ind.gi1 <- c()
 
@@ -114,7 +113,7 @@ group1 <- 0*ZM
   }
 
 # definition of the probabilities to belong to the groups for each unit
-pr <- matrix(NA,nrow=k,ncol=n)
+pr <- matrix(NA,nrow=k,ncol=N)
  for (kk in 1:k){
   pr[kk,] <- apply(group1,1,FUN=function(x) sum(x==kk)/length(x))
  }

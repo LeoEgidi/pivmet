@@ -29,10 +29,6 @@ distinct k-means partitions used for building a \eqn{N \times N}
 co-association matrix.}
 
 \item{...}{Optional arguments.}
-
-\item{iter.max}{The maximum number of iterations allowed.}
-
-\item{num.seeds}{The number of different starting random seeds to use. Each random seed results in a different k-means solution.}
 }
 \value{
 A list with components
