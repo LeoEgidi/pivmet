@@ -359,7 +359,7 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
     prec.par.1 <- min(min(table(grr))-1,5)
     clust  <-  piv_sel(
       k=k, gIndex=as.vector(grr),
-      C=C, n=nz, ZM=zm)
+      C=C, N=nz, ZM=zm)
 
     pivots <- clust$pivots[,piv.index.pivotal[piv.index]]
   }else if(piv.criterion=="MUS"){
@@ -375,7 +375,7 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
           computational efficiency")
     clust  <-  piv_sel(
       k=k, gIndex=as.vector(grr),
-      C=C, n=nz, ZM=zm)
+      C=C, N=nz, ZM=zm)
     pivots <- clust$pivots[,3]
   }
 }

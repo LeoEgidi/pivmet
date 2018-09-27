@@ -192,7 +192,7 @@ piv_KMeans <- function(x,
       zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
       sel <- piv_sel(
         k=centers, gIndex=cl,
-        C=sim_matr, n=n, ZM=zm)
+        C=sim_matr, N=n, ZM=zm)
       if (piv.criterion=="maxsumint"){
         pivots <- sel$pivots[,1]
       }else if(piv.criterion=="maxsumnoint"){
@@ -211,7 +211,7 @@ piv_KMeans <- function(x,
     zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
     sel <- piv_sel(
       k=centers, gIndex=cl,
-      C=sim_matr, n=n, ZM=zm)
+      C=sim_matr, N=n, ZM=zm)
     if (piv.criterion=="maxsumint"){
       pivots <- sel$pivots[,1]
     }else if(piv.criterion=="maxsumnoint"){
