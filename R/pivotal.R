@@ -13,8 +13,11 @@
 #'
 #'@details
 #'
-#' Given \eqn{H} distinct partitions of \eqn{N} units in \eqn{k} groups,
-#' we can build a co-association matrix \eqn{C},
+#' Given a set of \eqn{N} observations \eqn{(y_{1},y_{2},...,y_{n})}
+#' (\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \in \mathbb{N}}),
+#' consider clustering methods to obtain \eqn{H} distinct partitions
+#' into \eqn{k} groups.
+#' The matrix \code{C} is the co-association matrix,
 #' where \eqn{c_{i,p}=n_{i,p}/H}, with \eqn{n_{i,p}} the number of times
 #' the pair \eqn{(y_{i},y_{p})} is assigned to the same
 #' cluster among the \eqn{H} partitions.
@@ -38,6 +41,7 @@
 #' obtaining the most distant unit among the members
 #' that minimize the global dissimilarity between one group
 #' and all the others (\code{"maxsumnoint"}).
+#' See the vignette for further details.
 #'
 #'@return
 #'
