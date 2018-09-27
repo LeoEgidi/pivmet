@@ -357,7 +357,7 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
     available_met <- 3
     x <- c(1:available_met)
     prec.par.1 <- min(min(table(grr))-1,5)
-    clust  <-  piv_sel(C=C, k=k, clusters=as.vector(grr),ZM=zm)
+    clust  <-  piv_sel(C=C, clusters=as.vector(grr))
 
     pivots <- clust$pivots[,piv.index.pivotal[piv.index]]
   }else if(piv.criterion=="MUS"){
@@ -371,7 +371,7 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
 
     print("maxsumdiff criterion instead of MUS has been adopted due to
           computational efficiency")
-    clust  <-  piv_sel(C=C, k=k, clusters=as.vector(grr),ZM=zm)
+    clust  <-  piv_sel(C=C,  clusters=as.vector(grr))
     pivots <- clust$pivots[,3]
   }
 }

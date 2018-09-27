@@ -17,24 +17,20 @@
 #' @param alg.type The clustering algorithm for the initial partition of the
 #' \eqn{N} units into the desired number of clusters.
 #' Possible choices are \code{"KMeans"} and \code{"hclust"}.
-#' @param ... Optional arguments.
+#' @param ... Optional arguments to be passed to \code{MUS} or \code{KMeans}.
 #'
 #'
 #' @details
 #'
-#' Although K-means clustering is one of the most popular
-#' algorithms due to its simplicity and low computational burden,
-#' one  major criticism
-#' is the impact of the choice of the
-#' initial centers on the final solution.  However, limited work
-#' has been developed for improving the seeding of
-#' the centers. A modified version of K-means could
-#' benefit from a pivot-based initialization step.
-#' In particular, the starting point is performing multiple
-#' runs of the classical K-means with the desired number of cluster
-#' fixed, and build the co-association matrix of data units.
-#' Such matrix is given is the starting point for
-#' yielding the pivots regarded to as cluster centers.
+#' The function implements a modified version of K-means which aims at
+#' improving the clustering solution starting from a careful seeding.
+#' In particular, it performs a pivot-based initialization step
+#' using pivotal methods to find the initial centers
+#' for the clustering procedure. The starting point consists of multiple
+#' runs of the classical K-means (which uses random seeds)
+#' with a fixed number of clusters
+#' in order to build the co-association matrix of data units.
+#'
 #'
 #' @return A list with components
 #'
@@ -188,7 +184,7 @@ piv_KMeans <- function(x,
         }
       }
       zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
-      sel <- piv_sel(C=sim_matr,k=centers, clusters=cl, ZM=zm)
+      sel <- piv_sel(C=sim_matr, clusters=cl)
       if (piv.criterion=="maxsumint"){
         pivots <- sel$pivots[,1]
       }else if(piv.criterion=="maxsumnoint"){
@@ -205,7 +201,7 @@ piv_KMeans <- function(x,
       }
     }
     zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
-    sel <- piv_sel(C=sim_matr, k=centers, clusters=cl, ZM=zm)
+    sel <- piv_sel(C=sim_matr,  clusters=cl)
     if (piv.criterion=="maxsumint"){
       pivots <- sel$pivots[,1]
     }else if(piv.criterion=="maxsumnoint"){

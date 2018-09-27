@@ -3,10 +3,10 @@
 #'
 #'Finding the pivots according to three different
 #'methods involving a co-association matrix C.
-#'@param C Co-association matrix.
-#'@param k The number of clusters.
-#'@param cl Clusters' allocation.
-#'@param ZM Auxiliary matrix used for building \code{C}.
+#'@param C A \eqn{N \times N} Co-association matrix.
+#'@param clusters A vector of integers from \code{1:k} (with \code{k <= 4})
+#' indicating a partition of the \eqn{N} units resulting from clustering.
+
 #'
 #'
 #'@details
@@ -46,9 +46,11 @@
 #'
 
 
-piv_sel<-function( C, k, clusters, ZM){
+piv_sel<-function(C, clusters){
 
 N <- dim(C)[1]
+k <- length(unique(clusters))
+
 Cg1 <- rep(NA, k)
 Cg  <- matrix(NA, ncol=3, nrow=k)
 
@@ -101,29 +103,34 @@ Cg  <- matrix(NA, ncol=3, nrow=k)
 # For each method, we store the selected pivotal units
 Cg <- Cg[,1:3]
 # group1 contains the observation assigments to the groups obtained via pivots
-group1 <- 0*ZM
-# cycle on iterations
-  for (i in 1:ncol(ZM)){
-# cycle on number of groups
-    for (j in 1:k){
-      if (!is.na(Cg[j])){
-        group1[ZM[,i] ==ZM[Cg[j],i],i] <- j
-      }
-    }
-  }
+# group1 <- 0*Z
+# # cycle on iterations
+#   for (i in 1:ncol(Z)){
+# # cycle on number of groups
+#     for (j in 1:k){
+#       if (!is.na(Cg[j])){
+#         group1[Z[,i] ==Z[Cg[j],i],i] <- j
+#       }
+#     }
+#   }
+#
+# # definition of the probabilities to belong to the groups for each unit
+# pr <- matrix(NA,nrow=k,ncol=N)
+#  for (kk in 1:k){
+#   pr[kk,] <- apply(group1,1,FUN=function(x) sum(x==kk)/length(x))
+#  }
+#
+# # definition of the submatrix corresponding to the pivotal units
+#
+# submatrix <- round(C[Cg,Cg],5)
+# T <- max(submatrix[upper.tri(submatrix)])
 
-# definition of the probabilities to belong to the groups for each unit
-pr <- matrix(NA,nrow=k,ncol=N)
- for (kk in 1:k){
-  pr[kk,] <- apply(group1,1,FUN=function(x) sum(x==kk)/length(x))
- }
-
-# definition of the submatrix corresponding to the pivotal units
-
-submatrix <- round(C[Cg,Cg],5)
-T <- max(submatrix[upper.tri(submatrix)])
-
-  return(list(pr=pr, pivots=Cg, Submatrix=submatrix, Max=T))
+  return(list(
+    #pr=pr,
+     pivots=Cg
+    #Submatrix=submatrix,
+    #Max=T
+    ))
 }
 
 
