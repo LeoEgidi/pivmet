@@ -42,12 +42,12 @@
 #'
 #' # Data generated from a mixture of three bivariate Gaussian distributions
 #'
-#'n  <- 620
+#'N  <- 620
 #'k  <- 3
 #'n1 <- 20
 #'n2 <- 100
 #'n3 <- 500
-#'x  <- matrix(NA, n,2)
+#'x  <- matrix(NA, N,2)
 #'truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
 #'
 #'for (i in 1:n1){
@@ -60,6 +60,10 @@
 #' # Apply piv_KMeans with MUS as pivotal criterion
 #'
 #'res <- piv_KMeans(x, k)
+#'
+#'# Apply piv_KMeans with maxsumdiff as pivotal criterion
+#'
+#'res2 <- piv_KMeans(x, k, piv.criterion ="maxsumdiff")
 #'
 #' # Plot the data and the clustering solution
 #'
