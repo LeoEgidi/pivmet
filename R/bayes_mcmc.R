@@ -36,7 +36,7 @@
 #' \item{\code{ mu_pre_switch_compl}}{ Pre-precessed MCMC chains for the mean parameters.}
 #' \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
 #' \item{\code{grr}}{Group vector allocation as provided by \code{diana} or \code{hclust}.}
-#' \item{\code{clust_sel}}{clustering solution obtained via \code{diana} or \code{hclust} function.}
+#' \item{\code{pivots}}{clustering solution obtained via \code{diana} or \code{hclust} function.}
 #' \item{\code{true.iter}}{ The number of MCMC iterations for which their number of groups exactly coincides with the prespecified number of groups \code{k}. }
 #'
 #'
@@ -357,45 +357,36 @@ piv_MCMC <- function(y, k, nMC, piv.criterion,
     available_met <- 3
     x <- c(1:available_met)
     prec.par.1 <- min(min(table(grr))-1,5)
-    clust  <- lapply(x, piv_sel,
+    clust  <-  piv_sel(
       k=k, gIndex=as.vector(grr),
-      C=C, n=nz, ZM=zm,
-      available_met = available_met)
+      C=C, n=nz, ZM=zm)
 
-    clust_sel <- clust[[piv.index.pivotal[piv.index]]]
+    pivots <- clust$pivots[,piv.index.pivotal[piv.index]]
   }else if(piv.criterion=="MUS"){
       if (k <=4 & sum(C==0)!=0){
-          available_met <- 4
-          x <- c(1:available_met)
+
           prec.par.1 <- min(min(table(grr))-1,5)
           mus_res    <- MUS(C, grr, prec.par.1)
-         clust  <- lapply(x, piv_sel,
-             k=k, gIndex=as.vector(grr),
-             C=C, n=nz, ZM=zm,
-             maxima=mus_res$maxima,
-             available_met = available_met)
-         clust_sel <- clust[[4]]
-    }
+          clust  <-  mus_res$pivots
+
   }else{
 
-    x <- c(1:available_met)
-    clust  <- lapply(x, piv_sel,
+    print("maxsumdiff criterion instead of MUS has been adopted due to
+          computational efficiency")
+    clust  <-  piv_sel(
       k=k, gIndex=as.vector(grr),
-      C=C, n=nz, ZM=zm,
-      available_met = available_met)
-    clust_sel <- clust[[3]]
+      C=C, n=nz, ZM=zm)
+    pivots <- clust$pivots[,3]
   }
-  PivotIndex <- list()
-  #for(i in 1:length(x)){
-    PivotIndex[[1]] <- clust_sel$Cg
-  #}
+}
+
 
 
   return(list( Freq=Freq, z=z, Mu = mu_inits,
     ris=ris, groupPost=group,
     mu_switch=mu_switch,
     mu_pre_switch_compl=mu_pre_switch_compl,
-    C=C, grr=grr, clust_sel =clust_sel,
+    C=C, grr=grr, pivots = pivots,
     true.iter = true.iter,
     piv.criterion = piv.criterion))
   }

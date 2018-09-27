@@ -3,32 +3,26 @@
 #'
 #'Finding the pivots according to four different
 #'methods involving a co-association matrix C. This is an internal function launched by \code{piv_MCMC}.
-#'@param Obj Numerical string for the allowed pivotal criterion.
 #'@param k The number of mixture components/groups.
 #'@param gIndex Clusters' allocation.
 #'@param C Co-association matrix.
 #'@param n Data sample size
 #'@param ZM Auxiliary matrix used for building \code{C}.
-#'@param available_met Available criteria methods (integer).
-#'@param maxima Initial assignment for MUS algorithm.
 #'
 #'@return
 #'
-#'\item{\code{Cg}}{ The pivotal units. }
+#'\item{\code{pivots}}{ The pivotal units. }
 #'
 #'
 #'@export
 #'
 
 
-piv_sel<-function(Obj, k, gIndex, C, n, ZM, maxima, available_met){
+piv_sel<-function( k, gIndex, C, n, ZM){
 
-  if (missing(maxima)){
-    maxima=c(1:k)
-  }
 
 Cg1 <- rep(NA, k)
-Cg  <- matrix(NA, ncol=available_met, nrow=k)
+Cg  <- matrix(NA, ncol=3, nrow=k)
 
  for (g.i in 1:k){
     com.gi  <-  (1:n)[gIndex==g.i]
@@ -66,10 +60,10 @@ Cg  <- matrix(NA, ncol=available_met, nrow=k)
     #   Cg[g.i, 5] <- com.gi[which.min(ind.gi1[,6])]
     # if (!is.null(ind.gi))
     #   Cg[g.i, 6] <- com.gi[which.max(ind.gi1[,7])]
-    if (available_met==4){
-    if (!is.null(ind.gi))
-      Cg[, 4]    <-  t(maxima)
-    }
+    # if (available_met==4){
+    # if (!is.null(ind.gi))
+    #   Cg[, 4]    <-  t(maxima)
+    # }
     if (!is.null(ind.gi)){
       Cg1[g.i] <- ind.gi[do.call(order,
         as.data.frame(-ind.gi[,-1]))[1],1]
@@ -77,7 +71,7 @@ Cg  <- matrix(NA, ncol=available_met, nrow=k)
   }
 
 # For each method, we store the selected pivotal units
-Cg <- Cg[,Obj]
+Cg <- Cg[,1:3]
 # group1 contains the observation assigments to the groups obtained via pivots
 group1 <- 0*ZM
 # cycle on iterations
@@ -101,7 +95,7 @@ pr <- matrix(NA,nrow=k,ncol=n)
 submatrix <- round(C[Cg,Cg],5)
 T <- max(submatrix[upper.tri(submatrix)])
 
-  return(list(pr=pr, Cg=Cg, Submatrix=submatrix, Max=T))
+  return(list(pr=pr, pivots=Cg, Submatrix=submatrix, Max=T))
 }
 
 

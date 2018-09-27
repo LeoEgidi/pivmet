@@ -96,6 +96,12 @@ piv_KMeans <- function(x,
                        H = 1000,
                        ...){
   #check on optional parameters
+
+  if(missing(...)){
+    iter.max  <- 10
+    num.seeds <- 10
+    prec.par  <- 5
+  }
   if (missing(piv.criterion)){
     if (centers<=4 ){
       piv.criterion <- "MUS"
@@ -121,9 +127,9 @@ piv_KMeans <- function(x,
   }
 
   # tuning of precision MUS parameter
-  if (missing(prec.par)){
-    prec.par <- min( min(table(cl))-1, 5 )
-  }
+  # if (missing(prec.par)){
+  #   prec.par <- min( min(table(cl))-1, 5 )
+  # }
 
   #compute H different partitions
   if (is.vector(x)){
@@ -150,9 +156,9 @@ piv_KMeans <- function(x,
     if (piv.criterion=="MUS"){
 
       #MUS algorithm
-      prec.par <- prec.par
-      mus_res  <- MUS(sim_matr, cl, prec.par)
-      pivots   <- mus_res$maxima
+      #prec.par <- prec.par
+      mus_res  <- MUS(sim_matr, cl)
+      pivots   <- mus_res$pivots
     }else if (piv.criterion!="MUS"){
 
       #Other pivotal criteria
@@ -163,16 +169,15 @@ piv_KMeans <- function(x,
         }
       }
       zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
-      piv_sel <- pivotal_selection(Obj=c(1:7),
+      sel <- piv_sel(
         k=centers, gIndex=cl,
-        C=sim_matr, n=n, ZM=zm, maxima=c(1:centers),
-        available_met = 7)
+        C=sim_matr, n=n, ZM=zm)
       if (piv.criterion=="maxsumint"){
-        pivots <- piv_sel$Cg[,2]
+        pivots <- sel$pivots[,1]
       }else if(piv.criterion=="maxsumnoint"){
-        pivots <- piv_sel$Cg[,5]
+        pivots <- sel$pivots[,2]
       }else if(piv.criterion=="maxsumdiff"){
-        pivots <- piv_sel$Cg[,6]
+        pivots <- sel$pivots[,3]
       }
     }
   }else{
@@ -183,16 +188,15 @@ piv_KMeans <- function(x,
       }
     }
     zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
-    piv_sel <- pivotal_selection(Obj=c(1:6),
+    piv_sel <- piv_sel(
       k=centers, gIndex=cl,
-      C=sim_matr, n=n, ZM=zm, maxima=pivots,
-      available_met = 6)
+      C=sim_matr, n=n, ZM=zm)
     if (piv.criterion=="maxsumint"){
-      pivots <- piv_sel$Cg[,2]
+      pivots <- piv_sel$Cg[,1]
     }else if(piv.criterion=="maxsumnoint"){
-      pivots <- piv_sel$Cg[,5]
+      pivots <- piv_sel$Cg[,2]
     }else if(piv.criterion=="maxsumdiff"){
-      pivots <- piv_sel$Cg[,6]
+      pivots <- piv_sel$Cg[,3]
     }
   }
 

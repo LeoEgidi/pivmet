@@ -85,7 +85,7 @@ piv_rel<-function(mcmc, nMC ){
 
   mu_switch <- mcmc$mu_switch
   group <-  mcmc$groupPost
-  clustering <- mcmc$clust_sel
+  pivots <- mcmc$pivots
   Mu <- mcmc$Mu
 
   true.iter <- dim(mu_switch)[1]
@@ -95,7 +95,7 @@ piv_rel<-function(mcmc, nMC ){
   for (i in 1:true.iter){
       # cycle on number of groups
     for (j in 1:k){
-     groupD[i, group[i,]==group[i, clustering$Cg[j]]] <- j
+     groupD[i, group[i,]==group[i, pivots[j]]] <- j
         #group[i, clustering[[u]]$Cg[j]]
      }
     }
@@ -128,7 +128,7 @@ piv_rel<-function(mcmc, nMC ){
             decreasing=FALSE, index.return=TRUE)$ix
             mu_rel_complete[m,j] <-
               mu_switchD[m,
-                vect_rel[groupD2[m, clustering$Cg[j]]] ]
+                vect_rel[groupD2[m, pivots[j]]] ]
           }
         }
       }else{
@@ -156,7 +156,7 @@ piv_rel<-function(mcmc, nMC ){
         for (m in 1:true.iterD2){
           for (j in 1:k){
             mu_rel_complete[m,,j] <-
-              mu_switchD[m,,groupD2[m,clustering$Cg[j]]]
+              mu_switchD[m,,groupD2[m, pivots[j]]]
           }
         }
       }else{
