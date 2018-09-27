@@ -3,7 +3,7 @@
 #'
 #'Finding the pivots according to three different
 #'methods involving a co-association matrix C.
-#'@param C A \eqn{N \times N} co-association matrix, i.e.
+#'@param C A \eqn{N x N} co-association matrix, i.e.
 #'a matrix whose elements are co-occurences of pair of units
 #'in the same cluster among \eqn{H} distinct partitions.
 #'@param clusters A vector of integers indicating
@@ -13,7 +13,7 @@
 #'
 #'@details
 #'
-#' Given a set of \eqn{N} observations \eqn{(y_{1},y_{2},...,y_{n})}
+#' Given a set of \eqn{N} observations \eqn{(y_{1},y_{2},...,y_{N})}
 #' (\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \in \mathbb{N}}),
 #' consider clustering methods to obtain \eqn{H} distinct partitions
 #' into \eqn{k} groups.
