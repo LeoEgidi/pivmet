@@ -27,7 +27,7 @@ library(pivmet)
 
 ## Pivotal algorithms: how they works, and why
 
- We present here a real case for applying our procedure. Given $n$ units $y_1,\ldots,y_n$:
+ We present here a simulated case for applying our procedure. Given $n$ units $y_1,\ldots,y_n$:
 
 - consider to build a *co-association* matrix $C$, by taking the co-occurrences of pairs of $n$ units in
 the same cluster/group among the total number of partitions. For instance, this matrix could be constructed from a MCMC output arising from Bayesian mixture models;

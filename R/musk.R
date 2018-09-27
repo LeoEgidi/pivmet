@@ -21,7 +21,24 @@
 #' Possible choices are \code{"KMeans"} and \code{"hclust"}.
 #' @param ... Optional arguments.
 #'
-#'@return A list with components
+#'
+#' @details
+#'
+#' Although K-means clustering is one of the most popular
+#' algorithms due to its simplicity and low computational burden,
+#' one  major criticism
+#' is the impact of the choice of the
+#' initial centers on the final solution.  However, limited work
+#' has been developed for improving the seeding of
+#' the centers. A modified version of K-means could
+#' benefit from a pivot-based initialization step.
+#' In particular, the starting point is performing multiple
+#' runs of the classical K-means with the desired number of cluster
+#' fixed, and build the co-association matrix of data units.
+#' Such matrix is given is the starting point for
+#' yielding the pivots regarded to as cluster centers.
+#'
+#' @return A list with components
 #'
 #'\item{\code{cluster}}{A vector of integers indicating the cluster to which each point is allocated.}
 #'\item{\code{centers}}{A matrix of cluster centres (centroids).}
@@ -34,7 +51,7 @@
 #'\item{\code{ifault}}{integer: indicator of a possible algorithm problem – for experts.}
 #'\item{\code{pivots}}{The pivotal units identified by the selected pivotal criterion.}
 #'
-#'@details
+#'
 #'
 #'
 #'@author Leonardo Egidi \url{legidi@units.it}

@@ -9,6 +9,27 @@
 #'@param n Data sample size
 #'@param ZM Auxiliary matrix used for building \code{C}.
 #'
+#'
+#'@details
+#'
+#'Let \eqn{j} be the group containing units \eqn{\mathcal J_j},
+#'the user may chose \eqn{{i^*}\in\mathcal J_j} that
+#'maximizes one of the quantities:
+#' \deqn{
+#'  \sum_{p\in\mathcal J_j} c_{{i^*}p}
+#'  \sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.
+#' }
+#'
+#' These methods give the unit that maximizes the global
+#' within similarity (\code{"maxsumint"} and the unit that
+#' maximizes the difference between global within and
+#' between similarities \code{"maxsumdiff"}, respectively.
+#' Alternatively, we may choose \eqn{i^{*} \in\mathcal J_j}, which minimizes:
+#' \deqn{\sum_{p\not\in\mathcal J_j} c_{i^{*}p},}
+#' obtaining the most distant unit among the members
+#' that minimize the global dissimilarity between one group
+#' and all the others (\code{"maxsumnoint"}).
+#'
 #'@return
 #'
 #'\item{\code{pivots}}{ The pivotal units. }
