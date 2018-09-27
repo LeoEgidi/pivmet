@@ -38,7 +38,7 @@ zero co-occurrences;
 
 - the resulting units---hereafter pivots---have the desirable property to be representative of the group they belong to.
 
-We propose four alternative methods for achieving this task. Let $j$ be the group containing units $\mathcal J_j$, the user may chose ${i^*}\in\mathcal J_j$ that maximizes one of the quantities:
+We propose four alternative methods for achieving this task. Let $j$ be the group containing units $\mathcal J_j$, the user may choose ${i^*}\in\mathcal J_j$ that maximizes one of the quantities:
 
 \begin{align*}
 & \sum_{p\in\mathcal J_j} c_{{i^*}p}  \\
