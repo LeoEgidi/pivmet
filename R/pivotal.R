@@ -53,8 +53,8 @@ Cg1 <- rep(NA, k)
 Cg  <- matrix(NA, ncol=3, nrow=k)
 
  for (g.i in 1:k){
-    com.gi  <-  (1:n)[clusters==g.i]
-    com.ngi <-  (1:n)[clusters!=g.i]
+    com.gi  <-  (1:N)[clusters==g.i]
+    com.ngi <-  (1:N)[clusters!=g.i]
     ind.gi  <- c()
     ind.gi1 <- c()
 

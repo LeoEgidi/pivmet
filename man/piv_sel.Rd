@@ -4,18 +4,16 @@
 \alias{piv_sel}
 \title{Pivotal Selection via Co-Association Matrix}
 \usage{
-piv_sel(k, gIndex, C, N, ZM)
+piv_sel(C, k, clusters, ZM)
 }
 \arguments{
-\item{k}{The number of mixture components/groups.}
-
-\item{gIndex}{Clusters' allocation.}
-
 \item{C}{Co-association matrix.}
 
-\item{N}{Data sample size}
+\item{k}{The number of clusters.}
 
 \item{ZM}{Auxiliary matrix used for building \code{C}.}
+
+\item{cl}{Clusters' allocation.}
 }
 \value{
 \item{\code{pivots}}{ The pivotal units. }
