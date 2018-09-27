@@ -4,16 +4,13 @@
 \alias{piv_sel}
 \title{Pivotal Selection via Co-Association Matrix}
 \usage{
-piv_sel(C, k, clusters, ZM)
+piv_sel(C, clusters)
 }
 \arguments{
-\item{C}{Co-association matrix.}
+\item{C}{A \eqn{N \times N} Co-association matrix.}
 
-\item{k}{The number of clusters.}
-
-\item{ZM}{Auxiliary matrix used for building \code{C}.}
-
-\item{cl}{Clusters' allocation.}
+\item{clusters}{A vector of integers from \code{1:k} (with \code{k <= 4})
+indicating a partition of the \eqn{N} units resulting from clustering.}
 }
 \value{
 \item{\code{pivots}}{ The pivotal units. }

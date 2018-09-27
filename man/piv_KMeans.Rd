@@ -28,7 +28,7 @@ the vignette).}
 distinct k-means partitions used for building a \eqn{N \times N}
 co-association matrix.}
 
-\item{...}{Optional arguments.}
+\item{...}{Optional arguments to be passed to \code{MUS} or \code{KMeans}.}
 }
 \value{
 A list with components
@@ -49,19 +49,14 @@ Perform classical k-means clustering on a data matrix using pivots as
 initial centers.
 }
 \details{
-Although K-means clustering is one of the most popular
-algorithms due to its simplicity and low computational burden,
-one  major criticism
-is the impact of the choice of the
-initial centers on the final solution.  However, limited work
-has been developed for improving the seeding of
-the centers. A modified version of K-means could
-benefit from a pivot-based initialization step.
-In particular, the starting point is performing multiple
-runs of the classical K-means with the desired number of cluster
-fixed, and build the co-association matrix of data units.
-Such matrix is given is the starting point for
-yielding the pivots regarded to as cluster centers.
+The function implements a modified version of K-means which aims at
+improving the clustering solution starting from a careful seeding.
+In particular, it performs a pivot-based initialization step
+using pivotal methods to find the initial centers
+for the clustering procedure. The starting point consists of multiple
+runs of the classical K-means (which uses random seeds)
+with a fixed number of clusters
+in order to build the co-association matrix of data units.
 }
 \examples{
 
