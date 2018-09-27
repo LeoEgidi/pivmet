@@ -45,7 +45,8 @@
 #'
 #'@return
 #'
-#'\item{\code{pivots}}{ The pivotal units. }
+#'\item{\code{pivots}}{ A matrix with \eqn{k} rows and three
+#' columns containing the indexes of the pivotal units for each method.}
 #'
 #'
 #'@examples
