@@ -4,7 +4,7 @@
 \alias{piv_sel}
 \title{Pivotal Selection via Co-Association Matrix}
 \usage{
-piv_sel(k, gIndex, C, n, ZM)
+piv_sel(k, gIndex, C, N, ZM)
 }
 \arguments{
 \item{k}{The number of mixture components/groups.}
@@ -13,7 +13,7 @@ piv_sel(k, gIndex, C, n, ZM)
 
 \item{C}{Co-association matrix.}
 
-\item{n}{Data sample size}
+\item{N}{Data sample size}
 
 \item{ZM}{Auxiliary matrix used for building \code{C}.}
 }
@@ -21,16 +21,24 @@ piv_sel(k, gIndex, C, n, ZM)
 \item{\code{pivots}}{ The pivotal units. }
 }
 \description{
-Finding the pivots according to four different
-methods involving a co-association matrix C. This is an internal function launched by \code{piv_MCMC}.
+Finding the pivots according to three different
+methods involving a co-association matrix C.
 }
 \details{
+Given \eqn{H} distinct partitions of \eqn{N} units in \eqn{k} groups,
+we can build a co-association matrix \eqn{C},
+where \eqn{c_{i,p}=n_{i,p}/H}, with \eqn{n_{i,p}} the number of times
+the pair \eqn{(y_{i},y_{p})} is assigned to the same
+cluster among the \eqn{H} partitions.
+
 Let \eqn{j} be the group containing units \eqn{\mathcal J_j},
-the user may chose \eqn{{i^*}\in\mathcal J_j} that
+the user may choose \eqn{{i^*}\in\mathcal J_j} that
 maximizes one of the quantities:
 \deqn{
- \sum_{p\in\mathcal J_j} c_{{i^*}p}
- \sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.
+ \sum_{p\in\mathcal J_j} c_{{i^*}p}}
+
+ or
+ \deqn{\sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.
 }
 
 These methods give the unit that maximizes the global

@@ -11,8 +11,6 @@
 #' If \code{centers <= 4}, the default method is \code{"MUS"};
 #' otherwise, the default method is \code{"maxsumdiff"} (see the details and
 #' the vignette).
-#' @param iter.max The maximum number of iterations allowed.
-#' @param num.seeds	The number of different starting random seeds to use. Each random seed results in a different k-means solution.
 #' @param H If \code{MUS} is selected, this is the number of
 #' distinct k-means partitions used for building a \eqn{N \times N}
 #' co-association matrix.
