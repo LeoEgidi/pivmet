@@ -188,15 +188,15 @@ piv_KMeans <- function(x,
       }
     }
     zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
-    piv_sel <- piv_sel(
+    sel <- piv_sel(
       k=centers, gIndex=cl,
       C=sim_matr, n=n, ZM=zm)
     if (piv.criterion=="maxsumint"){
-      pivots <- piv_sel$Cg[,1]
+      pivots <- sel$pivots[,1]
     }else if(piv.criterion=="maxsumnoint"){
-      pivots <- piv_sel$Cg[,2]
+      pivots <- sel$pivots[,2]
     }else if(piv.criterion=="maxsumdiff"){
-      pivots <- piv_sel$Cg[,3]
+      pivots <- sel$pivots[,3]
     }
   }
 

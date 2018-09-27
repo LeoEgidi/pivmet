@@ -4,11 +4,9 @@
 \alias{piv_sel}
 \title{Pivotal Selection via Co-Association Matrix}
 \usage{
-piv_sel(Obj, k, gIndex, C, n, ZM, maxima, available_met)
+piv_sel(k, gIndex, C, n, ZM)
 }
 \arguments{
-\item{Obj}{Numerical string for the allowed pivotal criterion.}
-
 \item{k}{The number of mixture components/groups.}
 
 \item{gIndex}{Clusters' allocation.}
@@ -18,13 +16,9 @@ piv_sel(Obj, k, gIndex, C, n, ZM, maxima, available_met)
 \item{n}{Data sample size}
 
 \item{ZM}{Auxiliary matrix used for building \code{C}.}
-
-\item{maxima}{Initial assignment for MUS algorithm.}
-
-\item{available_met}{Available criteria methods (integer).}
 }
 \value{
-\item{\code{Cg}}{ The pivotal units. }
+\item{\code{pivots}}{ The pivotal units. }
 }
 \description{
 Finding the pivots according to four different
