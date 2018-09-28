@@ -38,7 +38,7 @@
 #' }
 #'
 #' where \eqn{\Sigma_s} is the covariance matrix for the
-#' subgroup \eqn{s, \ s=1,2.} \code{Mu} is the mean input vector/matrix,
+#' subgroup \eqn{s, s=1,2.} \code{Mu} is the mean input vector/matrix,
 #' \code{stdev} is a \eqn{k x 2}
 #' matrix for the standard deviations of the \eqn{k} groups.
 #' \code{Sigma.p1} and \code{Sigma.p2} are the input covariances matrices
