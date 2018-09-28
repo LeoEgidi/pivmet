@@ -9,25 +9,33 @@ piv_sim(N, k, Mu, stdev, Sigma.p1 = matrix(c(1, 0, 0, 1), 2, 2, byrow =
   W = c(0.5, 0.5))
 }
 \arguments{
-\item{N}{Sample size, data dimension.}
+\item{N}{The desired sample size.}
 
-\item{k}{Number of mixture components.}
+\item{k}{The desired number of mixture components.}
 
-\item{Mu}{Initial mean vector/matrix.}
+\item{Mu}{The input mean vector/matrix.}
 
-\item{stdev}{Initial standard deviations (for univariate mixtures).}
+\item{stdev}{A \code{k x2} matrix of input standard deviations,
+one for each group (from 1 to \code{k}) and for each subgroup (from 1 to 2).
+For univariate mixtures only.}
 
-\item{Sigma.p1}{Covariance matrix for the first mixture level (for bivariate mixtures only).}
+\item{Sigma.p1}{The covariance matrix for the first subgroup (for bivariate mixtures only).}
 
-\item{Sigma.p2}{Covariance matrix for the second mixture level (for bivariate mixture only).}
+\item{Sigma.p2}{The covariance matrix for the second subgroup (for bivariate mixture only).}
 
-\item{W}{Mixture weights for the two levels,vector.}
+\item{W}{The vector for the mixture weights of the two subgroups,}
 }
 \value{
-\item{ \code{y}}{Data values.}
+\item{\code{y}}{Data values.}
+\item{\code{true.group}}{ A vector of integers from \code{1:k}
+indicating the values of the latent variables \eqn{Z_i}.}
+\item{\code{subgroups}}{A \code{2 x N} matrix with values 1 or 2
+indicating the subgroup to which each observation is drawn from.}
 }
 \description{
-Simulate N observations from a nested Gaussian mixture model with k pre-specified components.
+Simulate N observations from a nested Gaussian mixture model
+with k pre-specified components, where each of them is in turn
+drawn from a further level consisting of two subgroups.
 }
 \details{
 The functions allows to simulate values from a double (nested) univariate
@@ -40,12 +48,15 @@ Gaussian mixture:
 or from a bivariate nested Gaussian mixture;
 
 \deqn{
-(Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}).
+(Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}),
 }
 
-\code{Mu} is the mean input vector/matrix, \code{stdev} is a \eqn{k x 2}
-matrix for the standard deviations of the \eqn{k} groups. \code{Sigma.p1} and
-\code{Sigma.p2} are the covariances matrices for subgroups 1 and 2,
+where \eqn{\Sigma_s} is the covariance matrix for the
+subgroup \eqn{s, \ s=1,2.} \code{Mu} is the mean input vector/matrix,
+\code{stdev} is a \eqn{k x 2}
+matrix for the standard deviations of the \eqn{k} groups.
+\code{Sigma.p1} and \code{Sigma.p2} are the input covariances matrices
+for subgroups 1 and 2,
 respectively. \code{W} is a vector of dimension 2 for the subgroups weights.
 }
 \examples{

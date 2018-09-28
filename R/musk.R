@@ -49,6 +49,12 @@
 #'
 #'
 #'@author Leonardo Egidi \url{legidi@units.it}
+#'@references
+#'
+#'Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
+#'K-means seeding via MUS algorithm. Conference Paper,
+#'Book of Short Papers, SIS2018, ISBN: 9788891910233.
+#'
 #'@examples
 #'
 #' # Data generated from a mixture of three bivariate Gaussian distributions
