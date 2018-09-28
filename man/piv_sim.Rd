@@ -26,7 +26,7 @@ For univariate mixtures only.}
 \item{W}{The vector for the mixture weights of the two subgroups,}
 }
 \value{
-\item{\code{y}}{Data values.}
+\item{\code{y}}{The \code{N} simulated observations.}
 \item{\code{true.group}}{ A vector of integers from \code{1:k}
 indicating the values of the latent variables \eqn{Z_i}.}
 \item{\code{subgroups}}{A \code{2 x N} matrix with values 1 or 2

@@ -111,6 +111,11 @@ points(x[res$pivots[3],1], x[res$pivots[3],2],
 points(res$centers, col = colors_centers[1:k],
    pch = 8, cex = 2)
 }
+\references{
+Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
+K-means seeding via MUS algorithm. Conference Paper,
+Book of Short Papers, SIS2018, ISBN: 9788891910233.
+}
 \author{
 Leonardo Egidi \url{legidi@units.it}
 }
