@@ -14,6 +14,25 @@
 #'
 #' \item{ \code{y}}{Data values.}
 #'
+#' @details
+#'
+#' The functions allows to simulate values from a double (nested) univariate
+#' Gaussian mixture:
+#'
+#' \deqn{
+#' (Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}(\mu_{j}, \sigma^{2}_{js}),
+#' }
+#'
+#' or from a bivariate nested Gaussian mixture;
+#'
+#' \deqn{
+#' (Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}).
+#' }
+#'
+#' \code{Mu} is the mean input vector/matrix, \code{stdev} is a \eqn{k x 2}
+#' matrix for the standard deviations of the \eqn{k} groups. \code{Sigma.p1} and
+#' \code{Sigma.p2} are the covariances matrices for subgroups 1 and 2,
+#' respectively. \code{W} is a vector of dimension 2 for the subgroups weights.
 #' @examples
 #'
 #' # Bivariate mixture simulation with three components
@@ -35,8 +54,18 @@
 #'
 #' @export
 
-piv_sim <- function(N,k,Mu, stdev,Sigma.p1,Sigma.p2,W){
+piv_sim <- function(N,
+                    k,
+                    Mu,
+                    stdev,
+                    Sigma.p1 = matrix(c(1,0,0,1),2,2, byrow = TRUE),
+                    Sigma.p2 = matrix(c(100,0,0,100),2,2, byrow = TRUE),
+                    W = c(0.5, 0.5)){
   # Generation---------------
+
+  if(missing(stdev)){
+    stdev <- matrix(cbind(rep(1,k), rep(100,k)))
+  }
 
   if (is.vector(Mu)){
     true.group <- sample(1:k,N,replace=TRUE,prob=rep(1/k,k))

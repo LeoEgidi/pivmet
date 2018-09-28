@@ -13,7 +13,7 @@
 #' \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k}},
 #' and
 #'\deqn{
-#' P(Z_i=k)=\pi_k.
+#' P(Z_i=j)=\pi_j.
 #' }
 #'
 #' This model is unidentified with respect to an arbitrary permutation of the labels \eqn{1,...,k}. Relabelling means permuting
