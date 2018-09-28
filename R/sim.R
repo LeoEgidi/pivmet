@@ -1,18 +1,26 @@
 #' Generate Data from a Gaussian Nested Mixture
 #'
-#' Simulate N observations from a nested Gaussian mixture model with k pre-specified components.
+#' Simulate N observations from a nested Gaussian mixture model
+#' with k pre-specified components, where each of them is in turn
+#' drawn from a further level consisting of two subgroups.
 #'
 #'
-#' @param N Sample size, data dimension.
-#' @param k Number of mixture components.
-#' @param Mu Initial mean vector/matrix.
-#' @param stdev Initial standard deviations (for univariate mixtures).
-#' @param Sigma.p1 Covariance matrix for the first mixture level (for bivariate mixtures only).
-#' @param Sigma.p2 Covariance matrix for the second mixture level (for bivariate mixture only).
-#' @param W Mixture weights for the two levels,vector.
+#' @param N The desired sample size.
+#' @param k The desired number of mixture components.
+#' @param Mu The input mean vector/matrix.
+#' @param stdev A \code{k x2} matrix of input standard deviations,
+#' one for each group (from 1 to \code{k}) and for each subgroup (from 1 to 2).
+#' For univariate mixtures only.
+#' @param Sigma.p1 The covariance matrix for the first subgroup (for bivariate mixtures only).
+#' @param Sigma.p2 The covariance matrix for the second subgroup (for bivariate mixture only).
+#' @param W The vector for the mixture weights of the two subgroups,
 #' @return
 #'
-#' \item{ \code{y}}{Data values.}
+#' \item{\code{y}}{Data values.}
+#' \item{\code{true.group}}{ A vector of integers from \code{1:k}
+#' indicating the values of the latent variables \eqn{Z_i}.}
+#' \item{\code{subgroups}}{A \code{2 x N} matrix with values 1 or 2
+#' indicating the subgroup to which each observation is drawn from.}
 #'
 #' @details
 #'
@@ -26,12 +34,15 @@
 #' or from a bivariate nested Gaussian mixture;
 #'
 #' \deqn{
-#' (Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}).
+#' (Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}),
 #' }
 #'
-#' \code{Mu} is the mean input vector/matrix, \code{stdev} is a \eqn{k x 2}
-#' matrix for the standard deviations of the \eqn{k} groups. \code{Sigma.p1} and
-#' \code{Sigma.p2} are the covariances matrices for subgroups 1 and 2,
+#' where \eqn{\Sigma_s} is the covariance matrix for the
+#' subgroup \eqn{s, \ s=1,2.} \code{Mu} is the mean input vector/matrix,
+#' \code{stdev} is a \eqn{k x 2}
+#' matrix for the standard deviations of the \eqn{k} groups.
+#' \code{Sigma.p1} and \code{Sigma.p2} are the input covariances matrices
+#' for subgroups 1 and 2,
 #' respectively. \code{W} is a vector of dimension 2 for the subgroups weights.
 #' @examples
 #'

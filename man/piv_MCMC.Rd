@@ -38,9 +38,9 @@ Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains 
 The function fits a Bayesian Gaussian mixture model of the form:
 \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
 where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k }}, and
-\deqn{P(Z_i=k)=\pi_k.}
+\deqn{P(Z_i=j)=\pi_j.}
 The likelihood of the model is then
-\deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_k f(y_i;\mu_k,\phi),}
+\deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_j f(y_i;\mu_j,\phi),}
 with \eqn{\mu=(\mu_{1},\dots,\mu_{k})} component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})} mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }}, and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})}, \eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the corresponding permutations of \eqn{\mu} and \eqn{\pi}. Denote by \eqn{V} the set of all the permutations of the indexes \eqn{{1,\ldots,k }}, the likelihood above is invariant under any permutation \eqn{\nu \in V}, that is
 \deqn{
 L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\phi).}
