@@ -288,3 +288,5 @@ if (type=="chains" ){
 # points(t(apply(output_bayes$mu_switch, c(2,3), mean)), col="red")
 #
 
+#per compilazione manuale
+#system("R CMD Rd2pdf C:/Users/leoeg/OneDrive/Documenti/GitHub/pivmet/R")
