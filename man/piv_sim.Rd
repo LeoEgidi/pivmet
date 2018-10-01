@@ -34,7 +34,8 @@ indicating the subgroup to which each observation is drawn from.}
 }
 \description{
 Simulate N observations from a nested Gaussian mixture model
-with k pre-specified components, where each of them is in turn
+with k pre-specified components and uniform group probabilities,
+where each of them is in turn
 drawn from a further level consisting of two subgroups.
 }
 \details{
@@ -51,13 +52,16 @@ or from a bivariate nested Gaussian mixture;
 (Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}),
 }
 
-where \eqn{\Sigma_s} is the covariance matrix for the
-subgroup \eqn{s, \ s=1,2.} \code{Mu} is the mean input vector/matrix,
-\code{stdev} is a \eqn{k x 2}
-matrix for the standard deviations of the \eqn{k} groups.
-\code{Sigma.p1} and \code{Sigma.p2} are the input covariances matrices
-for subgroups 1 and 2,
-respectively. \code{W} is a vector of dimension 2 for the subgroups weights.
+where \eqn{\sigma^{2}_{js}} is the variance for the group \eqn{j} and
+the subgroup \eqn{s} for univariate mixtures;
+ \eqn{\Sigma_s} is the covariance matrix for the
+subgroup \eqn{s, s=1,2}, where each of them is
+specified by\code{Sigma.p1}
+and \code{Sigma.p2} respectively; \eqn{\mu_j} and
+\eqn{\bm{\mu}_j, \ j=1,\ldots,k}
+  are the mean input vector and matrix respectively,
+  specified by \code{Mu};
+\code{W} is a vector of dimension 2 for the subgroups weights.
 }
 \examples{
 
