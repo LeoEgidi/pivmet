@@ -4,8 +4,15 @@
 #' @param y N-dimensional data vector/matrix.
 #' @param k Number of mixture components.
 #' @param nMC Number of MCMC iterations for the JAGS function execution.
-#' @param piv.criterion The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See the vignette for a thorough and detailed list of available pivotal methods.
-#' @param clustering The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. Possible choices: \code{diana} (default), \code{hclust}.
+#' @param piv.criterion The pivotal criterion used for identifying one pivot
+#' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+#' "maxsumdiff"}.
+#' If \code{centers <= 4}, the default method is \code{"MUS"};
+#' otherwise, the default method is \code{"maxsumdiff"} (see the details and
+#' the vignette).
+#' @param clustering The clustering technique adopted for partitioning the
+#' \code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
+#' \code{"hclust"}.
 #'
 #' @details
 #' The function fits a Bayesian Gaussian mixture model of the form:
@@ -73,8 +80,11 @@
 
 
 
-piv_MCMC <- function(y, k, nMC, piv.criterion,
-  clustering){
+piv_MCMC <- function(y,
+                     k,
+                     nMC,
+                     piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
+                     clustering = c("diana", "hclust")){
 
   # Conditions about data dimension----------------
 
