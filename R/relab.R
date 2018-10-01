@@ -34,7 +34,7 @@
 #' \item{\code{mu_rel_mean}}{ \code{k}-vector or \code{k x 2}
 #' matrix of estimated posterior means for the mean parameters.}
 #' \item{\code{mu_rel_median}}{ \code{k}-vector or \code{k x 2}
-#' matrix of estimated posterior medins for the mean parameters.}
+#' matrix of estimated posterior medians for the mean parameters.}
 #' \item{\code{mu_rel_complete}}{Complete relabelled chains}
 #' \item{\code{Final_It}}{The final number of valid iterations}
 #'

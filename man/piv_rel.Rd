@@ -14,8 +14,10 @@ piv_rel(mcmc, nMC)
 \value{
 This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
 
-\item{\code{mu_rel_mean}}{ Estimated posterior means}
-\item{\code{mu_rel_median}}{ Estimated posterior medians}
+\item{\code{mu_rel_mean}}{ \code{k}-vector or \code{k x 2}
+matrix of estimated posterior means for the mean parameters.}
+\item{\code{mu_rel_median}}{ \code{k}-vector or \code{k x 2}
+matrix of estimated posterior medins for the mean parameters.}
 \item{\code{mu_rel_complete}}{Complete relabelled chains}
 \item{\code{Final_It}}{The final number of valid iterations}
 }
