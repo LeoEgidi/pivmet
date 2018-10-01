@@ -19,22 +19,22 @@ piv_sim(N, k, Mu, stdev, Sigma.p1 = matrix(c(1, 0, 0, 1), 2, 2, byrow =
 one for each group (from 1 to \code{k}) and for each subgroup (from 1 to 2).
 For univariate mixtures only.}
 
-\item{Sigma.p1}{The covariance matrix for the first subgroup (for bivariate mixtures only).}
+\item{Sigma.p1}{The covariance matrix for the first subgroup. For bivariate mixtures only.}
 
-\item{Sigma.p2}{The covariance matrix for the second subgroup (for bivariate mixture only).}
+\item{Sigma.p2}{The covariance matrix for the second subgroup. For bivariate mixtures only.}
 
 \item{W}{The vector for the mixture weights of the two subgroups,}
 }
 \value{
 \item{\code{y}}{The \code{N} simulated observations.}
-\item{\code{true.group}}{ A vector of integers from \code{1:k}
+\item{\code{true.group}}{A vector of integers from \code{1:k}
 indicating the values of the latent variables \eqn{Z_i}.}
 \item{\code{subgroups}}{A \code{2 x N} matrix with values 1 or 2
 indicating the subgroup to which each observation is drawn from.}
 }
 \description{
 Simulate N observations from a nested Gaussian mixture model
-with k pre-specified components and uniform group probabilities,
+with k pre-specified components under uniform group probabilities \eqn{1/k},
 where each group is in turn
 drawn from a further level consisting of two subgroups.
 }
@@ -43,13 +43,13 @@ The functions allows to simulate values from a double (nested) univariate
 Gaussian mixture:
 
 \deqn{
-(Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}(\mu_{j}, \sigma^{2}_{js}),
+(Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}(\mu_{j}, \sigma^{2}_{js}),
 }
 
-or from a bivariate nested Gaussian mixture;
+or from a bivariate nested Gaussian mixture:
 
 \deqn{
-(Y_i|Z_i=j) sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}),
+(Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}),
 }
 
 where \eqn{\sigma^{2}_{js}} is the variance for the group \eqn{j} and
@@ -57,7 +57,7 @@ the subgroup \eqn{s} (\code{stdev} is the
 argument for specifying the \eqn{k x 2} standard deviations
 for univariate mixtures);
  \eqn{\Sigma_s} is the covariance matrix for the
-subgroup \eqn{s, s=1,2}, where each of them is
+subgroup \eqn{s, s=1,2}, where the two matrices are
 specified by \code{Sigma.p1}
 and \code{Sigma.p2} respectively; \eqn{\mu_j} and
 \eqn{\bm{\mu}_j, \ j=1,\ldots,k}
@@ -81,7 +81,8 @@ nrow=2, ncol=2)
 Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]),
  nrow=2, ncol=2)
 W   <- c(0.2,0.8)
-sim <- piv_sim(N,k,Mu,Sigma.p1,Sigma.p2,W)
+sim <- piv_sim(N, k, Mu, Sigma.p1 = Sigma.p1,
+Sigma.p2 = Sigma.p2, W)
 plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 
 }

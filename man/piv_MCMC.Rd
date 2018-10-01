@@ -25,7 +25,7 @@ The function gives the MCMC output, the clustering solutions and the pivotal ind
 \item{\code{ris}}{  MCMC output array as provided by JAGS.}
 \item{\code{groupPost}}{ Post-processed group vector.}
 \item{ \code{mu_switch}}{  Post-processed MCMC chains for the mean parameters.}
-\item{\code{ mu_pre_switch_compl}}{ Pre-precessed MCMC chains for the mean parameters.}
+\item{\code{ mu_rawl}}{ Pre-precessed MCMC chains for the mean parameters.}
 \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
 \item{\code{grr}}{Group vector allocation as provided by \code{diana} or \code{hclust}.}
 \item{\code{pivots}}{clustering solution obtained via \code{diana} or \code{hclust} function.}
