@@ -66,7 +66,7 @@
 #' Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]),
 #'  nrow=2, ncol=2)
 #' W   <- c(0.2,0.8)
-#' sim <- piv_sim(N,k,Mu,Sigma.p1,Sigma.p2,W)
+#' sim <- piv_sim(N,k,Mu, stdev,Sigma.p1,Sigma.p2,W)
 #' plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 #'
 #' @export
@@ -81,7 +81,7 @@ piv_sim <- function(N,
   # Generation---------------
 
   if(missing(stdev)){
-    stdev <- matrix(cbind(rep(1,k), rep(100,k)))
+    stdev <- matrix(cbind(rep(1,k), rep(200,k)))
   }
 
   if (is.vector(Mu)){

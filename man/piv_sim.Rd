@@ -35,7 +35,7 @@ indicating the subgroup to which each observation is drawn from.}
 \description{
 Simulate N observations from a nested Gaussian mixture model
 with k pre-specified components and uniform group probabilities,
-where each of them is in turn
+where each group is in turn
 drawn from a further level consisting of two subgroups.
 }
 \details{
@@ -53,14 +53,16 @@ or from a bivariate nested Gaussian mixture;
 }
 
 where \eqn{\sigma^{2}_{js}} is the variance for the group \eqn{j} and
-the subgroup \eqn{s} for univariate mixtures;
+the subgroup \eqn{s} (\code{stdev} is the
+argument for specifying the \eqn{k x 2} standard deviations
+for univariate mixtures);
  \eqn{\Sigma_s} is the covariance matrix for the
 subgroup \eqn{s, s=1,2}, where each of them is
-specified by\code{Sigma.p1}
+specified by \code{Sigma.p1}
 and \code{Sigma.p2} respectively; \eqn{\mu_j} and
 \eqn{\bm{\mu}_j, \ j=1,\ldots,k}
   are the mean input vector and matrix respectively,
-  specified by \code{Mu};
+  specified by the argument \code{Mu};
 \code{W} is a vector of dimension 2 for the subgroups weights.
 }
 \examples{
@@ -79,7 +81,7 @@ nrow=2, ncol=2)
 Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]),
  nrow=2, ncol=2)
 W   <- c(0.2,0.8)
-sim <- piv_sim(N,k,Mu,stdev,Sigma.p1,Sigma.p2,W)
+sim <- piv_sim(N,k,Mu,Sigma.p1,Sigma.p2,W)
 plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 
 }
