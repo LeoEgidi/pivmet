@@ -61,8 +61,11 @@
 #' \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
 #' \item{\code{grr}}{Group vector allocation as provided by
 #' \code{"diana"} or \code{"hclust"}.}
-#' \item{\code{pivots}}{The pivotal units identified by the
+#' \item{\code{pivots}}{ The pivotal units identified by the
 #' selected pivotal criterion.}
+#' \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
+#' the pivots.}
+#'
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
