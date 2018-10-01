@@ -7,7 +7,7 @@
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
 #' "maxsumdiff"}.
-#' If \code{centers <= 4}, the default method is \code{"MUS"};
+#' If \code{k <= 4}, the default method is \code{"MUS"};
 #' otherwise, the default method is \code{"maxsumdiff"} (see the details and
 #' the vignette).
 #' @param clustering The clustering technique adopted for partitioning the
@@ -40,16 +40,16 @@
 #' \item{\code{ris}}{  MCMC output array as provided by JAGS.}
 #' \item{\code{groupPost}}{ Post-processed group vector.}
 #' \item{ \code{mu_switch}}{  Post-processed MCMC chains for the mean parameters.}
-#' \item{\code{ mu_rawl}}{ Pre-precessed MCMC chains for the mean parameters.}
+#' \item{\code{mu_raw}}{ Pre-precessed MCMC chains for the mean parameters.}
 #' \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
-#' \item{\code{grr}}{Group vector allocation as provided by \code{diana} or \code{hclust}.}
-#' \item{\code{pivots}}{clustering solution obtained via \code{diana} or \code{hclust} function.}
+#' \item{\code{grr}}{Group vector allocation as provided by \code{"diana"} or \code{"hclust"}.}
+#' \item{\code{pivots}}{clustering solution obtained via \code{"diana"} or \code{"hclust"} function.}
 #' \item{\code{true.iter}}{ The number of MCMC iterations for which their number of groups exactly coincides with the prespecified number of groups \code{k}. }
 #'
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
-#'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969, DOI 10.1007/s11222-017-  9774-2.
+#'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples
 #' N   <- 200
 #' k   <- 4
@@ -317,6 +317,7 @@ piv_MCMC <- function(y,
 
   FreqGruppiJagsPERM <- table(group)
   Freq <- cbind(FreqGruppiJags,FreqGruppiJagsPERM)
+  colnames(Freq) <- c("JAGS group", "Relabelled groups")
 
 
 

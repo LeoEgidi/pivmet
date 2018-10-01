@@ -4,7 +4,8 @@
 \alias{piv_MCMC}
 \title{JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
 \usage{
-piv_MCMC(y, k, nMC, piv.criterion, clustering)
+piv_MCMC(y, k, nMC, piv.criterion = c("MUS", "maxsumint", "maxsumnoint",
+  "maxsumdiff"), clustering = c("diana", "hclust"))
 }
 \arguments{
 \item{y}{N-dimensional data vector/matrix.}
@@ -13,9 +14,16 @@ piv_MCMC(y, k, nMC, piv.criterion, clustering)
 
 \item{nMC}{Number of MCMC iterations for the JAGS function execution.}
 
-\item{piv.criterion}{The pivotal method used for detecting the pivots, one for each group. Possible choices: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff}, \code{MUS}. \code{MUS} is available for \code{k<5}. If \code{piv.criterion=NULL}, \code{maxsumdiff} is chosen by default. See the vignette for a thorough and detailed list of available pivotal methods.}
+\item{piv.criterion}{The pivotal criterion used for identifying one pivot
+for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+"maxsumdiff"}.
+If \code{centers <= 4}, the default method is \code{"MUS"};
+otherwise, the default method is \code{"maxsumdiff"} (see the details and
+the vignette).}
 
-\item{clustering}{The clustering technique adopted for partitioning the \code{N} observations into \code{k} groups. Possible choices: \code{diana} (default), \code{hclust}.}
+\item{clustering}{The clustering technique adopted for partitioning the
+\code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
+\code{"hclust"}.}
 }
 \value{
 The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
