@@ -17,7 +17,7 @@ piv_MCMC(y, k, nMC, piv.criterion = c("MUS", "maxsumint", "maxsumnoint",
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
 "maxsumdiff"}.
-If \code{centers <= 4}, the default method is \code{"MUS"};
+If \code{k <= 4}, the default method is \code{"MUS"};
 otherwise, the default method is \code{"maxsumdiff"} (see the details and
 the vignette).}
 
@@ -28,16 +28,36 @@ the vignette).}
 \value{
 The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
 
-\item{\code{Freq}}{  Number of units corresponding to each group for the post-processed chains.}
-\item{\code{z} }{  Post-processed latent vector.}
-\item{\code{ris}}{  MCMC output array as provided by JAGS.}
-\item{\code{groupPost}}{ Post-processed group vector.}
-\item{ \code{mu_switch}}{  Post-processed MCMC chains for the mean parameters.}
-\item{\code{ mu_rawl}}{ Pre-precessed MCMC chains for the mean parameters.}
+\item{\code{Freq}}{  \code{k x 2} matrix where: the first column
+reports the number of units allocated to each group
+as given by JAGS program; the second
+column reports the same number of units as given by the
+chains' post-processing.}
+\item{\code{true.iter}}{ The number of MCMC iterations for which
+the number of JAGS groups exactly coincides with the prespecified
+number of groups \code{k}.}
+\item{\code{z} }{  \code{N x k x true.iter} array with values: 1,
+if the \eqn{i}-th unit belongs to the \eqn{j}-th group at
+the \eqn{h}-th iteration; 0, otherwise.}
+\item{\code{ris}}{  MCMC output matrix as provided by JAGS.}
+\item{\code{groupPost}}{ \code{true.iter x N} matrix
+with values from \code{1:k} indicating the post-processed group allocation
+vector.}
+\item{ \code{mu_switch}}{  If \code{y} is a vector, a \code{true.iter x k}
+matrix with the post-processed MCMC chains for the mean parameters; if
+\code{y} is a matrix, a \code{true.iter x 2 x k} array with
+the post-processed MCMC chains for the mean parameters.}
+\item{\code{mu_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+with the raw MCMC chains for the mean parameters as given by JAGS; if
+\code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
+for the mean parameters as given by JAGS.}
 \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
-\item{\code{grr}}{Group vector allocation as provided by \code{diana} or \code{hclust}.}
-\item{\code{pivots}}{clustering solution obtained via \code{diana} or \code{hclust} function.}
-\item{\code{true.iter}}{ The number of MCMC iterations for which their number of groups exactly coincides with the prespecified number of groups \code{k}. }
+\item{\code{grr}}{Group vector allocation as provided by
+\code{"diana"} or \code{"hclust"}.}
+\item{\code{pivots}}{ The pivotal units identified by the
+selected pivotal criterion.}
+\item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
+the pivots.}
 }
 \description{
 Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
@@ -88,7 +108,7 @@ res <- piv_MCMC(y, k, nMC)
 }
 \references{
 Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
-Models by Pivotal Units. Statistics and Computing, 28(4), 957-969, DOI 10.1007/s11222-017-  9774-2.
+Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 }
 \author{
 Leonardo Egidi \url{legidi@units.it}
