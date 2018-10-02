@@ -113,6 +113,9 @@
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 #'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples
+#'
+#' # Bivariate simulation
+#'
 #' N   <- 200
 #' k   <- 4
 #' nMC <- 1000
@@ -126,7 +129,15 @@
 #' Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]), nrow=2, ncol=2)
 #' W <- c(0.2,0.8)
 #' sim <- piv_sim(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
-#' res <- piv_MCMC(sim$y, k, nMC)
+#' res <- piv_MCMC(y = sim$y, k =k, nMC = nMC)
+#' #changing priors
+#' res2 <- piv_MCMC(y = sim$y,
+#'                  priors = list (
+#'                  mu0=c(1,1),
+#'                  S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
+#'                  S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE)),
+#'                  k = k, nMC = nMC)
+#'
 #'
 #'
 #' # Fishery data (bayesmix package)
@@ -135,7 +146,13 @@
 #' y <- fish[,1]
 #' k <- 5
 #' nMC <- 5000
-#' res <- piv_MCMC(y, k, nMC)
+#' res <- piv_MCMC(y = y, k = k, nMC = nMC)
+#' # changing priors
+#' res2   <- piv_MCMC(y = y,
+#'                    priors = list(kind = "conditionallyconjugate",
+#'                    parameter = "priorsRaftery",
+#'                    hierarchical = "tau"),  k =k, nMC = nMC)
+#'
 #' @export
 
 
