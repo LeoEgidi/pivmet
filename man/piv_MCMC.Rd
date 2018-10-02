@@ -4,8 +4,8 @@
 \alias{piv_MCMC}
 \title{JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
 \usage{
-piv_MCMC(y, k, nMC, piv.criterion = c("MUS", "maxsumint", "maxsumnoint",
-  "maxsumdiff"), clustering = c("diana", "hclust"))
+piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
+  "maxsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"))
 }
 \arguments{
 \item{y}{N-dimensional data vector/matrix.}
@@ -62,26 +62,10 @@ the pivots.}
 \description{
 Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 }
-\details{
-The function fits a Bayesian Gaussian mixture model of the form:
-\deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
-where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k }}, and
-\deqn{P(Z_i=j)=\pi_j.}
-The likelihood of the model is then
-\deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_j f(y_i;\mu_j,\phi),}
-with \eqn{\mu=(\mu_{1},\dots,\mu_{k})} component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})} mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }}, and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})}, \eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the corresponding permutations of \eqn{\mu} and \eqn{\pi}. Denote by \eqn{V} the set of all the permutations of the indexes \eqn{{1,\ldots,k }}, the likelihood above is invariant under any permutation \eqn{\nu \in V}, that is
-\deqn{
-L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\phi).}
-As a consequence, the model is unidentified with respect to an arbitrary permutation of the labels.
-When Bayesian inference for the model is performed, if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\pi,\phi) = p_0(\nu(\mu),\nu(\pi),\phi)}, then
-\deqn{
-p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
-is multimodal with (at least) \eqn{k!} modes.
-The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags} package for bivariate Gaussian mixtures. After MCMC sampling,
-this function calls the \code{piv_sel()} function and yields the pivots obtained from one among four different
-methods: \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"} and \code{"MUS"} (available only if \code{k < 5}) (see the vignette for thorough details)
-}
 \examples{
+
+# Bivariate simulation
+
 N   <- 200
 k   <- 4
 nMC <- 1000
@@ -95,7 +79,15 @@ Sigma.p1 <- matrix(c(stdev[1,1],0,0,stdev[1,1]), nrow=2, ncol=2)
 Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]), nrow=2, ncol=2)
 W <- c(0.2,0.8)
 sim <- piv_sim(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
-res <- piv_MCMC(sim$y, k, nMC)
+res <- piv_MCMC(y = sim$y, k =k, nMC = nMC)
+#changing priors
+res2 <- piv_MCMC(y = sim$y,
+                 priors = list (
+                 mu0=c(1,1),
+                 S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
+                 S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE)),
+                 k = k, nMC = nMC)
+
 
 
 # Fishery data (bayesmix package)
@@ -104,10 +96,16 @@ data(fish)
 y <- fish[,1]
 k <- 5
 nMC <- 5000
-res <- piv_MCMC(y, k, nMC)
+res <- piv_MCMC(y = y, k = k, nMC = nMC)
+# changing priors
+res2   <- piv_MCMC(y = y,
+                   priors = list(kind = "conditionallyconjugate",
+                   parameter = "priorsRaftery",
+                   hierarchical = "tau"),  k =k, nMC = nMC)
+
 }
 \references{
-Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
+Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 }
 \author{
