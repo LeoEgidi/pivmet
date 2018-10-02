@@ -5,11 +5,12 @@
 #' @param nMC The number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).
 #'
 #'@details
-#'Prototypical models in which the label switching problem arises are mixture models, where for a sample \eqn{y=(y_1,\ldots,y_n)} we assume
+#'Prototypical models in which the label switching problem arises are mixture models,
+#'where for a sample \eqn{y=(y_1,\ldots,y_N)} we assume
 #'  \deqn{
 #' (Y_i|Z_i=j) \sim f(y;\mu_j,\phi),
 #' }
-#' where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k},
+#' where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k},
 #' \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k}},
 #' and
 #'\deqn{
@@ -22,12 +23,58 @@
 #'on component-specific parameters.
 #'
 #'
-#' We assume here that an MCMC sample is obtained from the posterior distribution for model above--for instance via \code{piv_MCMC} function--with a prior distribution which is labelling invariant.
+#' We assume here that an MCMC sample is obtained from the
+#' posterior distribution for model above--for instance via
+#' \code{piv_MCMC} function--with a prior distribution which is
+#' labelling invariant.
 #' Furthermore, suppose that we can find \eqn{k} units, one
-#' for each group, which are (pairwise) separated with (posterior) probability one
-#' (that is, the posterior probability of any two of them being in the same group
+#' for each group, which are (pairwise) separated with (posterior)
+#' probability one
+#' (that is, the posterior probability of any two of them being
+#' in the same group
 #' is zero).
-#' It is then straightforward to use the \eqn{k} units, called pivots in what follows, to identify the groups and to relabel the chains (see the vignette for thorough details).
+#' It is then straightforward to use the \eqn{k} units,
+#' called pivots in what follows, to identify the groups and to
+#' relabel the chains:
+#' for each \eqn{h=1,\ldots, H} and \eqn{j=1,\ldots,k}, set
+#'\deqn{
+#'[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}]_h;
+#'}
+#'\deqn{
+#'[Z_{i}]_h=j \mbox{ for } i:[Z_i]_h=[Z_{i_{j}}]_h.
+#'}
+#'The applicability of this strategy is limited by the existence of the pivots,
+#'which is not guaranteed. The existence of the pivots is a requirement of the
+#'method, meaning that its use is restricted to those chains—or
+#'those parts of a chain—for which the pivots are present. First, although the
+#'model is based on a mixture of \eqn{k} components, each iteration of the chain
+#'may imply a different number of non-empty groups. Let then \eqn{[k]_h \leq k}
+#'be the number of non-empty groups at iteration \eqn{h},
+#'\deqn{
+#'  [k]_h = \#\{j: [Z_i]_h=j\mbox{ for some }i\},
+#'}
+#'where \eqn{\#A} is the cardinality of the set \eqn{A}. Hence, the relabelling
+#'procedure outlined above can be used only for the subset of the chain
+#'for which \eqn{[k]_h=k}; let it be \deqn{\mathcal{H}_k=\{h:[k]_h= k\}},
+#'which correspond to the argument \code{true.iter} given by \code{piv_MCMC}.
+#'This means that the resulting relabelled chain is not a sample (of size \eqn{H})
+#'from the posterior distribution, but a sample (of size \eqn{\#\mathcal{H}_k})
+#'from the posterior
+#'distribution conditional on there being (exactly) \eqn{k} non-empty groups.
+#'Even if \eqn{k} non-empty groups are available, however,
+#'there may not be \eqn{k} perfectly separated units. Let us define
+#' \deqn{
+#'  \mathcal{H}^{*}_k=\{ h\in\mathcal{H}_k : \exists k,s \mbox{ s.t. }
+#'  [Z_{i_k}]_h=[Z_{i_s}]_h \}
+#'
+#' that is, the set of iterations where (at least) two pivots are in the same
+#' group.
+#' In order for the pivot method to be applicable,
+#' we need to exclude iterations \eqn{\mathcal{H}^{*}_k};
+#' that is, we can perform the pivot relabelling on \eqn{\mathcal{k}-
+#' \mathcal{H}^{*}_{k}}, corresponding to the argument \code{Final_It}..
+#'
+#'
 
 #' @return This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
 #'
@@ -40,7 +87,7 @@
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
-#'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969, DOI 10.1007/s11222-017-  9774-2.
+#'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples
 #'
 #' #Univariate simulation
