@@ -36,7 +36,9 @@
 #' It is then straightforward to use the \eqn{k} units,
 #' called pivots in what follows, to identify the groups and to
 #' relabel the chains:
-#' for each \eqn{h=1,\ldots, H} and \eqn{j=1,\ldots,k}, set
+#' for each MCMC iteration \eqn{h=1,\ldots, H} (\eqn{H} corresponds to
+#' the argument \code{nMC} of \code{piv_MCMC}) and group
+#'  \eqn{j=1,\ldots,k}, set
 #'\deqn{
 #'[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}]}_h;
 #'}
@@ -55,7 +57,7 @@
 #'}
 #'where \eqn{\#A} is the cardinality of the set \eqn{A}. Hence, the relabelling
 #'procedure outlined above can be used only for the subset of the chain
-#'for which \eqn{[k]_h=k}; let it be \deqn{\mathcal{H}_k=\{h:[k]_h= k\}},
+#'for which \eqn{[k]_h=k}; let it be \deqn{\mathcal{H}_k=\{h:[k]_h= k\},}
 #'which correspond to the argument \code{true.iter} given by \code{piv_MCMC}.
 #'This means that the resulting relabelled chain is not a sample (of size \eqn{H})
 #'from the posterior distribution, but a sample (of size \eqn{\#\mathcal{H}_k})
