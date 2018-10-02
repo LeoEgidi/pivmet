@@ -40,7 +40,7 @@
 #'
 #' where \eqn{\sigma^{2}_{js}} is the variance for the group \eqn{j} and
 #' the subgroup \eqn{s} (\code{stdev} is the
-#' argument for specifying the \eqn{k x 2} standard deviations
+#' argument for specifying the \code{k x 2} standard deviations
 #' for univariate mixtures);
 #'  \eqn{\Sigma_s} is the covariance matrix for the
 #' subgroup \eqn{s, s=1,2}, where the two matrices are
