@@ -44,9 +44,25 @@
 #'
 #'  with default values: \eqn{ B0inv=0.1, nu0Half =10, S0=2,
 #'  nu0S0Half= nu0Half*S0=0.2,
-#'  g0Half = 5e-17, g0G0Half = 5e-33}, in accordance with the specification
+#'  g0Half = 5e-17, g0G0Half = 5e-33}, in accordance with the default
+#'  specification
 #'  \code{priors=list(kind = "independence", parameter = "priorsFish",
 #hierarchical = "tau")} (see \code{bayesmix} for further details and choices).
+#'
+#'For bivariate mixtures, the prior specification is the following:
+#'
+#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{mu}_0, S2)}
+#'\deqn{ 1/\Sigma \sim \text{Wishart(S3, 3)}}
+#'\deqn{\pi \sim \text{Dirichlet}(1,\ldots,1),}
+#'
+#'where \eqn{S2} and \eqn{S3} are diagonal matrices
+#'with diagonal elements (the variances)
+#'equal to 1e+05. The user may specify other values for the hyperparameters
+#'\eqn{\bm{\mu}_0, S2, S3} via \code{priors} argument in such a way:
+#'
+#'\code{priors =list(mu0 = c(1,1), S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
+#'S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE))}.
+#'
 #'
 #' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags}
 #' package for bivariate Gaussian mixtures. After MCMC sampling, this function
@@ -235,9 +251,15 @@ piv_MCMC <- function(y,
     # JAGS code------------------------
 
     # Initial values
+    if (missing(priors)){
     mu0 <- as.vector(c(0,0))
     S2 <- matrix(c(1,0,0,1),nrow=2)/100000
     S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+    }else{
+      mu0 <- priors$mu0
+      S2 <- priors$S2
+      S3 <- priors$S3
+    }
 
     # Data
     dati.biv <- list(y = y, N = N, k = k, S2= S2, S3= S3, mu0=mu0,
