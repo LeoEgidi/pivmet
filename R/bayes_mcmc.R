@@ -73,7 +73,7 @@
 #'equal to 1e+05. The user may specify other values for the hyperparameters
 #'\eqn{\bm{\mu}_0, S2, S3} via \code{priors} argument in such a way:\\
 #'
-#'\code{priors =list(mu0 = c(1,1), S2 = ...,'S3 = ...)}, \\
+#'\code{priors =list(mu0 = c(1,1), S2 = ...,S3 = ...)}, \\
 #'
 #'with the constraint for \eqn{S2} and \eqn{S3} to be positive definite.
 #'
