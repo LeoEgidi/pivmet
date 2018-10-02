@@ -42,12 +42,12 @@
 #'  \deqn{\pi \sim \text{Dirichlet}(1,\ldots,1)}
 #'  \deqn{S0 \sim \text{Gamma}(g0Half, g0G0Half),}
 #'
-#'  with default values: \eqn{ B0inv=0.1, nu0Half =10, S0=2,
-#'  nu0S0Half= nu0Half*S0=0.2,
+#'  with default values: \eqn{B0inv=0.1, nu0Half =10, S0=2,
+#'  nu0S0Half= nu0Half*S0,
 #'  g0Half = 5e-17, g0G0Half = 5e-33}, in accordance with the default
 #'  specification
 #'  \code{priors=list(kind = "independence", parameter = "priorsFish",
-#hierarchical = "tau")} (see \code{bayesmix} for further details and choices).
+#'  hierarchical = "tau")} (see \code{bayesmix} for further details and choices).
 #'
 #'For bivariate mixtures, the prior specification is the following:
 #'
