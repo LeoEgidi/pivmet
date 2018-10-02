@@ -69,21 +69,25 @@
 #' In order for the pivot method to be applicable,
 #' we need to exclude iterations \eqn{\mathcal{H}^{*}_k};
 #' that is, we can perform the pivot relabelling on \eqn{\mathcal{H}_k-
-#' \mathcal{H}^{*}_{k}}, corresponding to the argument \code{Final_It}.
+#' \mathcal{H}^{*}_{k}}, corresponding to the argument \code{final_it}.
 #'
 #'
 
 #' @return This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
 #'
+#' \item{\code{final_it}}{The final number of valid MCMC iterations,
+#' as explained in Details}
+#' #' \item{\code{final_it_p}}{\code{final_it/nMC}}
 #' \item{\code{mu_rel_mean}}{ \code{k}-vector (in case of univariate mixture)
 #' or \code{k x 2}
 #' matrix (in case of bivariate mixture) of estimated posterior means for the mean parameters.}
 #' \item{\code{mu_rel_median}}{ \code{k}-vector (in case of univariate mixture)
 #' or \code{k x 2}
 #' matrix (in case of bivariate mixture) of estimated posterior medians for the mean parameters.}
-#' \item{\code{mu_rel}}{Complete relabelled chains}
-#' \item{\code{Final_It}}{The final number of valid MCMC iterations,
-#' as explained in Details}
+#' \item{\code{mu_rel}}{\code{final_it x k} matrix (in case of univariate mixtures)
+#' or \code{final_it x 2 x k} array (in case of bivariate mixtures)
+#' for the complete relabelled chains}
+
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
@@ -239,9 +243,10 @@ piv_rel<-function(mcmc, nMC ){
   mu_rel_mean_tr   <- t(mu_rel_mean)
     }
 
- return(list(mu_rel_median = mu_rel_median_tr,
+ return(list( final_it = true.iterD2,
+              mu_rel_median = mu_rel_median_tr,
               mu_rel_mean = mu_rel_mean_tr,
               mu_rel = mu_rel_complete,
-              Final_It = Final_It))
+              final_it_p = Final_It))
 }
 

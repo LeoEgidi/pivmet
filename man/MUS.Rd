@@ -7,7 +7,7 @@
 MUS(C, clusters, prec_par = 5)
 }
 \arguments{
-\item{C}{\code{NxN} matrix with a non-negligible number of zeros.
+\item{C}{\eqn{N \times N} matrix with a non-negligible number of zeros.
 For instance, a similarity matrix estimated from a \code{NxD} data matrix whose rows
 are statistical units, or a co-association matrix resulting from clustering
 ensembles.}

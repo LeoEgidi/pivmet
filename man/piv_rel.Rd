@@ -20,7 +20,7 @@ matrix (in case of bivariate mixture) of estimated posterior means for the mean 
 \item{\code{mu_rel_median}}{ \code{k}-vector (in case of univariate mixture)
 or \code{k x 2}
 matrix (in case of bivariate mixture) of estimated posterior medians for the mean parameters.}
-\item{\code{mu_rel_complete}}{Complete relabelled chains}
+\item{\code{mu_rel}}{Complete relabelled chains}
 \item{\code{Final_It}}{The final number of valid MCMC iterations,
 as explained in Details}
 }
@@ -39,8 +39,8 @@ a way that the relabelled chain can be used to draw inferences
 on component-specific parameters.
 
 
-We assume here that an MCMC sample is obtained from the
-posterior distribution for model above--for instance via
+We assume here that a MCMC sample is obtained for the
+posterior distribution of a Gaussian mixture model--for instance via
 \code{piv_MCMC} function--with a prior distribution which is
 labelling invariant.
 Furthermore, suppose that we can find \eqn{k} units, one
@@ -50,13 +50,14 @@ probability one
 in the same group
 is zero).
 It is then straightforward to use the \eqn{k} units,
-called pivots in what follows, to identify the groups and to
+called pivots in what follows and denoted by the indexes
+\eqn{i_1,\ldots,i_k}, to identify the groups and to
 relabel the chains:
 for each MCMC iteration \eqn{h=1,\ldots, H} (\eqn{H} corresponds to
 the argument \code{nMC}) and group
  \eqn{j=1,\ldots,k}, set
 \deqn{
-[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}}]_h;
+[\mu_j]_h=[\mu_{[Z_{i_{j}}]_h}]_h;
 }
 \deqn{
 [Z_{i}]_h=j \mbox{ for } i:[Z_i]_h=[Z_{i_{j}}]_h.
@@ -82,14 +83,14 @@ distribution conditional on there being (exactly) \eqn{k} non-empty groups.
 Even if \eqn{k} non-empty groups are available, however,
 there may not be \eqn{k} perfectly separated units. Let us define
 \deqn{
- \mathcal{H}^{*}_k=\{ h\in\mathcal{H}_k : \exists k,s \mbox{ s.t. }
- [Z_{i_k}]_h=[Z_{i_s}]_h \}}
+ \mathcal{H}^{*}_k=\{ h\in\mathcal{H}_k : \exists r,s \mbox{ s.t. }
+ [Z_{i_r}]_h=[Z_{i_s}]_h \}}
 
 that is, the set of iterations where (at least) two pivots are in the same
 group.
 In order for the pivot method to be applicable,
 we need to exclude iterations \eqn{\mathcal{H}^{*}_k};
-that is, we can perform the pivot relabelling on \eqn{\mathcal{k}-
+that is, we can perform the pivot relabelling on \eqn{\mathcal{H}_k-
 \mathcal{H}^{*}_{k}}, corresponding to the argument \code{Final_It}.
 }
 \examples{
