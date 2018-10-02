@@ -14,7 +14,7 @@
 #'@details
 #'
 #' Given a set of \eqn{N} observations \eqn{(y_{1},y_{2},...,y_{N})}
-#' (\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \in \mathbb{N}}),
+#' (\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \geq 1),
 #' consider clustering methods to obtain \eqn{H} distinct partitions
 #' into \eqn{k} groups.
 #' The matrix \code{C} is the co-association matrix,
