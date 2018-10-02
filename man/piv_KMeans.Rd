@@ -2,7 +2,7 @@
 % Please edit documentation in R/musk.R
 \name{piv_KMeans}
 \alias{piv_KMeans}
-\title{K-means Clustering Using Pivotal Algorithms For Seeding}
+\title{k-means Clustering Using Pivotal Algorithms For Seeding}
 \usage{
 piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
   piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
@@ -24,7 +24,7 @@ If \code{centers <= 4}, the default method is \code{"MUS"};
 otherwise, the default method is \code{"maxsumdiff"} (see the details and
 the vignette).}
 
-\item{H}{If \code{MUS} is selected, this is the number of
+\item{H}{If \code{"MUS"} is selected, this is the number of
 distinct k-means partitions used for building a \eqn{N \times N}
 co-association matrix.}
 
@@ -49,12 +49,13 @@ Perform classical k-means clustering on a data matrix using pivots as
 initial centers.
 }
 \details{
-The function implements a modified version of K-means which aims at
+The function implements a modified version of k-means which aims at
 improving the clustering solution starting from a careful seeding.
 In particular, it performs a pivot-based initialization step
 using pivotal methods to find the initial centers
 for the clustering procedure. The starting point consists of multiple
-runs of the classical K-means (which uses random seeds)
+runs of the classical k-means (which uses random seeds via \code{Kmeans}
+function of the \code{RcmdrMisc} package)
 with a fixed number of clusters
 in order to build the co-association matrix of data units.
 }

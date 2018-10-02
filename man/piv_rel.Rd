@@ -28,19 +28,12 @@ as explained in Details}
 This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
 }
 \details{
-Prototypical models in which the label switching problem arises are mixture models,
-where for a sample \eqn{y=(y_1,\ldots,y_N)} we assume
- \deqn{
-(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),
-}
-where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k},
-\eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k}},
-and
-\deqn{
-P(Z_i=j)=\pi_j.
-}
+Prototypical models in which the label switching problem arises
+are mixture models, as explained in the Details section of
+the \code{piv_MCMC} function.
 
-This model is unidentified with respect to an arbitrary permutation of the labels \eqn{1,...,k}. Relabelling means permuting
+These models are unidentified with respect to an arbitrary permutation
+of the labels \eqn{1,...,k}. Relabelling means permuting
 the labels at each iteration of the Markov chain in such
 a way that the relabelled chain can be used to draw inferences
 on component-specific parameters.
@@ -63,7 +56,7 @@ for each MCMC iteration \eqn{h=1,\ldots, H} (\eqn{H} corresponds to
 the argument \code{nMC}) and group
  \eqn{j=1,\ldots,k}, set
 \deqn{
-[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}]}]_h;
+[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}}]_h;
 }
 \deqn{
 [Z_{i}]_h=j \mbox{ for } i:[Z_i]_h=[Z_{i_{j}}]_h.

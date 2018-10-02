@@ -9,6 +9,8 @@ piv_plot(y, mcmc, rel_est, type = c("chains", "estimates", "hist"))
 \arguments{
 \item{y}{Data vector or matrix.}
 
+\item{mcmc}{The ouptut of the raw MCMC sampling, as provided by \code{piv_MCMC}.}
+
 \item{rel_est}{Pivotal estimates as provided by \code{piv_rel}.}
 
 \item{type}{Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"hist"}.}
