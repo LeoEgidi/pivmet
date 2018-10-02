@@ -38,7 +38,7 @@
 #' relabel the chains:
 #' for each \eqn{h=1,\ldots, H} and \eqn{j=1,\ldots,k}, set
 #'\deqn{
-#'[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}]_h;
+#'[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}]}_h;
 #'}
 #'\deqn{
 #'[Z_{i}]_h=j \mbox{ for } i:[Z_i]_h=[Z_{i_{j}}]_h.
@@ -65,14 +65,14 @@
 #'there may not be \eqn{k} perfectly separated units. Let us define
 #' \deqn{
 #'  \mathcal{H}^{*}_k=\{ h\in\mathcal{H}_k : \exists k,s \mbox{ s.t. }
-#'  [Z_{i_k}]_h=[Z_{i_s}]_h \}
+#'  [Z_{i_k}]_h=[Z_{i_s}]_h \}}
 #'
 #' that is, the set of iterations where (at least) two pivots are in the same
 #' group.
 #' In order for the pivot method to be applicable,
 #' we need to exclude iterations \eqn{\mathcal{H}^{*}_k};
 #' that is, we can perform the pivot relabelling on \eqn{\mathcal{k}-
-#' \mathcal{H}^{*}_{k}}, corresponding to the argument \code{Final_It}..
+#' \mathcal{H}^{*}_{k}}, corresponding to the argument \code{Final_It}.
 #'
 #'
 

@@ -17,37 +17,12 @@ This function gives the relabelled posterior estimates--both mean and medians--o
 \item{\code{mu_rel_mean}}{ \code{k}-vector or \code{k x 2}
 matrix of estimated posterior means for the mean parameters.}
 \item{\code{mu_rel_median}}{ \code{k}-vector or \code{k x 2}
-matrix of estimated posterior medins for the mean parameters.}
+matrix of estimated posterior medians for the mean parameters.}
 \item{\code{mu_rel_complete}}{Complete relabelled chains}
 \item{\code{Final_It}}{The final number of valid iterations}
 }
 \description{
 This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
-}
-\details{
-Prototypical models in which the label switching problem arises are mixture models, where for a sample \eqn{y=(y_1,\ldots,y_n)} we assume
- \deqn{
-(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),
-}
-where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k},
-\eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k}},
-and
-\deqn{
-P(Z_i=j)=\pi_j.
-}
-
-This model is unidentified with respect to an arbitrary permutation of the labels \eqn{1,...,k}. Relabelling means permuting
-the labels at each iteration of the Markov chain in such
-a way that the relabelled chain can be used to draw inferences
-on component-specific parameters.
-
-
-We assume here that an MCMC sample is obtained from the posterior distribution for model above--for instance via \code{piv_MCMC} function--with a prior distribution which is labelling invariant.
-Furthermore, suppose that we can find \eqn{k} units, one
-for each group, which are (pairwise) separated with (posterior) probability one
-(that is, the posterior probability of any two of them being in the same group
-is zero).
-It is then straightforward to use the \eqn{k} units, called pivots in what follows, to identify the groups and to relabel the chains (see the vignette for thorough details).
 }
 \examples{
 
@@ -92,7 +67,7 @@ piv_plot(y=sim$y, mcmc=res, rel_est = rel,
 }
 \references{
 Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
-Models by Pivotal Units. Statistics and Computing, 28(4), 957-969, DOI 10.1007/s11222-017-  9774-2.
+Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 }
 \author{
 Leonardo Egidi \url{legidi@units.it}

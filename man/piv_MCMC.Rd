@@ -65,7 +65,7 @@ Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains 
 \details{
 The function fits a Bayesian Gaussian mixture model of the form:
 \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
-where the \eqn{Z_i}, \eqn{i=1,\ldots,n}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k }}, and
+where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k }}, and
 \deqn{P(Z_i=j)=\pi_j.}
 The likelihood of the model is then
 \deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_j f(y_i;\mu_j,\phi),}
