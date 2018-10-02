@@ -85,9 +85,9 @@ the specification is the same as the function \code{BMMmodel} of the
 \code{bayesmix} package:
 
  \deqn{\mu_j \sim \mathcal{N}(0, 1/B0inv)}
- \deqn{\phi_j \sim \text{invGamma}(nu0Half, nu0S0Half)}
- \deqn{\pi \sim \text{Dirichlet}(1,\ldots,1)}
- \deqn{S0 \sim \text{Gamma}(g0Half, g0G0Half),}
+ \deqn{\phi_j \sim \mbox{invGamma}(nu0Half, nu0S0Half)}
+ \deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1)}
+ \deqn{S0 \sim \mbox{Gamma}(g0Half, g0G0Half),}
 
  with default values: \eqn{B0inv=0.1, nu0Half =10, S0=2,
  nu0S0Half= nu0Half*S0,
@@ -99,8 +99,8 @@ the specification is the same as the function \code{BMMmodel} of the
 For bivariate mixtures, the prior specification is the following:
 
 \deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{mu}_0, S2)}
-\deqn{ 1/\Sigma \sim \text{Wishart(S3, 3)}}
-\deqn{\pi \sim \text{Dirichlet}(1,\ldots,1),}
+\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, 3)}
+\deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1),}
 
 where \eqn{S2} and \eqn{S3} are diagonal matrices
 with diagonal elements (the variances)
