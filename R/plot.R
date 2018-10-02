@@ -2,7 +2,7 @@
 #'
 #' Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
 #' @param y Data vector or matrix.
-#' @param mcmc The ouptut of the raw MCMC sampling, as provided by \code{piv_MCMC.
+#' @param mcmc The ouptut of the raw MCMC sampling, as provided by \code{piv_MCMC}.
 #' @param rel_est Pivotal estimates as provided by \code{piv_rel}.
 #' @param type Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"hist"}.
 #'

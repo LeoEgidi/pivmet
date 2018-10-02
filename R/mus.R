@@ -38,11 +38,11 @@
 #'
 #' \item{\code{pivots}}{ The \code{k} pivotal units}
 #'
-#' @references Egidi,L., Pappad\`a,R., Pauli,F., Torelli,N. (2018).
+#' @references Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
 #'  Maxima Units Search(MUS) algorithm:
 #' methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) Studies in
 #' Theoretical and Applied Statistics,
-#' Springer Proceedings in Mathematics \& Statistics 227, pp. 71–-81.
+#' Springer Proceedings in Mathematics and Statistics 227, pp. 71–81.
 #'
 #'
 #'

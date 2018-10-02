@@ -1,4 +1,4 @@
-#' K-means Clustering Using Pivotal Algorithms For Seeding
+#' k-means Clustering Using Pivotal Algorithms For Seeding
 #'
 #' Perform classical k-means clustering on a data matrix using pivots as
 #' initial centers.
@@ -11,7 +11,7 @@
 #' If \code{centers <= 4}, the default method is \code{"MUS"};
 #' otherwise, the default method is \code{"maxsumdiff"} (see the details and
 #' the vignette).
-#' @param H If \code{MUS} is selected, this is the number of
+#' @param H If \code{"MUS"} is selected, this is the number of
 #' distinct k-means partitions used for building a \eqn{N \times N}
 #' co-association matrix.
 #' @param alg.type The clustering algorithm for the initial partition of the
@@ -22,12 +22,13 @@
 #'
 #' @details
 #'
-#' The function implements a modified version of K-means which aims at
+#' The function implements a modified version of k-means which aims at
 #' improving the clustering solution starting from a careful seeding.
 #' In particular, it performs a pivot-based initialization step
 #' using pivotal methods to find the initial centers
 #' for the clustering procedure. The starting point consists of multiple
-#' runs of the classical K-means (which uses random seeds)
+#' runs of the classical k-means (which uses random seeds via \code{Kmeans}
+#' function of the \code{RcmdrMisc} package)
 #' with a fixed number of clusters
 #' in order to build the co-association matrix of data units.
 #'
@@ -143,8 +144,6 @@ piv_KMeans <- function(x,
     cl <-cutree(hclust(dist(x), "average"),centers)
   }else if (alg.type=="KMeans"){
     cl <- KMeans(x,centers)$cluster
-  }else if(alg.type=="kmeans"){
-    cl <- kmeans(x,centers)$cluster
   }
 
   # tuning of precision MUS parameter

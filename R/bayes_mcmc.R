@@ -3,13 +3,13 @@
 #' Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y N-dimensional data vector/matrix.
 #' @param k Number of mixture components.
-#' @param priors
+#' @param priors Input prior hyperparameters (see Details).
 #' @param nMC Number of MCMC iterations for the JAGS function execution.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
 #' "maxsumdiff"}.
 #' If \code{k <= 4}, the default method is \code{"MUS"};
-#' otherwise, the default method is \code{"maxsumdiff"} (see the details and
+#' otherwise, the default method is \code{"maxsumdiff"} (see the Details and
 #' the vignette).
 #' @param clustering The clustering technique adopted for partitioning the
 #' \code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
@@ -18,17 +18,29 @@
 #' @details
 #' The function fits univariate and bivariate Bayesian Gaussian mixture models of the form
 #' (here for univariate only):
-#' \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi_j),}
+#' \deqn{(Y_i|Z_i=j) \sim \mathcal{N}(\mu_j,\phi_j),}
 #' where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k},
-#' \eqn{\phi_j} is the variance,  \eqn{Z_i \in {1,\ldots,k }}, and
+#' \eqn{\phi_j} is the group variance,  \eqn{Z_i \in {1,\ldots,k }} are the
+#' latent group allocation, and
 #' \deqn{P(Z_i=j)=\pi_j.}
 #' The likelihood of the model is then
-#' \deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j,\phi),}
-#'with \eqn{\mu=(\mu_{1},\dots,\mu_{k})} component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})} mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }}, and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})}, \eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the corresponding permutations of \eqn{\mu} and \eqn{\pi}. Denote by \eqn{V} the set of all the permutations of the indexes \eqn{{1,\ldots,k }}, the likelihood above is invariant under any permutation \eqn{\nu \in V}, that is
+#' \deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^N \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j,\phi_j),}
+#' where \eqn{(\mu, \phi)=(\mu_{1},\dots,\mu_{k},\phi_{1},\ldots,\phi_{k})}
+#' are the component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})}
+#' the mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }},
+#' and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})},
+#' \eqn{\nu(\phi)= (\phi_{\nu(1)},\ldots,} \eqn{ \phi_{\nu(k)})},
+#' \eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the
+#' corresponding permutations of \eqn{\mu}, \eqn{\phi} and \eqn{\pi}.
+#'  Denote by \eqn{V} the set of all the permutations of the indexes
+#'  \eqn{{1,\ldots,k }}, the likelihood above is invariant under any
+#'  permutation \eqn{\nu \in V}, that is
 #' \deqn{
-#' L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\phi).}
-#' As a consequence, the model is unidentified with respect to an arbitrary permutation of the labels.
-#' When Bayesian inference for the model is performed, if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\pi,\phi) = p_0(\nu(\mu),\nu(\pi),\phi)}, then
+#' L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\nu(\phi)).}
+#' As a consequence, the model is unidentified with respect to an
+#' arbitrary permutation of the labels.
+#' When Bayesian inference for the model is performed,
+#' if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\pi,\phi) = p_0(\nu(\mu),\nu(\pi),\phi)}, then
 #'\deqn{
 #' p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 #' is multimodal with (at least) \eqn{k!} modes.
@@ -43,26 +55,27 @@
 #'  \deqn{S0 \sim \mbox{Gamma}(g0Half, g0G0Half),}
 #'
 #'  with default values: \eqn{B0inv=0.1, nu0Half =10, S0=2,
-#'  nu0S0Half= nu0Half*S0,
+#'  nu0S0Half= nu0Half\times S0,
 #'  g0Half = 5e-17, g0G0Half = 5e-33}, in accordance with the default
-#'  specification
+#'  specification: \\
 #'  \code{priors=list(kind = "independence", parameter = "priorsFish",
-#'  hierarchical = "tau")} (see \code{bayesmix} for further details and choices).
+#'  hierarchical = "tau")} \\
+#'  (see \code{bayesmix} for further details and choices).
 #'
 #'For bivariate mixtures, the prior specification is the following:
 #'
-#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{mu}_0, S2)}
+#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)}
 #'\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, 3)}
 #'\deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1),}
 #'
 #'where \eqn{S2} and \eqn{S3} are diagonal matrices
 #'with diagonal elements (the variances)
 #'equal to 1e+05. The user may specify other values for the hyperparameters
-#'\eqn{\bm{\mu}_0, S2, S3} via \code{priors} argument in such a way:
+#'\eqn{\bm{\mu}_0, S2, S3} via \code{priors} argument in such a way:\\
 #'
-#'\code{priors =list(mu0 = c(1,1), S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
-#'S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE))}.
+#'\code{priors =list(mu0 = c(1,1), S2 = ...,'S3 = ...)}, \\
 #'
+#'with the constraint for \eqn{S2} and \eqn{S3} to be positive definite.
 #'
 #' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags}
 #' package for bivariate Gaussian mixtures. After MCMC sampling, this function
@@ -72,7 +85,7 @@
 #' methods (the user may specify one among them via \code{piv.criterion}
 #' argument):
 #'  \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"} and \code{"MUS"}
-#'  (available only if \code{k < 5})
+#'  (available only if \code{k <= 4})
 #' (see the vignette for thorough details).
 #'
 #' @return The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
@@ -92,7 +105,7 @@
 #' \item{\code{groupPost}}{ \code{true.iter x N} matrix
 #' with values from \code{1:k} indicating the post-processed group allocation
 #' vector.}
-#' \item{ \code{mu_switch}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' \item{\code{mu_switch}}{  If \code{y} is a vector, a \code{true.iter x k}
 #' matrix with the post-processed MCMC chains for the mean parameters; if
 #' \code{y} is a matrix, a \code{true.iter x 2 x k} array with
 #' the post-processed MCMC chains for the mean parameters.}
