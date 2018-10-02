@@ -295,4 +295,4 @@ if (type=="chains" ){
 #
 
 #per compilazione manuale
-#system("R CMD Rd2pdf C:/Users/leoeg/OneDrive/Documenti/GitHub/pivmet/R")
+#system("R CMD Rd2pdf C:/Users/leoeg/OneDrive/Documenti/GitHub/pivmet")

@@ -159,7 +159,7 @@ nMC <- 5000
 res <- piv_MCMC(y = y, k = k, nMC = nMC)
 # changing priors
 res2   <- piv_MCMC(y = y,
-                   priors = list(kind = "conditionallyconjugate",
+                   priors = list(kind = "condconjugate",
                    parameter = "priorsRaftery",
                    hierarchical = "tau"),  k =k, nMC = nMC)
 
