@@ -7,7 +7,7 @@
 piv_sel(C, clusters)
 }
 \arguments{
-\item{C}{A \eqn{N x N} co-association matrix, i.e.
+\item{C}{A \eqn{N \times N} co-association matrix, i.e.
 a matrix whose elements are co-occurences of pair of units
 in the same cluster among \eqn{H} distinct partitions.}
 
@@ -21,6 +21,37 @@ columns containing the indexes of the pivotal units for each method.}
 \description{
 Finding the pivots according to three different
 methods involving a co-association matrix C.
+}
+\details{
+Given a set of \eqn{N} observations \eqn{(y_{1},y_{2},...,y_{N})}
+(\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \geq 1},
+consider clustering methods to obtain \eqn{H} distinct partitions
+into \eqn{k} groups.
+The matrix \code{C} is the co-association matrix,
+where \eqn{c_{i,p}=n_{i,p}/H}, with \eqn{n_{i,p}} the number of times
+the pair \eqn{(y_{i},y_{p})} is assigned to the same
+cluster among the \eqn{H} partitions.
+
+Let \eqn{j} be the group containing units \eqn{\mathcal J_j},
+the user may choose \eqn{{i^*}\in\mathcal J_j} that
+maximizes one of the quantities:
+\deqn{
+ \sum_{p\in\mathcal J_j} c_{{i^*}p}}
+
+ or
+ \deqn{\sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.
+}
+
+These methods give the unit that maximizes the global
+within similarity (\code{"maxsumint"} and the unit that
+maximizes the difference between global within and
+between similarities \code{"maxsumdiff"}, respectively.
+Alternatively, we may choose \eqn{i^{*} \in\mathcal J_j}, which minimizes:
+\deqn{\sum_{p\not\in\mathcal J_j} c_{i^{*}p},}
+obtaining the most distant unit among the members
+that minimize the global dissimilarity between one group
+and all the others (\code{"maxsumnoint"}).
+See the vignette for further details.
 }
 \examples{
 # Iris data
