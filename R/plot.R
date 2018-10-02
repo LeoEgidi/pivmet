@@ -36,7 +36,7 @@ piv_plot <- function(y,
   est <- rel_est$mu_rel_median
   chains <- rel_est$mu_rel
   mu_switch <- mcmc$mu_switch
-  n.iter <- rel_est$Final_It
+  n.iter <- rel_est$final_it
   true.means <- mcmc$Mu
 
 if (type=="chains" ){
