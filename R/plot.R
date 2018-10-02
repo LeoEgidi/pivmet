@@ -34,7 +34,7 @@ piv_plot <- function(y,
                      type = c("chains", "estimates", "hist") ){
   colori <- c("red", "green", "violet", "blue")
   est <- rel_est$mu_rel_median
-  chains <- rel_est$mu_rel_complete
+  chains <- rel_est$mu_rel
   mu_switch <- mcmc$mu_switch
   n.iter <- rel_est$Final_It
   true.means <- mcmc$Mu

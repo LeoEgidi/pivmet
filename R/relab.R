@@ -81,7 +81,7 @@
 #' \item{\code{mu_rel_median}}{ \code{k}-vector (in case of univariate mixture)
 #' or \code{k x 2}
 #' matrix (in case of bivariate mixture) of estimated posterior medians for the mean parameters.}
-#' \item{\code{mu_rel_complete}}{Complete relabelled chains}
+#' \item{\code{mu_rel}}{Complete relabelled chains}
 #' \item{\code{Final_It}}{The final number of valid MCMC iterations,
 #' as explained in Details}
 #'
@@ -241,7 +241,7 @@ piv_rel<-function(mcmc, nMC ){
 
  return(list(mu_rel_median = mu_rel_median_tr,
               mu_rel_mean = mu_rel_mean_tr,
-              mu_rel_complete = mu_rel_complete,
+              mu_rel = mu_rel_complete,
               Final_It = Final_It))
 }
 
