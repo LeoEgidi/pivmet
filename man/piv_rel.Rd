@@ -16,7 +16,7 @@ This function gives the relabelled posterior estimates--both mean and medians--o
 
 \item{\code{final_it}}{The final number of valid MCMC iterations,
 as explained in Details}
-#' \item{\code{final_it_p}}{\code{final_it/nMC}}
+\item{\code{final_it_p}}{\code{final_it/nMC}}
 \item{\code{mu_rel_mean}}{ \code{k}-vector (in case of univariate mixture)
 or \code{k x 2}
 matrix (in case of bivariate mixture) of estimated posterior means for the mean parameters.}

@@ -24,7 +24,7 @@ methods involving a co-association matrix C.
 }
 \details{
 Given a set of \eqn{N} observations \eqn{(y_{1},y_{2},...,y_{N})}
-(\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \geq 1},
+(\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \geq 1}),
 consider clustering methods to obtain \eqn{H} distinct partitions
 into \eqn{k} groups.
 The matrix \code{C} is the co-association matrix,
@@ -43,9 +43,9 @@ maximizes one of the quantities:
 }
 
 These methods give the unit that maximizes the global
-within similarity (\code{"maxsumint"} and the unit that
+within similarity (\code{"maxsumint"}) and the unit that
 maximizes the difference between global within and
-between similarities \code{"maxsumdiff"}, respectively.
+between similarities (\code{"maxsumdiff"}), respectively.
 Alternatively, we may choose \eqn{i^{*} \in\mathcal J_j}, which minimizes:
 \deqn{\sum_{p\not\in\mathcal J_j} c_{i^{*}p},}
 obtaining the most distant unit among the members
