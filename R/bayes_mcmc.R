@@ -86,11 +86,18 @@
 #' pivots obtained from one among four different
 #' methods (the user may specify one among them via \code{piv.criterion}
 #' argument):
-#'  \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"} and \code{"MUS"}
-#'  (available only if \code{k <= 4})
-#' (see the vignette for thorough details).
-#'
-#' @return The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
+#'  \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"}
+#'  and \code{"MUS"} (available only if \code{k <= 4})
+#' (see the vignette for thorough details). Due to computational reasons
+#' clarified in the Details section of the function \code{piv_rel}, the
+#' length of the MCMC chains will be minor or equal the input
+#' argument \code{nMC}; this length, corresponding to the value
+#' \code{true.iter} returned by the procedure, is the number of
+#' MCMC iterations for which
+#' the number of JAGS groups exactly coincides with the prespecified
+#' number of groups \code{k}.
+#' @return The function gives the MCMC output, the clustering
+#' solutions and the pivotal indexes. Here there is a complete list of outputs.
 #'
 #' \item{\code{Freq}}{  \code{k x 2} matrix where: the first column
 #' reports the number of units allocated to each group

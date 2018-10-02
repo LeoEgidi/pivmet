@@ -4,7 +4,7 @@
 #' order to find a set of pivotal units through a sequential search
 #' in the given matrix.
 #'
-#' @param C  \code{NxN} matrix with a non-negligible number of zeros.
+#' @param C  \eqn{N \times N} matrix with a non-negligible number of zeros.
 #' For instance, a similarity matrix estimated from a \code{NxD} data matrix whose rows
 #' are statistical units, or a co-association matrix resulting from clustering
 #' ensembles.
