@@ -2,9 +2,9 @@
 #'
 #' Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
 #' @param y Data vector or matrix.
-#' @param mcmc The ouptut of the raw MCMC sampling.
+#' @param mcmc The ouptut of the raw MCMC sampling, as provided by \code{piv_MCMC.
 #' @param rel_est Pivotal estimates as provided by \code{piv_rel}.
-#' @param type Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"estimates_hist"}.
+#' @param type Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"hist"}.
 #'
 #' @examples
 #'
@@ -19,13 +19,19 @@
 #' rel <- piv_rel(mcmc=res, nMC = nMC)
 #' piv_plot(y, res, rel, "chains")
 #' piv_plot(y, res, rel, "estimates")
-#' piv_plot(y, res, rel, "estimates_hist")
+#' piv_plot(y, res, rel, "hist")
 #'
+#' @author
+#'
+#' Leonardo Egidi \url{legidi@units.it}
 #'
 #' @export
 
 
-piv_plot <- function(y, mcmc, rel_est, type ){
+piv_plot <- function(y,
+                     mcmc,
+                     rel_est,
+                     type = c("chains", "estimates", "hist") ){
   colori <- c("red", "green", "violet", "blue")
   est <- rel_est$mu_rel_median
   chains <- rel_est$mu_rel_complete
@@ -130,7 +136,7 @@ if (type=="chains" ){
         cex.main = 0.7)
       points(est, col="red")
     }
-  }else if(type=="estimates_hist"){
+  }else if(type=="hist"){
     if (length(dim(mu_switch))==2){
       par(mfrow=c(1,2))
       hist(y, breaks=40, prob = TRUE,
