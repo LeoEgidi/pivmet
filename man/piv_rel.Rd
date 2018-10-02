@@ -14,15 +14,18 @@ piv_rel(mcmc, nMC)
 \value{
 This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
 
+\item{\code{final_it}}{The final number of valid MCMC iterations,
+as explained in Details}
+#' \item{\code{final_it_p}}{\code{final_it/nMC}}
 \item{\code{mu_rel_mean}}{ \code{k}-vector (in case of univariate mixture)
 or \code{k x 2}
 matrix (in case of bivariate mixture) of estimated posterior means for the mean parameters.}
 \item{\code{mu_rel_median}}{ \code{k}-vector (in case of univariate mixture)
 or \code{k x 2}
 matrix (in case of bivariate mixture) of estimated posterior medians for the mean parameters.}
-\item{\code{mu_rel}}{Complete relabelled chains}
-\item{\code{Final_It}}{The final number of valid MCMC iterations,
-as explained in Details}
+\item{\code{mu_rel}}{\code{final_it x k} matrix (in case of univariate mixtures)
+or \code{final_it x 2 x k} array (in case of bivariate mixtures)
+for the complete relabelled chains}
 }
 \description{
 This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
@@ -91,7 +94,7 @@ group.
 In order for the pivot method to be applicable,
 we need to exclude iterations \eqn{\mathcal{H}^{*}_k};
 that is, we can perform the pivot relabelling on \eqn{\mathcal{H}_k-
-\mathcal{H}^{*}_{k}}, corresponding to the argument \code{Final_It}.
+\mathcal{H}^{*}_{k}}, corresponding to the argument \code{final_it}.
 }
 \examples{
 
