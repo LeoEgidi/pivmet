@@ -3,6 +3,7 @@
 #' Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y N-dimensional data vector/matrix.
 #' @param k Number of mixture components.
+#' @param priors
 #' @param nMC Number of MCMC iterations for the JAGS function execution.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
@@ -15,9 +16,11 @@
 #' \code{"hclust"}.
 #'
 #' @details
-#' The function fits a Bayesian Gaussian mixture model of the form:
-#' \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi),}
-#' where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k }}, and
+#' The function fits univariate and bivariate Bayesian Gaussian mixture models of the form
+#' (here for univariate only):
+#' \deqn{(Y_i|Z_i=j) \sim f(y;\mu_j,\phi_j),}
+#' where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k},
+#' \eqn{\phi_j} is the variance,  \eqn{Z_i \in {1,\ldots,k }}, and
 #' \deqn{P(Z_i=j)=\pi_j.}
 #' The likelihood of the model is then
 #' \deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j,\phi),}
@@ -29,6 +32,22 @@
 #'\deqn{
 #' p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 #' is multimodal with (at least) \eqn{k!} modes.
+#'
+#' Priors are chosen as weakly informative. For univariate mixtures,
+#' the specification is the same as the function \code{BMMmodel} of the
+#' \code{bayesmix} package:
+#'
+#'  \deqn{\mu_j \sim \mathcal{N}(0, 1/B0inv)}
+#'  \deqn{\phi_j \sim \text{invGamma}(nu0Half, nu0S0Half)}
+#'  \deqn{\pi \sim \text{Dirichlet}(1,\ldots,1)}
+#'  \deqn{S0 \sim \text{Gamma}(g0Half, g0G0Half),}
+#'
+#'  with default values: \eqn{ B0inv=0.1, nu0Half =10, S0=2,
+#'  nu0S0Half= nu0Half*S0=0.2,
+#'  g0Half = 5e-17, g0G0Half = 5e-33}, in accordance with the specification
+#'  \code{priors=list(kind = "independence", parameter = "priorsFish",
+#hierarchical = "tau")} (see \code{bayesmix} for further details and choices).
+#'
 #' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags}
 #' package for bivariate Gaussian mixtures. After MCMC sampling, this function
 #' clusters the units in \code{k} groups,
@@ -109,6 +128,7 @@
 
 piv_MCMC <- function(y,
                      k,
+                     priors,
                      nMC,
                      piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
                      clustering = c("diana", "hclust")){
@@ -116,6 +136,10 @@ piv_MCMC <- function(y,
   # Conditions about data dimension----------------
 
   if (is.vector(y)){
+     if (missing(priors)){
+       priors = list(kind = "independence", parameter = "priorsFish",
+                     hierarchical = "tau")
+     }
     N <- length(y)
     # JAGS code------------------------
 
@@ -130,8 +154,7 @@ piv_MCMC <- function(y,
 
     # Model
     mod.mist.univ <- BMMmodel(y, k = k, initialValues = list(S0 = 2),
-      priors = list(kind = "independence", parameter = "priorsFish",
-        hierarchical = "tau"))
+      priors = priors)
     control <- JAGScontrol(variables = c("mu", "tau", "eta", "S"),
       burn.in = burn, n.iter = nMC, seed = 10)
     ogg.jags <- JAGSrun(y, model = mod.mist.univ, control = control)
