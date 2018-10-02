@@ -31,7 +31,7 @@
 #' is multimodal with (at least) \eqn{k!} modes.
 #' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags} package for bivariate Gaussian mixtures. After MCMC sampling,
 #' this function calls the \code{piv_sel()} function and yields the pivots obtained from one among four different
-#' methods: \code{maxsumint}, \code{maxsumnoint}, \code{maxsumdiff} and \code{MUS} (available only if \code{k < 5}) (see the vignette for thorough details)
+#' methods: \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"} and \code{"MUS"} (available only if \code{k < 5}) (see the vignette for thorough details)
 #'
 #' @return The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
 #'
