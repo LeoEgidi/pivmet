@@ -20,7 +20,7 @@
 #' where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k}, \eqn{\phi} is a parameter which is common to all components,  \eqn{Z_i \in {1,\ldots,k }}, and
 #' \deqn{P(Z_i=j)=\pi_j.}
 #' The likelihood of the model is then
-#' \deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_j f(y_i;\mu_j,\phi),}
+#' \deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^n \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j,\phi),}
 #'with \eqn{\mu=(\mu_{1},\dots,\mu_{k})} component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})} mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }}, and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})}, \eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the corresponding permutations of \eqn{\mu} and \eqn{\pi}. Denote by \eqn{V} the set of all the permutations of the indexes \eqn{{1,\ldots,k }}, the likelihood above is invariant under any permutation \eqn{\nu \in V}, that is
 #' \deqn{
 #' L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\phi).}
@@ -29,9 +29,16 @@
 #'\deqn{
 #' p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 #' is multimodal with (at least) \eqn{k!} modes.
-#' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags} package for bivariate Gaussian mixtures. After MCMC sampling,
-#' this function calls the \code{piv_sel()} function and yields the pivots obtained from one among four different
-#' methods: \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"} and \code{"MUS"} (available only if \code{k < 5}) (see the vignette for thorough details)
+#' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags}
+#' package for bivariate Gaussian mixtures. After MCMC sampling, this function
+#' clusters the units in \code{k} groups,
+#' calls the \code{piv_sel()} function and yields the
+#' pivots obtained from one among four different
+#' methods (the user may specify one among them via \code{piv.criterion}
+#' argument):
+#'  \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"} and \code{"MUS"}
+#'  (available only if \code{k < 5})
+#' (see the vignette for thorough details).
 #'
 #' @return The function gives the MCMC output, the clustering solutions and the pivotal indexes. Here is a complete list of outputs.
 #'
@@ -68,7 +75,7 @@
 #'
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
-#' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
+#' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 #'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples
 #' N   <- 200

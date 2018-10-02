@@ -4,16 +4,14 @@
 \alias{piv_plot}
 \title{Plotting outputs from pivotal relabelling}
 \usage{
-piv_plot(y, mcmc, rel_est, type)
+piv_plot(y, mcmc, rel_est, type = c("chains", "estimates", "hist"))
 }
 \arguments{
 \item{y}{Data vector or matrix.}
 
-\item{mcmc}{The ouptut of the raw MCMC sampling.}
-
 \item{rel_est}{Pivotal estimates as provided by \code{piv_rel}.}
 
-\item{type}{Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"estimates_hist"}.}
+\item{type}{Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"hist"}.}
 }
 \description{
 Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
@@ -31,7 +29,9 @@ res <- piv_MCMC(y, k, nMC)
 rel <- piv_rel(mcmc=res, nMC = nMC)
 piv_plot(y, res, rel, "chains")
 piv_plot(y, res, rel, "estimates")
-piv_plot(y, res, rel, "estimates_hist")
+piv_plot(y, res, rel, "hist")
 
-
+}
+\author{
+Leonardo Egidi \url{legidi@units.it}
 }

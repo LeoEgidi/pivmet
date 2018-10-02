@@ -14,12 +14,15 @@ piv_rel(mcmc, nMC)
 \value{
 This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
 
-\item{\code{mu_rel_mean}}{ \code{k}-vector or \code{k x 2}
-matrix of estimated posterior means for the mean parameters.}
-\item{\code{mu_rel_median}}{ \code{k}-vector or \code{k x 2}
-matrix of estimated posterior medians for the mean parameters.}
+\item{\code{mu_rel_mean}}{ \code{k}-vector (in case of univariate mixture)
+or \code{k x 2}
+matrix (in case of bivariate mixture) of estimated posterior means for the mean parameters.}
+\item{\code{mu_rel_median}}{ \code{k}-vector (in case of univariate mixture)
+or \code{k x 2}
+matrix (in case of bivariate mixture) of estimated posterior medians for the mean parameters.}
 \item{\code{mu_rel_complete}}{Complete relabelled chains}
-\item{\code{Final_It}}{The final number of valid iterations}
+\item{\code{Final_It}}{The final number of valid MCMC iterations,
+as explained in Details}
 }
 \description{
 This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
@@ -56,9 +59,11 @@ is zero).
 It is then straightforward to use the \eqn{k} units,
 called pivots in what follows, to identify the groups and to
 relabel the chains:
-for each \eqn{h=1,\ldots, H} and \eqn{j=1,\ldots,k}, set
+for each MCMC iteration \eqn{h=1,\ldots, H} (\eqn{H} corresponds to
+the argument \code{nMC}) and group
+ \eqn{j=1,\ldots,k}, set
 \deqn{
-[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}]}_h;
+[\mu_j]_h=[\mu_{[Z_{i_{j}]_h}]}]_h;
 }
 \deqn{
 [Z_{i}]_h=j \mbox{ for } i:[Z_i]_h=[Z_{i_{j}}]_h.
@@ -75,7 +80,7 @@ be the number of non-empty groups at iteration \eqn{h},
 }
 where \eqn{\#A} is the cardinality of the set \eqn{A}. Hence, the relabelling
 procedure outlined above can be used only for the subset of the chain
-for which \eqn{[k]_h=k}; let it be \deqn{\mathcal{H}_k=\{h:[k]_h= k\}},
+for which \eqn{[k]_h=k}; let it be \deqn{\mathcal{H}_k=\{h:[k]_h= k\},}
 which correspond to the argument \code{true.iter} given by \code{piv_MCMC}.
 This means that the resulting relabelled chain is not a sample (of size \eqn{H})
 from the posterior distribution, but a sample (of size \eqn{\#\mathcal{H}_k})
@@ -131,7 +136,7 @@ res <- piv_MCMC(sim$y, k, nMC)
 rel <- piv_rel(mcmc = res, nMC = nMC)
 piv_plot(y=sim$y, mcmc=res, rel_est = rel, type="chains")
 piv_plot(y=sim$y, mcmc=res, rel_est = rel,
-         type="estimates_hist")
+         type="hist")
 
 
 }
