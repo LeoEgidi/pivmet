@@ -140,7 +140,7 @@ argument):
  and \code{"MUS"} (available only if \code{k <= 4})
 (see the vignette for thorough details). Due to computational reasons
 clarified in the Details section of the function \code{piv_rel}, the
-length of the MCMC chains will be minor or equal the input
+length of the MCMC chains will be minor or equal than the input
 argument \code{nMC}; this length, corresponding to the value
 \code{true.iter} returned by the procedure, is the number of
 MCMC iterations for which
