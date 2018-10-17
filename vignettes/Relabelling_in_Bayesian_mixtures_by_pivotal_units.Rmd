@@ -105,7 +105,7 @@ The function `piv_rel` performs the procedure above, and for such task it only n
 rel <- piv_rel(mcmc=res, nMC = nMC)
 piv_plot(y = y, mcmc = res, rel_est = rel, type = "chains")
 piv_plot(y = y, mcmc = res, rel_est = rel, type = "estimates")
-piv_plot(y = sim$y, mcmc = res, rel_est = rel, type = "estimates_hist")
+piv_plot(y = sim$y, mcmc = res, rel_est = rel, type = "hist")
 ```
 
 
