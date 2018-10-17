@@ -76,7 +76,7 @@
 #'
 #'km <- kmeans(x, centers =3)
 #'
-#' # Find the pivots according to the three possible pivoyal criterion
+#' # Find the pivots according to the three possible pivotal criterion
 #'
 #' ris <- piv_sel(C, clusters = km$cluster)
 #'

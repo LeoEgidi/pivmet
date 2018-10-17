@@ -5,7 +5,7 @@
 #' in the given matrix.
 #'
 #' @param C  \eqn{N \times N} matrix with a non-negligible number of zeros.
-#' For instance, a similarity matrix estimated from a \code{NxD} data matrix whose rows
+#' For instance, a similarity matrix estimated from a \eqn{N \times D} data matrix whose rows
 #' are statistical units, or a co-association matrix resulting from clustering
 #' ensembles.
 #' @param clusters A vector of integers from \code{1:k} (with \code{k <= 4})
