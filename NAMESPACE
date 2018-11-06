@@ -14,5 +14,11 @@ import(bayesmix)
 import(mvtnorm)
 import(mclust)
 importFrom(RcmdrMisc, KMeans)
+importFrom("grDevices", "trans3d")
+importFrom("graphics", "axis", "barplot", "hist", "matplot", "par",
+             "persp", "plot", "points")
+importFrom("stats", "as.dist", "cutree", "dist", "hclust", "kmeans",
+             "median", "rnorm")
+importFrom("utils", "combn")
 
 
