@@ -21,7 +21,7 @@ You can then install pivmet from github with:
 devtools::install_github("leoegidi/pivmet")
 ```
 
-Example 1: dealing with label switching: relabelling in Bayesian mixture models by pivotal units (fish data)
+Example 1. Dealing with label switching: relabelling in Bayesian mixture models by pivotal units (fish data)
 ------------------------------------------------------------------------------------------------------------
 
 First of all, we load the package and we import the `fish` dataset belonging to the `bayesmix` package:
@@ -77,21 +77,15 @@ piv_plot(y, res, rel, "chains")
 ![](README-plot-1.png)
 
 ``` r
-piv_plot(y, res, rel, "estimates")
+piv_plot(y, res, rel, "hist")
 ```
 
 ![](README-plot-2.png)
 
-``` r
-piv_plot(y, res, rel, "hist")
-```
-
-![](README-plot-3.png)
-
-Example 2: K-means clustering using MUS and other pivotal algorithms
+Example 2. K-means clustering using MUS and other pivotal algorithms
 --------------------------------------------------------------------
 
-Sometimes K-means algorith does not provide an optimal clustering solution. Suppose to generate some clustered data and detect one pivotal unit for each group with the `MUS` function:
+Sometimes K-means algorithm does not provide an optimal clustering solution. Suppose to generate some clustered data and to detect one pivotal unit for each group with the `MUS` function:
 
 ``` r
 #generate some data
@@ -131,8 +125,6 @@ sim_matr <- matrix(1, n,n)
 cl <- KMeans(x, centers)$cluster
 mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 ```
-
-Now we apply the K-means algorithm:
 
 Quite often, classical K-means fails in recognizing the *true* groups:
 
