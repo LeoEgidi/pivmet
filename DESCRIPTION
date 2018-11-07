@@ -16,8 +16,8 @@ url: https://github.com/leoegidi/pivmet
 Encoding: UTF-8
 LazyData: true
 LazyLoad: yes
-Depends:  bayesmix, runjags, rjags
-Imports:  cluster, mvtnorm,  RcmdrMisc, mclust, MASS    
+Depends:  bayesmix, runjags, rjags, mvtnorm
+Imports:  cluster, RcmdrMisc, mclust, MASS    
 Suggests: knitr
 VignetteBuilder: knitr
 RemoteType: github

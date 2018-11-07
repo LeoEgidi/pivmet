@@ -13,7 +13,6 @@ importFrom(MASS, mvrnorm)
 importFrom(mclust, adjustedRandIndex)
 importFrom(RcmdrMisc, KMeans)
 importFrom(cluster, pam, diana)
-importFrom(mvtnorm, dmvnorm, rmvnorm, pmvnorm, qmvnorm)
 importFrom("grDevices", "trans3d")
 importFrom("graphics", "axis", "barplot", "hist", "matplot", "par",
              "persp", "plot", "points")
