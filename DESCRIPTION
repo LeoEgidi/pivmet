@@ -2,7 +2,7 @@ Package: pivmet
 Type: Package
 Title: Pivotal methods for Bayesian relabelling and k-means clustering
 Version: 0.1.0
-Author: Leonardo Egidi, Roberta Pappadà 
+Author: Leonardo Egidi, Roberta Pappadà, Francesco Pauli, Nicola Torelli 
 Maintainer: Leonardo Egidi <legidi@units.it>
 License: GPL-2
 Year: 2018
