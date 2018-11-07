@@ -16,16 +16,16 @@ knitr::opts_chunk$set(
 
 The goal of ```pivmet``` is to propose some pivotal methods in order to:
 
-- undo the label switching problem which naturally arises during the MCMC sampling in Bayesian mixture models $\rightarrow$**pivotal relabelling** (Egidi et al. 2018a)
+- undo the label switching problem which naturally arises during the MCMC sampling in Bayesian mixture models $\rightarrow$ **pivotal relabelling** (Egidi et al. 2018a)
 
-- initialize the K-means algorithm $\rightarrow$ **pivotal seeding** (Egidi et al. 2018b)
+- initialize the K-means algorithm aimed at obtaining a good clustering solution $\rightarrow$ **pivotal seeding** (Egidi et al. 2018b)
 
 ## Installation
 
--PAY ATTENTION! BEFORE INSTALLING: make sure to download the JAGS program at
+- <span style="color:red">PAY ATTENTION! BEFORE INSTALLING</span>: make sure to download the JAGS program at
 [https://sourceforge.net/projects/mcmc-jags/](https://sourceforge.net/projects/mcmc-jags/).
 
-You can then install pivmet from github with:
+You can then install ```pivmet``` from github with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
@@ -40,9 +40,9 @@ First of all, we load the package and we import the ```fish``` dataset belonging
 library(pivmet)
 data(fish)
 y <- fish[,1]
-N <- length(y)
-k <- 5
-nMC <- 12000
+N <- length(y)  # sample size 
+k <- 5          # fixed number of clusters
+nMC <- 12000    # MCMC iterations
 ```
 
 Then we fit a Bayesian Gaussian mixture using the ```piv_MCMC``` function:
@@ -53,7 +53,7 @@ res <- piv_MCMC(y = y, k = k, nMC = nMC)
 ```
 
 
-Finally, we can apply pivotal relabelling and inspect the new estimates with the functions ```piv_rel``` and ```piv_plot```, respectively:
+Finally, we can apply pivotal relabelling and inspect the new posterior estimates with the functions ```piv_rel``` and ```piv_plot```, respectively:
 
 ```{r plot, message =FALSE, warning = FALSE}
 rel <- piv_rel(mcmc=res, nMC = nMC)
@@ -63,7 +63,7 @@ piv_plot(y, res, rel, "hist")
 
 ## Example 2. K-means clustering using MUS and other pivotal algorithms
 
-Sometimes K-means algorithm does not provide an optimal clustering solution. Suppose to generate some clustered data and to detect one pivotal unit for each group with the ```MUS``` function:
+Sometimes K-means algorithm does not provide an optimal clustering solution. Suppose to generate some clustered data and to detect one pivotal unit for each group with the ```MUS``` (Maxima Units Search algorithm) function:
 
 ```{r mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE}
 #generate some data
@@ -109,39 +109,36 @@ mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 
 Quite often, classical K-means fails in recognizing the *true* groups:
 
-```{r kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
- kmeans_res <- KMeans(x, centers)
-```
 
 
-
-```{r kmeans_plots, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
+```{r kmeans_plots, echo =TRUE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
+# launch classical KMeans
+kmeans_res <- KMeans(x, centers)
+# plots
 par(mfrow=c(1,2))
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
 colors_centers <- c("black", "darkgreen", "firebrick")
  
- plot(x, col = colors_cluster[truegroup]
+plot(x, col = colors_cluster[truegroup]
                  ,bg= colors_cluster[truegroup], pch=21,
                   xlab="y[,1]",
                   ylab="y[,2]", cex.lab=1.5,
                   main="True data", cex.main=1.5)
  
- plot(x, col = colors_cluster[kmeans_res$cluster], 
+plot(x, col = colors_cluster[kmeans_res$cluster], 
       bg=colors_cluster[kmeans_res$cluster], pch=21, xlab="y[,1]",
-   ylab="y[,2]", cex.lab=1.5,main="K-means",  cex.main=1.5)
- points(kmeans_res$centers, col = colors_centers[1:centers], 
-   pch = 8, cex = 2)
-
+      ylab="y[,2]", cex.lab=1.5,main="K-means",  cex.main=1.5)
+points(kmeans_res$centers, col = colors_centers[1:centers], 
+      pch = 8, cex = 2)
 ```
 
 
-In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments
+In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments (in the figure below, the colored triangles represent the pivots).
 
 ```{r musk, fig.show='hold'}
+# launch piv_KMeans
 piv_res <- piv_KMeans(x, centers)
-```
-
-```{r musk_plots, echo=FALSE, fig.show='hold'}
+# plots
 par(mfrow=c(1,2), pty="s")
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
 colors_centers <- c("black", "darkgreen", "firebrick")
@@ -170,8 +167,8 @@ points(piv_res$centers, col = colors_centers[1:centers],
 
 ## References
 
-Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018a). Relabelling in Bayesian Mixture Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
+Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018a). Relabelling in Bayesian Mixture Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 
-Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018). K-means seeding via MUS algorithm. Conference Paper, Book of Short Papers, SIS2018, ISBN: 9788891910233.
+Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018b). K-means seeding via MUS algorithm. Conference Paper, Book of Short Papers, SIS2018, ISBN: 9788891910233.
 
 
