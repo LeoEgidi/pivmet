@@ -3,7 +3,10 @@ Type: Package
 Title: Pivotal Methods for Bayesian Relabelling and k-means Clustering
 Version: 0.1.0
 Date: 2018-11-08
-Author: Leonardo Egidi, Roberta Pappadà, Francesco Pauli, Nicola Torelli 
+Author: Leonardo Egidi[aut, cre], 
+        Roberta Pappadà[aut], 
+        Francesco Pauli[aut], 
+        Nicola Torelli[aut] 
 Maintainer: Leonardo Egidi <legidi@units.it>
 License: GPL-2
 Year: 2018
