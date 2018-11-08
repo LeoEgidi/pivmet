@@ -9,7 +9,6 @@ Author: Leonardo Egidi[aut, cre],
         Nicola Torelli[aut] 
 Maintainer: Leonardo Egidi <legidi@units.it>
 License: GPL-2
-Year: 2018
 Description: Collection of pivotal algorithms 
              for: relabelling the MCMC chains in order to undo the label 
              switching problem in Bayesian mixture models;
