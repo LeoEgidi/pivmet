@@ -1,18 +1,23 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-pivmet
-======
+
+# pivmet
 
 The goal of `pivmet` is to propose some pivotal methods in order to:
 
--   undo the label switching problem which naturally arises during the MCMC sampling in Bayesian mixture models → **pivotal relabelling** (Egidi et al. 2018a)
+  - undo the label switching problem which naturally arises during the
+    MCMC sampling in Bayesian mixture models \(\rightarrow\) **pivotal
+    relabelling** (Egidi et al. 2018a)
 
--   initialize the K-means algorithm aimed at obtaining a good clustering solution → **pivotal seeding** (Egidi et al. 2018b)
+  - initialize the K-means algorithm aimed at obtaining a good
+    clustering solution \(\rightarrow\) **pivotal seeding** (Egidi et
+    al. 2018b)
 
-Installation
-------------
+## Installation
 
--   <span style="color:red">PAY ATTENTION! BEFORE INSTALLING</span>: make sure to download the JAGS program at <https://sourceforge.net/projects/mcmc-jags/>.
+  - <span style="color:red">PAY ATTENTION\! BEFORE INSTALLING</span>:
+    make sure to download the JAGS program at
+    <https://sourceforge.net/projects/mcmc-jags/>.
 
 You can then install `pivmet` from github with:
 
@@ -21,10 +26,10 @@ You can then install `pivmet` from github with:
 devtools::install_github("leoegidi/pivmet")
 ```
 
-Example 1. Dealing with label switching: relabelling in Bayesian mixture models by pivotal units (fish data)
-------------------------------------------------------------------------------------------------------------
+## Example 1. Dealing with label switching: relabelling in Bayesian mixture models by pivotal units (fish data)
 
-First of all, we load the package and we import the `fish` dataset belonging to the `bayesmix` package:
+First of all, we load the package and we import the `fish` dataset
+belonging to the `bayesmix` package:
 
 ``` r
 library(pivmet)
@@ -62,25 +67,28 @@ res <- piv_MCMC(y = y, k = k, nMC = nMC)
 #> Initializing model
 ```
 
-Finally, we can apply pivotal relabelling and inspect the new posterior estimates with the functions `piv_rel` and `piv_plot`, respectively:
+Finally, we can apply pivotal relabelling and inspect the new posterior
+estimates with the functions `piv_rel` and `piv_plot`, respectively:
 
 ``` r
 rel <- piv_rel(mcmc=res, nMC = nMC)
 piv_plot(y, res, rel, "chains")
 ```
 
-![](README-plot-1.png)
+![](man/figures/README-plot-1.png)<!-- -->
 
 ``` r
 piv_plot(y, res, rel, "hist")
 ```
 
-![](README-plot-2.png)
+![](man/figures/README-plot-2.png)<!-- -->
 
-Example 2. K-means clustering using MUS and other pivotal algorithms
---------------------------------------------------------------------
+## Example 2. K-means clustering using MUS and other pivotal algorithms
 
-Sometimes K-means algorithm does not provide an optimal clustering solution. Suppose to generate some clustered data and to detect one pivotal unit for each group with the `MUS` (Maxima Units Search algorithm) function:
+Sometimes K-means algorithm does not provide an optimal clustering
+solution. Suppose to generate some clustered data and to detect one
+pivotal unit for each group with the `MUS` (Maxima Units Search
+algorithm) function:
 
 ``` r
 #generate some data
@@ -144,9 +152,13 @@ points(kmeans_res$centers, col = colors_centers[1:centers],
       pch = 8, cex = 2)
 ```
 
-![](README-kmeans_plots-1.png)
+![](man/figures/README-kmeans_plots-1.png)<!-- -->
 
-In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments (in the figure below, the colored triangles represent the pivots).
+In such situations, we may need a more robust version of the classical
+K-means. The pivots may be used as initial seeds for a classical K-means
+algorithm. The function `piv_KMeans` works as the classical `kmeans`
+function, with some optional arguments (in the figure below, the colored
+triangles represent the pivots).
 
 ``` r
 # launch piv_KMeans
@@ -177,11 +189,14 @@ points(piv_res$centers, col = colors_centers[1:centers],
    pch = 8, cex = 2)
 ```
 
-![](README-musk-1.png)
+![](man/figures/README-musk-1.png)<!-- -->
 
-References
-----------
+## References
 
-Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018a). Relabelling in Bayesian Mixture Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
+Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018a). Relabelling
+in Bayesian Mixture Models by Pivotal Units. Statistics and Computing,
+28(4), 957-969.
 
-Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018b). K-means seeding via MUS algorithm. Conference Paper, Book of Short Papers, SIS2018, ISBN: 9788891910233.
+Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018b). K-means seeding
+via MUS algorithm. Conference Paper, Book of Short Papers, SIS2018,
+ISBN: 9788891910233.
