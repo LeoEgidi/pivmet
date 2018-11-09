@@ -15,7 +15,7 @@ piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
 
 \item{alg.type}{The clustering algorithm for the initial partition of the
 \eqn{N} units into the desired number of clusters.
-Possible choices are \code{"KMeans"} and \code{"hclust"}.}
+Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.}
 
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
