@@ -16,7 +16,7 @@
 #' co-association matrix.
 #' @param alg.type The clustering algorithm for the initial partition of the
 #' \eqn{N} units into the desired number of clusters.
-#' Possible choices are \code{"KMeans"} and \code{"hclust"}.
+#' Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.
 #' @param ... Optional arguments to be passed to \code{MUS} or \code{KMeans}.
 #'
 #'

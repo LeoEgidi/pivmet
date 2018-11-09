@@ -5,7 +5,7 @@
 \title{k-means Clustering Using Pivotal Algorithms For Seeding}
 \usage{
 piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
-  piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
+  piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
   H = 1000, ...)
 }
 \arguments{
@@ -18,7 +18,7 @@ piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
 Possible choices are \code{"KMeans"} and \code{"hclust"}.}
 
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
-for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 "maxsumdiff"}.
 If \code{centers <= 4}, the default method is \code{"MUS"};
 otherwise, the default method is \code{"maxsumdiff"} (see the details and

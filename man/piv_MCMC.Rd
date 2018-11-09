@@ -5,7 +5,7 @@
 \title{JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
 \usage{
 piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
-  "maxsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"))
+  "minsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"))
 }
 \arguments{
 \item{y}{N-dimensional data vector/matrix.}
@@ -17,7 +17,7 @@ piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
 \item{nMC}{Number of MCMC iterations for the JAGS function execution.}
 
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
-for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 "maxsumdiff"}.
 If \code{k <= 4}, the default method is \code{"MUS"};
 otherwise, the default method is \code{"maxsumdiff"} (see the Details and
@@ -136,7 +136,7 @@ calls the \code{piv_sel()} function and yields the
 pivots obtained from one among four different
 methods (the user may specify one among them via \code{piv.criterion}
 argument):
- \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"}
+ \code{"maxsumint"}, \code{"minsumnoint"}, \code{"maxsumdiff"}
  and \code{"MUS"} (available only if \code{k <= 4})
 (see the vignette for thorough details). Due to computational reasons
 clarified in the Details section of the function \code{piv_rel}, the

@@ -50,7 +50,7 @@ Alternatively, we may choose \eqn{i^{*} \in\mathcal J_j}, which minimizes:
 \deqn{\sum_{p\not\in\mathcal J_j} c_{i^{*}p},}
 obtaining the most distant unit among the members
 that minimize the global dissimilarity between one group
-and all the others (\code{"maxsumnoint"}).
+and all the others (\code{"minsumnoint"}).
 See the vignette for further details.
 }
 \examples{
