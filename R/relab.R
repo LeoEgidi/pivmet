@@ -1,4 +1,4 @@
-#' Perfroming the pivotal relabelling step and computing the relabelled posterior estimates
+#' Performing the pivotal relabelling step and computing the relabelled posterior estimates
 #'
 #' This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
 #' @param mcmc The output of the MCMC sampling from \code{piv_MCMC}.
@@ -90,7 +90,7 @@
 
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
-#' @references Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
+#' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 #'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples
 #'

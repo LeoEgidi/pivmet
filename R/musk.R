@@ -36,7 +36,7 @@
 #' @return A list with components
 #'
 #'\item{\code{cluster}}{A vector of integers indicating the cluster to which each point is allocated.}
-#'\item{\code{centers}}{A matrix of cluster centres (centroids).}
+#'\item{\code{centers}}{A matrix of cluster centers (centroids).}
 #'\item{\code{totss}}{The total sum of squares.}
 #'\item{\code{withinss}}{The within-cluster sum of squares for each cluster.}
 #'\item{\code{tot.withinss}}{The within-cluster sum of squares summed across clusters.}

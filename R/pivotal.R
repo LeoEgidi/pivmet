@@ -4,7 +4,7 @@
 #'Finding the pivots according to three different
 #'methods involving a co-association matrix C.
 #'@param C A \eqn{N \times N} co-association matrix, i.e.
-#'a matrix whose elements are co-occurences of pair of units
+#'a matrix whose elements are co-occurrences of pair of units
 #'in the same cluster among \eqn{H} distinct partitions.
 #'@param clusters A vector of integers indicating
 #'a partition of the \eqn{N} units into, say, \eqn{k} groups.
