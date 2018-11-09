@@ -17,7 +17,7 @@
 #' @param alg.type The clustering algorithm for the initial partition of the
 #' \eqn{N} units into the desired number of clusters.
 #' Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.
-#' @param ... Optional arguments to be passed to \code{MUS} or \code{KMeans}.
+#' @param opt List of optional arguments to be passed to \code{MUS} or \code{KMeans}.
 #'
 #'
 #' @details
@@ -116,13 +116,17 @@ piv_KMeans <- function(x,
                        alg.type = c("KMeans", "hclust"),
                        piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
                        H = 1000,
-                       ...){
+                       opt = list(iter.max =10, num.seeds =10, prec.par =5)){
   #check on optional parameters
 
-  if(missing(...)){
+  if(missing(opt)){
     iter.max  <- 10
     num.seeds <- 10
     prec.par  <- 5
+  }else{
+    iter.max  <-  c(10, list(opt)$iter.max)[which(c(is.null(list(opt)$iter.max), !is.null(list(opt)$iter.max)))]
+    num.seeds <-  c(10, list(opt)$num.seeds)[which(c(is.null(list(opt)$num.seeds), !is.null(list(opt)$num.seeds)))]
+    prec.par  <-  c(5, list(opt)$prec.par)[which(c(is.null(list(opt)$prec.par), !is.null(list(opt)$prec.par)))]
   }
   if (missing(piv.criterion)){
     if (centers<=4 ){
