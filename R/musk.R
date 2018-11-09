@@ -6,7 +6,7 @@
 #' @param x A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).
 #' @param centers The number of clusters in the solution.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
-#' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+#' for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 #' "maxsumdiff"}.
 #' If \code{centers <= 4}, the default method is \code{"MUS"};
 #' otherwise, the default method is \code{"maxsumdiff"} (see the details and
@@ -114,7 +114,7 @@
 piv_KMeans <- function(x,
                        centers,
                        alg.type = c("KMeans", "hclust"),
-                       piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
+                       piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
                        H = 1000,
                        ...){
   #check on optional parameters
@@ -192,7 +192,7 @@ piv_KMeans <- function(x,
       sel <- piv_sel(C=sim_matr, clusters=cl)
       if (piv.criterion=="maxsumint"){
         pivots <- sel$pivots[,1]
-      }else if(piv.criterion=="maxsumnoint"){
+      }else if(piv.criterion=="minsumnoint"){
         pivots <- sel$pivots[,2]
       }else if(piv.criterion=="maxsumdiff"){
         pivots <- sel$pivots[,3]
@@ -209,7 +209,7 @@ piv_KMeans <- function(x,
     sel <- piv_sel(C=sim_matr,  clusters=cl)
     if (piv.criterion=="maxsumint"){
       pivots <- sel$pivots[,1]
-    }else if(piv.criterion=="maxsumnoint"){
+    }else if(piv.criterion=="minsumnoint"){
       pivots <- sel$pivots[,2]
     }else if(piv.criterion=="maxsumdiff"){
       pivots <- sel$pivots[,3]

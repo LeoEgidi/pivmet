@@ -49,7 +49,7 @@ These methods give the unit that maximizes the global within similarity (`maxsum
 
 $$\sum_{p\not\in\mathcal J_j} c_{i^{*}p},$$
 
-obtaining the most distant unit among the members that minimize the global dissimilarity between one group and all the others (`maxsumnoint`).
+obtaining the most distant unit among the members that minimize the global dissimilarity between one group and all the others (`minsumnoint`).
 
 
 MUS algorithm described in @egidi2018mus is a sequential procedure for extracting identity submatrices of small rank and pivotal units from large and sparse matrices. The procedure has already
@@ -168,7 +168,7 @@ points(piv_res$centers, col = colors_centers[1:centers],
 
 The function `piv_KMeans` has optional arguments:
 
-- `piv.criterion`: one among the four different pivotal criteria described above and listed in @egidi2018relabelling: `MUS`, `maxsumint`, `maxsumnoint`, `maxsumdiff`. `MUS` is the default criterion when `centers` $\le$ 4, whereas `maxsumdiff` is the default method when `centers` > 4.
+- `piv.criterion`: one among the four different pivotal criteria described above and listed in @egidi2018relabelling: `MUS`, `maxsumint`, `minsumnoint`, `maxsumdiff`. `MUS` is the default criterion when `centers` $\le$ 4, whereas `maxsumdiff` is the default method when `centers` > 4.
 
 - `iter.mus`: the number of different partitions used for building the co-association matrix $C$. Default is $10^3$.
 

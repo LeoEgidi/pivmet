@@ -6,7 +6,7 @@
 #' @param priors Input prior hyperparameters (see Details).
 #' @param nMC Number of MCMC iterations for the JAGS function execution.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
-#' for each group. Possible choices are: \code{"MUS", "maxsumint", "maxsumnoint",
+#' for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 #' "maxsumdiff"}.
 #' If \code{k <= 4}, the default method is \code{"MUS"};
 #' otherwise, the default method is \code{"maxsumdiff"} (see the Details and
@@ -86,7 +86,7 @@
 #' pivots obtained from one among four different
 #' methods (the user may specify one among them via \code{piv.criterion}
 #' argument):
-#'  \code{"maxsumint"}, \code{"maxsumnoint"}, \code{"maxsumdiff"}
+#'  \code{"maxsumint"}, \code{"minsumnoint"}, \code{"maxsumdiff"}
 #'  and \code{"MUS"} (available only if \code{k <= 4})
 #' (see the vignette for thorough details). Due to computational reasons
 #' clarified in the Details section of the function \code{piv_rel}, the
@@ -185,7 +185,7 @@ piv_MCMC <- function(y,
                      k,
                      priors,
                      nMC,
-                     piv.criterion = c("MUS", "maxsumint", "maxsumnoint", "maxsumdiff"),
+                     piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
                      clustering = c("diana", "hclust")){
 
   # Conditions about data dimension----------------
@@ -463,7 +463,7 @@ piv_MCMC <- function(y,
 
   available_met <- 3
 
-  piv.criterion.choices <- c("maxsumint", "maxsumnoint",
+  piv.criterion.choices <- c("maxsumint", "minsumnoint",
     "maxsumdiff")
 
   if (missing(piv.criterion)){
@@ -471,7 +471,7 @@ piv_MCMC <- function(y,
   }
 
   if (piv.criterion=="maxsumint"||
-      piv.criterion=="maxsumnoint"||
+      piv.criterion=="minsumnoint"||
       piv.criterion=="maxsumdiff" ){
 
     piv.index <- (1:3)[piv.criterion.choices==piv.criterion]

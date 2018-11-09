@@ -76,7 +76,7 @@ same group is zero). We call them *pivots*, and denote them with: $i_1,\ldots,i_
 
 - $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`maxsumdiff`, default method);
 
-- $i^{*}$ that minimizes $\sum_{p \not\in J_j}c_{ip}$ (`maxsumnoint`).
+- $i^{*}$ that minimizes $\sum_{p \not\in J_j}c_{ip}$ (`minsumnoint`).
 
 Alternatively, when $k <5$, the user has the optional pivotal criterion `MUS` [@egidi2018mus] based on a sequential search within the matrix $C$.
 

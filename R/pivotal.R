@@ -40,7 +40,7 @@
 #' \deqn{\sum_{p\not\in\mathcal J_j} c_{i^{*}p},}
 #' obtaining the most distant unit among the members
 #' that minimize the global dissimilarity between one group
-#' and all the others (\code{"maxsumnoint"}).
+#' and all the others (\code{"minsumnoint"}).
 #' See the vignette for further details.
 #'
 #'@return
@@ -117,7 +117,7 @@ Cg  <- matrix(NA, ncol=3, nrow=k)
         # criteria involving minimization
         #min(C[j,com.gi],na.rm=TRUE),          #dropped
         #min(C[j,com.ngi]),                    #dropped
-        sum(C[j,com.ngi]),                     #maxsumnoint
+        sum(C[j,com.ngi]),                     #minsumnoint
         # another criterion involving maximization
         sum(C[j,com.gi],na.rm=TRUE)-sum(C[j,com.ngi])))
   }                                            #maxsumdiff
@@ -147,7 +147,7 @@ Cg  <- matrix(NA, ncol=3, nrow=k)
 
 # For each method, we store the selected pivotal units
 Cg <- Cg[,1:3]
-colnames(Cg) <- c("maxsumint", "maxsumnoint", "maxsumdiff")
+colnames(Cg) <- c("maxsumint", "minsumnoint", "maxsumdiff")
 
 # group1 contains the observation assigments to the groups obtained via pivots
 # group1 <- 0*Z
