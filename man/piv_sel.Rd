@@ -8,7 +8,7 @@ piv_sel(C, clusters)
 }
 \arguments{
 \item{C}{A \eqn{N \times N} co-association matrix, i.e.
-a matrix whose elements are co-occurences of pair of units
+a matrix whose elements are co-occurrences of pair of units
 in the same cluster among \eqn{H} distinct partitions.}
 
 \item{clusters}{A vector of integers indicating

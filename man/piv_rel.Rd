@@ -2,7 +2,7 @@
 % Please edit documentation in R/relab.R
 \name{piv_rel}
 \alias{piv_rel}
-\title{Perfroming the pivotal relabelling step and computing the relabelled posterior estimates}
+\title{Performing the pivotal relabelling step and computing the relabelled posterior estimates}
 \usage{
 piv_rel(mcmc, nMC)
 }
@@ -138,7 +138,7 @@ piv_plot(y=sim$y, mcmc=res, rel_est = rel,
 
 }
 \references{
-Egidi, L., Pappada, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
+Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 }
 \author{
