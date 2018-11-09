@@ -6,7 +6,7 @@
 \usage{
 piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
   piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
-  H = 1000, ...)
+  H = 1000, opt = list(iter.max = 10, num.seeds = 10, prec.par = 5))
 }
 \arguments{
 \item{x}{A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
@@ -28,7 +28,7 @@ the vignette).}
 distinct k-means partitions used for building a \eqn{N \times N}
 co-association matrix.}
 
-\item{...}{Optional arguments to be passed to \code{MUS} or \code{KMeans}.}
+\item{opt}{List of optional arguments to be passed to \code{MUS} or \code{KMeans}.}
 }
 \value{
 A list with components
