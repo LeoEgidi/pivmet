@@ -1,4 +1,6 @@
-New submission
+## Resubmission
+This is a resubmission. In this version I have:
+
 
 ## Test environments
 * win-builder (devel and release)
@@ -7,13 +9,6 @@ New submission
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
-
-There were 2 NOTES (actually, the same one repeated twice):
-
-* Examples with CPU or elapsed time > 10s
-
-  MCMC is sometimes computationally demanding. Good    
-  estimates sometimes need time.
 
   
 ## Downstream dependencies
