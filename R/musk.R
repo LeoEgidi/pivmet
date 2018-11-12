@@ -59,7 +59,7 @@
 #'@examples
 #'
 #' # Data generated from a mixture of three bivariate Gaussian distributions
-#'
+#'\dontrun{
 #'N  <- 620
 #'k  <- 3
 #'n1 <- 20
@@ -108,6 +108,7 @@
 #'    cex=1.5)
 #'points(res$centers, col = colors_centers[1:k],
 #'    pch = 8, cex = 2)
+#'    }
 
 
 

@@ -137,7 +137,7 @@
 #' @examples
 #'
 #' # Bivariate simulation
-#'
+#'\dontrun{
 #' N   <- 200
 #' k   <- 4
 #' nMC <- 1000
@@ -159,11 +159,11 @@
 #'                  S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
 #'                  S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE)),
 #'                  k = k, nMC = nMC)
-#'
+#'}
 #'
 #'
 #' # Fishery data (bayesmix package)
-#'
+#'\dontrun{
 #' data(fish)
 #' y <- fish[,1]
 #' k <- 5
@@ -174,7 +174,7 @@
 #'                    priors = list(kind = "condconjugate",
 #'                    parameter = "priorsRaftery",
 #'                    hierarchical = "tau"),  k =k, nMC = nMC)
-#'
+#'}
 #' @export
 
 

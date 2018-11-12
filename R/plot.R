@@ -9,7 +9,7 @@
 #' @examples
 #'
 #' # Fishery data
-#'
+#'\dontrun{
 #' data(fish)
 #' y <- fish[,1]
 #' N <- length(y)
@@ -20,6 +20,7 @@
 #' piv_plot(y, res, rel, "chains")
 #' piv_plot(y, res, rel, "estimates")
 #' piv_plot(y, res, rel, "hist")
+#' {}
 #'
 #' @author
 #'

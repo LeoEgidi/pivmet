@@ -95,7 +95,7 @@
 #' @examples
 #'
 #' #Univariate simulation
-#'
+#'\dontrun{
 #' N   <- 250
 #' nMC <- 2500
 #' k   <- 3
@@ -107,10 +107,10 @@
 #' sim   <- piv_sim(N,k,Mu,stdev,W=W)
 #' res   <- piv_MCMC(y = sim$y, k =k, nMC = nMC)
 #' rel   <- piv_rel(mcmc=res, nMC = nMC)
-#'
+#'}
 #'
 #' #Bivariate simulation
-#'
+#'\dontrun{
 #' N <- 200
 #' k <- 3
 #' nMC <- 5000
@@ -130,7 +130,7 @@
 #' piv_plot(y=sim$y, mcmc=res, rel_est = rel, type="chains")
 #' piv_plot(y=sim$y, mcmc=res, rel_est = rel,
 #'          type="hist")
-#'
+#'}
 #'
 #' @export
 
