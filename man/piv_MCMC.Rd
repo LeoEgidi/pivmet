@@ -150,7 +150,7 @@ number of groups \code{k}.
 \examples{
 
 # Bivariate simulation
-
+\dontrun{
 N   <- 200
 k   <- 4
 nMC <- 1000
@@ -172,11 +172,11 @@ res2 <- piv_MCMC(y = sim$y,
                  S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
                  S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE)),
                  k = k, nMC = nMC)
-
+}
 
 
 # Fishery data (bayesmix package)
-
+\dontrun{
 data(fish)
 y <- fish[,1]
 k <- 5
@@ -187,7 +187,7 @@ res2   <- piv_MCMC(y = y,
                    priors = list(kind = "condconjugate",
                    parameter = "priorsRaftery",
                    hierarchical = "tau"),  k =k, nMC = nMC)
-
+}
 }
 \references{
 Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture

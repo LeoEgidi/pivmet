@@ -99,7 +99,7 @@ that is, we can perform the pivot relabelling on \eqn{\mathcal{H}_k-
 \examples{
 
 #Univariate simulation
-
+\dontrun{
 N   <- 250
 nMC <- 2500
 k   <- 3
@@ -111,10 +111,10 @@ W     <- c(0.2,0.8)
 sim   <- piv_sim(N,k,Mu,stdev,W=W)
 res   <- piv_MCMC(y = sim$y, k =k, nMC = nMC)
 rel   <- piv_rel(mcmc=res, nMC = nMC)
-
+}
 
 #Bivariate simulation
-
+\dontrun{
 N <- 200
 k <- 3
 nMC <- 5000
@@ -134,7 +134,7 @@ rel <- piv_rel(mcmc = res, nMC = nMC)
 piv_plot(y=sim$y, mcmc=res, rel_est = rel, type="chains")
 piv_plot(y=sim$y, mcmc=res, rel_est = rel,
          type="hist")
-
+}
 
 }
 \references{
