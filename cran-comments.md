@@ -1,7 +1,7 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* 
+* included the examples in the \dontrun{} field. 
 
 ## Test environments
 * win-builder (devel and release)
