@@ -136,6 +136,7 @@
 
 piv_rel<-function(mcmc, nMC ){
   N <- dim(mcmc$z)[1]
+  k <- dim(mcmc$z)[2]
   mu_switch <- mcmc$mu_switch
   group <-  mcmc$groupPost
   pivots <- mcmc$pivots
