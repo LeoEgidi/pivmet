@@ -1,7 +1,12 @@
 ## Resubmission
-This is a resubmission. In this version I have:
+This is a resubmission. Package ‘pivmet’ was removed from 
+the CRAN repository on January 24th, since check issues 
+reported by professor Brian D. Ripley on December 29th were
+not corrected in time. In this version I fixed the issues
+and I have:
 
-* included the examples in the \dontrun{} field. 
+* suppressed vignettes with duplicates titles (index 
+entries) 
 
 ## Test environments
 * win-builder (devel and release)
