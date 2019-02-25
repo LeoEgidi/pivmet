@@ -20,7 +20,7 @@ LazyData: true
 LazyLoad: yes
 Depends:  bayesmix, rjags, runjags, mvtnorm, RcmdrMisc
 Imports:  cluster, mclust, MASS    
-Suggests: knitr, rmarkdown (>= 1.0.0)
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
 BuildManual: yes
