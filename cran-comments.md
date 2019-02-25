@@ -5,8 +5,9 @@ reported by professor Brian D. Ripley on December 29th were
 not corrected in time. In this version I fixed the issues
 and I have:
 
-* suppressed vignettes with duplicates titles (index 
-entries) 
+* changed the title in the %\VignetteIndexEntry lines in the vignette sources. Now  they correspond to the vignette title.
+
+* included rmarkdown in the Suggests field in the description.
 
 ## Test environments
 * win-builder (devel and release)
