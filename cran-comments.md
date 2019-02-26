@@ -9,6 +9,8 @@ and I have:
 
 * included rmarkdown in the Suggests field in the description.
 
+* fixed the version number and the date field
+
 ## Test environments
 * win-builder (devel and release)
 * local OS X install, R 3.5.1
