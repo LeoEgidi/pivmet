@@ -11,9 +11,11 @@ Maintainer: Leonardo Egidi <legidi@units.it>
 License: GPL-2
 Description: Collection of pivotal algorithms 
              for: relabelling the MCMC chains in order to undo the label 
-             switching problem in Bayesian mixture models;
+             switching problem in Bayesian mixture models,
+             as proposed in Egidi, Pappadà, Pauli and Torelli (2018a)<doi:10.1007/s11222-017-9774-2>;
              initializing the centers of the classical k-means algorithm 
-             in order to obtain a better clustering solution.
+             in order to obtain a better clustering solution. For further details see
+             Egidi, Pappadà, Pauli and Torelli (2018b)<ISBN:9788891910233>.
 URL: https://github.com/leoegidi/pivmet
 Encoding: UTF-8
 LazyData: true
