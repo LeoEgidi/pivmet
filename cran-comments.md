@@ -11,6 +11,8 @@ and I have:
 
 * fixed the version number and the date field
 
+* included references in the description field.
+
 ## Test environments
 * win-builder (devel and release)
 * local OS X install, R 3.5.1
