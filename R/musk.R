@@ -182,7 +182,7 @@ piv_KMeans <- function(x,
 
       #MUS algorithm
       #prec.par <- prec.par
-      mus_res  <- MUS(sim_matr, cl)
+      mus_res  <- MUS(sim_matr, cl, prec_par=n%/%centers)
       pivots   <- mus_res$pivots
     }else if (piv.criterion!="MUS"){
 

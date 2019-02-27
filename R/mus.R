@@ -97,7 +97,7 @@
 #MUS algorithm
 ###########################################
 
-MUS <- function(C, clusters, prec_par = 5){
+MUS <- function(C, clusters, prec_par){
 
   #C: C di similarit?
   #clusters: gruppi partizione clustering
