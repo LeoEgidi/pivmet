@@ -179,10 +179,15 @@ piv_KMeans <- function(x,
 
   if (centers <=4){
     if (piv.criterion=="MUS"){
+      if (centers==2){
+        tuning <- n%/%2
+      }else{
+        tuning <- 5
+      }
 
       #MUS algorithm
       #prec.par <- prec.par
-      mus_res  <- MUS(sim_matr, cl)
+      mus_res  <- MUS(sim_matr, cl, prec_par=tuning)
       pivots   <- mus_res$pivots
     }else if (piv.criterion!="MUS"){
 
