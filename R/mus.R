@@ -352,8 +352,7 @@ MUS <- function(C, clusters, prec_par){
     maxima<-rep(NA,length(unique(clusters)) )
 
     if (is.na(sum(maxima))){
-      return(print("Warning: the precision parameter is too low.
-            Try to increment the prec_par argument"))
+      return(print("Warning: try increasing the precision parameter prec_par"))
     }else{
 
   return(list(pivots=maxima))
@@ -367,8 +366,7 @@ MUS <- function(C, clusters, prec_par){
 
 
   if (is.na(sum(maxima))){
-    return(print("Warning: the precision parameter is too low.
-            Try to increment the prec_par argument"))
+    return(print("Warning: try increasing the precision parameter prec_par"))
   }else{
   return(list(#tabella=tabella,
               pivots=maxima
