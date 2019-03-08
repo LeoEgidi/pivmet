@@ -115,6 +115,8 @@
 piv_KMeans <- function(x,
                        centers,
                        alg.type = c("KMeans", "hclust"),
+                       method = c("single", "complete", "average", "ward.D", "ward.D2",
+                                  "mcquitty", "median", "centroid"),
                        piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
                        H = 1000,
                        opt = list(iter.max =10, num.seeds =10, prec.par =5)){
@@ -143,10 +145,13 @@ piv_KMeans <- function(x,
   if (missing(alg.type)){
     alg.type <- "KMeans"
   }
+  if (missing(method)){
+    method <- "complete"
+  }
 
   #type of clustering for initial clusters' assignment
   if (alg.type=="hclust"){
-    cl <-cutree(hclust(dist(x), "average"),centers)
+    cl <-cutree(hclust(dist(x), method = method),centers)
   }else if (alg.type=="KMeans"){
     cl <- KMeans(x,centers)$cluster
   }
