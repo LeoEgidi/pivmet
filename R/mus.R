@@ -357,7 +357,7 @@ MUS <- function(C, clusters, prec_par){
       return(print("Warning: try increasing the precision parameter prec_par"))
     }else{
 
-  return(list(pivots=maxima))
+  return(list(pivots=maxima, prec_par = prec_par))
     }
   }else{
 
@@ -371,7 +371,8 @@ MUS <- function(C, clusters, prec_par){
     return(print("Warning: try increasing the precision parameter prec_par"))
   }else{
   return(list(#tabella=tabella,
-              pivots=maxima
+              pivots=maxima,
+              prec_par = prec_par
               #,contatore=contatore
               #,
               #new=new_lista_ord[is.na(new_lista_ord)==FALSE
