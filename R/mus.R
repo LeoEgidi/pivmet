@@ -106,6 +106,11 @@ MUS <- function(C, clusters, prec_par){
 
   #clusters<-c()
   #clusters<-as.vector(clusters_list[[ind_id]])
+
+  if (missing(prec_par)){
+    prec_par <- min(10, min(table(clusters)))
+  }
+
   coppie<-which(C==0, arr.ind = TRUE) #estraggo le coppie
   ordine<-sort(table(which(C==0, arr.ind = TRUE)), decreasing=TRUE) #ordino i pptenziali pivot
   new_lista_ord<-c()
@@ -346,18 +351,30 @@ MUS <- function(C, clusters, prec_par){
   if (length(unique(tabella[,2]))<length(unique(clusters))){
     maxima<-rep(NA,length(unique(clusters)) )
 
+    if (is.na(sum(maxima))){
+      return(print("Warning: the precision parameter is too low.
+            Try to increment the prec_par argument"))
+    }else{
+
   return(list(pivots=maxima))
+    }
   }else{
 
   p<-c()
   for (g in 1:length(unique(clusters))){
     maxima[g]<- subset(tabella, tabella[,2]==g)[which.max(subset(tabella[,4], tabella[,2]==g)),1]
   }
+
+
+  if (is.na(sum(maxima))){
+    return(print("Warning: the precision parameter is too low.
+            Try to increment the prec_par argument"))
+  }else{
   return(list(#tabella=tabella,
               pivots=maxima
               #,contatore=contatore
               #,
               #new=new_lista_ord[is.na(new_lista_ord)==FALSE
                ))
-
+        }
   }}
