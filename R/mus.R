@@ -109,6 +109,8 @@ MUS <- function(C, clusters, prec_par){
 
   if (missing(prec_par)){
     prec_par <- min(10, min(table(clusters)))
+  }else{
+    prec_par <- min(prec_par, min(table(clusters)))
   }
 
   coppie<-which(C==0, arr.ind = TRUE) #estraggo le coppie
