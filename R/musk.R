@@ -20,6 +20,7 @@
 #' co-association matrix.
 #' @param iter.max The maximum number of iterations allowed for \code{KMeans}.
 #' @param num.seeds The number of different starting random seeds to use for \code{KMeans}. Each random seed results in a different solution.
+#' @param prec_par The maximum number of alternative pivots for each group in \code{MUS} algorithm. Default is 10.
 #'
 #'
 #' @details

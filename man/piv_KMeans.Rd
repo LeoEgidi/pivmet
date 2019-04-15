@@ -35,6 +35,8 @@ co-association matrix.}
 \item{iter.max}{The maximum number of iterations allowed for \code{KMeans}.}
 
 \item{num.seeds}{The number of different starting random seeds to use for \code{KMeans}. Each random seed results in a different solution.}
+
+\item{prec_par}{The maximum number of alternative pivots for each group in \code{MUS} algorithm. Default is 10.}
 }
 \value{
 A list with components
