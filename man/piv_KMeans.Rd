@@ -19,6 +19,8 @@ piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
 \eqn{N} units into the desired number of clusters.
 Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.}
 
+\item{method}{The method used in the \code{hclust} algorithm.}
+
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 "maxsumdiff"}.
@@ -30,13 +32,17 @@ the vignette).}
 distinct k-means partitions used for building a \eqn{N \times N}
 co-association matrix.}
 
-\item{opt}{List of optional arguments to be passed to \code{MUS} or \code{KMeans}.}
+\item{iter.max}{The maximum number of iterations allowed for \code{KMeans}.}
+
+\item{num.seeds}{The number of different starting random seeds to use for \code{KMeans}. Each random seed results in a different solution.}
 }
 \value{
 A list with components
 
 \item{\code{cluster}}{A vector of integers indicating the cluster to which each point is allocated.}
 \item{\code{centers}}{A matrix of cluster centers (centroids).}
+\item{\code{coass}}{The co-association matrix built from ensemble clustering.}
+\item{\code{pivots}}{The pivotal units identified by the selected pivotal criterion.}
 \item{\code{totss}}{The total sum of squares.}
 \item{\code{withinss}}{The within-cluster sum of squares for each cluster.}
 \item{\code{tot.withinss}}{The within-cluster sum of squares summed across clusters.}
@@ -44,7 +50,6 @@ A list with components
 \item{\code{size}}{ The number of points in each cluster.}
 \item{\code{iter}}{The number of (outer) iterations.}
 \item{\code{ifault}}{integer: indicator of a possible algorithm problem – for experts.}
-\item{\code{pivots}}{The pivotal units identified by the selected pivotal criterion.}
 }
 \description{
 Perform classical k-means clustering on a data matrix using pivots as
@@ -121,5 +126,5 @@ K-means seeding via MUS algorithm. Conference Paper,
 Book of Short Papers, SIS2018, ISBN: 9788891910233.
 }
 \author{
-Leonardo Egidi \url{legidi@units.it}
+Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
 }

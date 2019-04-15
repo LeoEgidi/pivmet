@@ -5,6 +5,10 @@
 #'
 #' @param x A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).
 #' @param centers The number of clusters in the solution.
+#' @param alg.type The clustering algorithm for the initial partition of the
+#' \eqn{N} units into the desired number of clusters.
+#' Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.
+#' @param method The method used in the \code{hclust} algorithm.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 #' "maxsumdiff"}.
@@ -14,10 +18,8 @@
 #' @param H If \code{"MUS"} is selected, this is the number of
 #' distinct k-means partitions used for building a \eqn{N \times N}
 #' co-association matrix.
-#' @param alg.type The clustering algorithm for the initial partition of the
-#' \eqn{N} units into the desired number of clusters.
-#' Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.
-#' @param opt List of optional arguments to be passed to \code{MUS} or \code{KMeans}.
+#' @param iter.max The maximum number of iterations allowed for \code{KMeans}.
+#' @param num.seeds The number of different starting random seeds to use for \code{KMeans}. Each random seed results in a different solution.
 #'
 #'
 #' @details
@@ -37,6 +39,8 @@
 #'
 #'\item{\code{cluster}}{A vector of integers indicating the cluster to which each point is allocated.}
 #'\item{\code{centers}}{A matrix of cluster centers (centroids).}
+#'\item{\code{coass}}{The co-association matrix built from ensemble clustering.}
+#'\item{\code{pivots}}{The pivotal units identified by the selected pivotal criterion.}
 #'\item{\code{totss}}{The total sum of squares.}
 #'\item{\code{withinss}}{The within-cluster sum of squares for each cluster.}
 #'\item{\code{tot.withinss}}{The within-cluster sum of squares summed across clusters.}
@@ -44,12 +48,12 @@
 #'\item{\code{size}}{ The number of points in each cluster.}
 #'\item{\code{iter}}{The number of (outer) iterations.}
 #'\item{\code{ifault}}{integer: indicator of a possible algorithm problem – for experts.}
-#'\item{\code{pivots}}{The pivotal units identified by the selected pivotal criterion.}
 #'
 #'
 #'
 #'
-#'@author Leonardo Egidi \url{legidi@units.it}
+#'
+#'@author Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
 #'@references
 #'
 #'Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
@@ -112,10 +116,15 @@
 
 
 
-piv_KMeans <- function (x, centers, alg.type = c("KMeans", "hclust"),
+piv_KMeans <- function (x, centers,
+                        alg.type = c("KMeans", "hclust"),
                         method = c("single",  "complete", "average", "ward.D", "ward.D2", "mcquitty", "median",
-                                   "centroid"), piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
-                        H = 1000, iter.max = 10, num.seeds = 10,  prec_par = 10)
+                                   "centroid"),
+                        piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
+                        H = 1000,
+                        iter.max = 10,
+                        num.seeds = 10,
+                        prec_par = 10)
 {
 
   if (missing(piv.criterion)) {
@@ -202,9 +211,16 @@ piv_KMeans <- function (x, centers, alg.type = c("KMeans", "hclust"),
 
   Pivgroups <- KMeans(x, centers = start, iter.max = iter.max, num.seeds = num.seeds)
 
-  return(list(cluster = Pivgroups$cluster, centers = Pivgroups$centers, coass=sim_matr, pivots = pivots,
-              totss = Pivgroups$totss, withinss = Pivgroups$withinss, tot.withinss = Pivgroups$tot.withinss,
-              betweenss = Pivgroups$betweenss, size = Pivgroups$size, iter = Pivgroups$iter,
+  return(list(cluster = Pivgroups$cluster,
+              centers = Pivgroups$centers,
+              coass=sim_matr,
+              pivots = pivots,
+              totss = Pivgroups$totss,
+              withinss = Pivgroups$withinss,
+              tot.withinss = Pivgroups$tot.withinss,
+              betweenss = Pivgroups$betweenss,
+              size = Pivgroups$size,
+              iter = Pivgroups$iter,
               ifaults = Pivgroups$ifault))
 }
 

@@ -103,3 +103,6 @@ methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) 
 Theoretical and Applied Statistics,
 Springer Proceedings in Mathematics and Statistics 227, pp. 71–81.
 }
+\author{
+Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
+}

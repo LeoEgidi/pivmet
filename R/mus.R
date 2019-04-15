@@ -41,6 +41,8 @@
 #'
 #' \item{\code{pivots}}{ The \code{k} pivotal units}
 #'
+#'
+#' @author Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
 #' @references Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
 #'  Maxima Units Search(MUS) algorithm:
 #' methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) Studies in
