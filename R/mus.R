@@ -11,6 +11,9 @@
 #' @param clusters A vector of integers from \code{1:k} (with \code{k <= 4})
 #' indicating a partition of the \eqn{N} units resulting from clustering.
 #' @param prec_par  Optional argument. The maximum number of alternative pivots for each group.
+#' Default is 10.
+#' @param tol Optional argument. The tolerance value for \code{C} when testing for similarity/co-association.
+#' The lowest the tolerance, the highest the requirement for the dissimilarity. Default is 0.
 #' @details
 #'
 #' Consider \eqn{H} distinct partitions of a set of \eqn{N} \eqn{d}-dimensional
@@ -236,7 +239,8 @@ MUS <- function(C, clusters, prec_par=10, tol=0) {
     maxima[g] <- subset(tabella, tabella[, 2] == g)[which.max(s), 1]
 
   }
-  return(list(pivots = maxima, prec_par = prec_par, tabella =tabella))
+  return(list(pivots = maxima,
+              prec_par = prec_par))
 }
 
 
