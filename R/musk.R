@@ -112,154 +112,252 @@
 
 
 
-piv_KMeans <- function(x,
-                       centers,
-                       alg.type = c("KMeans", "hclust"),
-                       method = c("single", "complete", "average", "ward.D", "ward.D2",
-                                  "mcquitty", "median", "centroid"),
-                       piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
-                       H = 1000,
-                       opt = list(iter.max =10, num.seeds =10, prec.par =5)){
-  #check on optional parameters
+piv_KMeans <- function (x, centers, alg.type = c("KMeans", "hclust"),
+                        method = c("single",  "complete", "average", "ward.D", "ward.D2", "mcquitty", "median",
+                                   "centroid"), piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
+                        H = 1000, iter.max = 10, num.seeds = 10,  prec_par = 10)
+{
 
-  if(missing(opt)){
-    iter.max  <- 10
-    num.seeds <- 10
-    prec.par  <- 5
-  }else{
-    iter.max  <-  c(10, list(opt)$iter.max)[which(c(is.null(list(opt)$iter.max), !is.null(list(opt)$iter.max)))]
-    num.seeds <-  c(10, list(opt)$num.seeds)[which(c(is.null(list(opt)$num.seeds), !is.null(list(opt)$num.seeds)))]
-    prec.par  <-  c(5, list(opt)$prec.par)[which(c(is.null(list(opt)$prec.par), !is.null(list(opt)$prec.par)))]
-  }
-  if (missing(piv.criterion)){
-    if (centers<=4 ){
+  if (missing(piv.criterion)) {
+    if (centers <= 4) {
       piv.criterion <- "MUS"
-    }else{
-      piv.criterion <- "maxsumdiff"
+    }
+    else {
+      piv.criterion <-  "maxsumint"
     }
   }
-  if (missing(H)){
-    H <- 1000
-  }
 
-  if (missing(alg.type)){
+  if (missing(alg.type)) {
     alg.type <- "KMeans"
   }
-  if (missing(method)){
-    method <- "complete"
+
+  if (alg.type == "hclust") {
+    if (missing(method)) {
+      method <- "complete"
+    }
+
+    cl <- cutree(hclust(dist(x), method = method), centers)
+
+  } else if (alg.type == "KMeans") {
+
+    cl <- KMeans(x, centers,  iter.max = iter.max, num.seeds = num.seeds)$cluster
   }
 
-  #type of clustering for initial clusters' assignment
-  if (alg.type=="hclust"){
-    cl <-cutree(hclust(dist(x), method = method),centers)
-  }else if (alg.type=="KMeans"){
-    cl <- KMeans(x,centers)$cluster
-  }
-
-  # tuning of precision MUS parameter
-  # if (missing(prec.par)){
-  #   prec.par <- min( min(table(cl))-1, 5 )
-  # }
-
-  #compute H different partitions
-  if (is.vector(x)){
+  if (is.vector(x)) {
     n <- length(x)
-  }else{
+  }
+  else {
     n <- dim(x)[1]
   }
 
   a <- matrix(NA, H, n)
-
-  for (h in 1:H){
-    a[h,] <- kmeans(x,centers)$cluster
+  for (h in 1:H) {
+    a[h, ] <- kmeans(x, centers)$cluster
   }
-  sim_matr <- matrix(1, n,n)
-
-  for (i in 1:(n-1)){
-    for (j in (i+1):n){
-      sim_matr[i,j] <- sum(a[,i]==a[,j])/H
-      sim_matr[j,i] <- sim_matr[i,j]
+  sim_matr <- matrix(1, n, n)
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      sim_matr[i, j] <- sum(a[, i] == a[, j])/H
+      sim_matr[j, i] <- sim_matr[i, j]
     }
   }
 
-  if (centers <=4){
-    if (piv.criterion=="MUS"){
-      if (centers==2){
-        tuning <- n%/%2
-      }else{
-        tuning <- 5
-      }
+  if (piv.criterion == "MUS") {
 
-      #MUS algorithm
-      #prec.par <- prec.par
-      mus_res  <- MUS(sim_matr, cl, prec_par=tuning)
-      pivots   <- mus_res$pivots
-    }else if (piv.criterion!="MUS"){
+    mus_res <- MUS(sim_matr, cl, prec_par = prec_par)
 
-      #Other pivotal criteria
-      z <- array(0,dim=c(n, centers, H))
-      for (i in 1:H){
-        for (j in 1:n){
-          z[j,a[i,j],i] <- 1
-        }
-      }
-      zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
-      sel <- piv_sel(C=sim_matr, clusters=cl)
-      if (piv.criterion=="maxsumint"){
-        pivots <- sel$pivots[,1]
-      }else if(piv.criterion=="minsumnoint"){
-        pivots <- sel$pivots[,2]
-      }else if(piv.criterion=="maxsumdiff"){
-        pivots <- sel$pivots[,3]
-      }
+    prec_par=mus_res$prec_par
+    pivots <- mus_res$pivots
+
+  } else if (piv.criterion != "MUS") {
+
+    sel <- piv_sel(C = sim_matr, clusters = cl)
+
+    if (piv.criterion == "maxsumint") {
+      pivots <- sel$pivots[, 1]
     }
-  }else{
-    z <- array(0,dim=c(n, centers, H))
-    for (i in 1:H){
-      for (j in 1:n){
-        z[j,a[i,j],i] <- 1
-      }
+    else if (piv.criterion == "minsumnoint") {
+      pivots <- sel$pivots[, 2]
     }
-    zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
-    sel <- piv_sel(C=sim_matr,  clusters=cl)
-    if (piv.criterion=="maxsumint"){
-      pivots <- sel$pivots[,1]
-    }else if(piv.criterion=="minsumnoint"){
-      pivots <- sel$pivots[,2]
-    }else if(piv.criterion=="maxsumdiff"){
-      pivots <- sel$pivots[,3]
+    else if (piv.criterion == "maxsumdiff") {
+      pivots <- sel$pivots[, 3]
     }
   }
 
-  #Initial seeding
-  if(is.vector(x)){
-    dim_x <- 1
+  if (is.vector(x)) {
+    #dim_x <- 1
     start <- c()
-    for (k in 1:centers){
+    for (k in 1:centers) {
       start[k] <- as.double(x[pivots[k]])
     }
-  }else if(is.matrix(x)){
-    dim_x <- dim(x)[2]
-    start <- matrix(NA, centers, dim_x )
-    for (k in 1:centers){
-      start[k,] <- as.double(x[pivots[k],])
+  }
+  else if (is.matrix(x)) {
+    #dim_x <- dim(x)[2]
+    start <- matrix(NA, centers,  dim(x)[2])
+    for (k in 1:centers) {
+      start[k, ] <- as.double(x[pivots[k], ])
     }
   }
 
 
-  #MUSKmeans
-  d_mus   <- KMeans(x, centers=start, iter.max = iter.max,
-                    num.seeds = num.seeds)
+  Pivgroups <- KMeans(x, centers = start, iter.max = iter.max, num.seeds = num.seeds)
 
-  return(list(cluster=d_mus$cluster,
-    centers=d_mus$centers,
-    totss=d_mus$totss,
-    withinss=d_mus$withinss,
-    tot.withinss=d_mus$tot.withinss,
-    betweenss=d_mus$betweenss,
-    size=d_mus$size,
-    iter=d_mus$iter,
-    ifaults=d_mus$ifault,
-    pivots = pivots,
-    piv.criterion = piv.criterion))
+  return(list(cluster = Pivgroups$cluster, centers = Pivgroups$centers, coass=sim_matr, pivots = pivots,
+              totss = Pivgroups$totss, withinss = Pivgroups$withinss, tot.withinss = Pivgroups$tot.withinss,
+              betweenss = Pivgroups$betweenss, size = Pivgroups$size, iter = Pivgroups$iter,
+              ifaults = Pivgroups$ifault))
 }
+
+
+
+# function(x,
+#                        centers,
+#                        alg.type = c("KMeans", "hclust"),
+#                        method = c("single", "complete", "average", "ward.D", "ward.D2",
+#                                   "mcquitty", "median", "centroid"),
+#                        piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
+#                        H = 1000,
+#                        opt = list(iter.max =10, num.seeds =10, prec.par =5)){
+#   #check on optional parameters
+#
+#   if(missing(opt)){
+#     iter.max  <- 10
+#     num.seeds <- 10
+#     prec.par  <- 5
+#   }else{
+#     iter.max  <-  c(10, list(opt)$iter.max)[which(c(is.null(list(opt)$iter.max), !is.null(list(opt)$iter.max)))]
+#     num.seeds <-  c(10, list(opt)$num.seeds)[which(c(is.null(list(opt)$num.seeds), !is.null(list(opt)$num.seeds)))]
+#     prec.par  <-  c(5, list(opt)$prec.par)[which(c(is.null(list(opt)$prec.par), !is.null(list(opt)$prec.par)))]
+#   }
+#   if (missing(piv.criterion)){
+#     if (centers<=4 ){
+#       piv.criterion <- "MUS"
+#     }else{
+#       piv.criterion <- "maxsumdiff"
+#     }
+#   }
+#   if (missing(H)){
+#     H <- 1000
+#   }
+#
+#   if (missing(alg.type)){
+#     alg.type <- "KMeans"
+#   }
+#   if (missing(method)){
+#     method <- "complete"
+#   }
+#
+#   #type of clustering for initial clusters' assignment
+#   if (alg.type=="hclust"){
+#     cl <-cutree(hclust(dist(x), method = method),centers)
+#   }else if (alg.type=="KMeans"){
+#     cl <- KMeans(x,centers)$cluster
+#   }
+#
+#   # tuning of precision MUS parameter
+#   # if (missing(prec.par)){
+#   #   prec.par <- min( min(table(cl))-1, 5 )
+#   # }
+#
+#   #compute H different partitions
+#   if (is.vector(x)){
+#     n <- length(x)
+#   }else{
+#     n <- dim(x)[1]
+#   }
+#
+#   a <- matrix(NA, H, n)
+#
+#   for (h in 1:H){
+#     a[h,] <- kmeans(x,centers)$cluster
+#   }
+#   sim_matr <- matrix(1, n,n)
+#
+#   for (i in 1:(n-1)){
+#     for (j in (i+1):n){
+#       sim_matr[i,j] <- sum(a[,i]==a[,j])/H
+#       sim_matr[j,i] <- sim_matr[i,j]
+#     }
+#   }
+#
+#   if (centers <=4){
+#     if (piv.criterion=="MUS"){
+#       if (centers==2){
+#         tuning <- n%/%2
+#       }else{
+#         tuning <- 5
+#       }
+#
+#       #MUS algorithm
+#       #prec.par <- prec.par
+#       mus_res  <- MUS(sim_matr, cl, prec_par=tuning)
+#       pivots   <- mus_res$pivots
+#     }else if (piv.criterion!="MUS"){
+#
+#       #Other pivotal criteria
+#       z <- array(0,dim=c(n, centers, H))
+#       for (i in 1:H){
+#         for (j in 1:n){
+#           z[j,a[i,j],i] <- 1
+#         }
+#       }
+#       zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
+#       sel <- piv_sel(C=sim_matr, clusters=cl)
+#       if (piv.criterion=="maxsumint"){
+#         pivots <- sel$pivots[,1]
+#       }else if(piv.criterion=="minsumnoint"){
+#         pivots <- sel$pivots[,2]
+#       }else if(piv.criterion=="maxsumdiff"){
+#         pivots <- sel$pivots[,3]
+#       }
+#     }
+#   }else{
+#     z <- array(0,dim=c(n, centers, H))
+#     for (i in 1:H){
+#       for (j in 1:n){
+#         z[j,a[i,j],i] <- 1
+#       }
+#     }
+#     zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
+#     sel <- piv_sel(C=sim_matr,  clusters=cl)
+#     if (piv.criterion=="maxsumint"){
+#       pivots <- sel$pivots[,1]
+#     }else if(piv.criterion=="minsumnoint"){
+#       pivots <- sel$pivots[,2]
+#     }else if(piv.criterion=="maxsumdiff"){
+#       pivots <- sel$pivots[,3]
+#     }
+#   }
+#
+#   #Initial seeding
+#   if(is.vector(x)){
+#     dim_x <- 1
+#     start <- c()
+#     for (k in 1:centers){
+#       start[k] <- as.double(x[pivots[k]])
+#     }
+#   }else if(is.matrix(x)){
+#     dim_x <- dim(x)[2]
+#     start <- matrix(NA, centers, dim_x )
+#     for (k in 1:centers){
+#       start[k,] <- as.double(x[pivots[k],])
+#     }
+#   }
+#
+#
+#   #MUSKmeans
+#   d_mus   <- KMeans(x, centers=start, iter.max = iter.max,
+#                     num.seeds = num.seeds)
+#
+#   return(list(cluster=d_mus$cluster,
+#     centers=d_mus$centers,
+#     totss=d_mus$totss,
+#     withinss=d_mus$withinss,
+#     tot.withinss=d_mus$tot.withinss,
+#     betweenss=d_mus$betweenss,
+#     size=d_mus$size,
+#     iter=d_mus$iter,
+#     ifaults=d_mus$ifault,
+#     pivots = pivots,
+#     piv.criterion = piv.criterion))
+# }

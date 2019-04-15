@@ -7,8 +7,8 @@
 piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
   method = c("single", "complete", "average", "ward.D", "ward.D2",
   "mcquitty", "median", "centroid"), piv.criterion = c("MUS",
-  "maxsumint", "minsumnoint", "maxsumdiff"), H = 1000,
-  opt = list(iter.max = 10, num.seeds = 10, prec.par = 5))
+  "maxsumint", "minsumnoint", "maxsumdiff"), H = 1000, iter.max = 10,
+  num.seeds = 10, prec_par = 10)
 }
 \arguments{
 \item{x}{A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}

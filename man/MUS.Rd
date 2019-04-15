@@ -4,7 +4,7 @@
 \alias{MUS}
 \title{MUS algorithm}
 \usage{
-MUS(C, clusters, prec_par)
+MUS(C, clusters, prec_par = 10, tol = 0)
 }
 \arguments{
 \item{C}{\eqn{N \times N} matrix with a non-negligible number of zeros.
