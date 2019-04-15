@@ -15,7 +15,11 @@ ensembles.}
 \item{clusters}{A vector of integers from \code{1:k} (with \code{k <= 4})
 indicating a partition of the \eqn{N} units resulting from clustering.}
 
-\item{prec_par}{Optional argument. The maximum number of alternative pivots for each group.}
+\item{prec_par}{Optional argument. The maximum number of alternative pivots for each group.
+Default is 10.}
+
+\item{tol}{Optional argument. The tolerance value for \code{C} when testing for similarity/co-association.
+The lowest the tolerance, the highest the requirement for the dissimilarity. Default is 0.}
 }
 \value{
 \item{\code{pivots}}{ The \code{k} pivotal units}
