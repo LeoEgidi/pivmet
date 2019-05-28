@@ -23,6 +23,7 @@ The lowest the tolerance, the highest the requirement for the dissimilarity. Def
 }
 \value{
 \item{\code{pivots}}{ The \code{k} pivotal units}
+\item{\code{prec_par}}{The efective maximum number of alternative pivots for each group}
 }
 \description{
 Perform Maxima Units Search (MUS) algorithm on a large and sparse matrix in
