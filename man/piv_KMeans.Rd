@@ -30,11 +30,11 @@ the vignette).}
 
 \item{H}{If \code{"MUS"} is selected, this is the number of
 distinct k-means partitions used for building a \eqn{N \times N}
-co-association matrix.}
+co-association matrix. Default is 1000.}
 
-\item{iter.max}{The maximum number of iterations allowed for \code{KMeans}.}
+\item{iter.max}{The maximum number of iterations allowed for \code{KMeans}. Default is 10.}
 
-\item{num.seeds}{The number of different starting random seeds to use for \code{KMeans}. Each random seed results in a different solution.}
+\item{num.seeds}{The number of different starting random seeds to use for \code{KMeans}. Each random seed results in a different solution. Default is 10.}
 
 \item{prec_par}{The maximum number of alternative pivots for each group in \code{MUS} algorithm. Default is 10.}
 }

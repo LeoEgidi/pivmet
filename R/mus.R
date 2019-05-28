@@ -40,7 +40,7 @@
 #' @return
 #'
 #' \item{\code{pivots}}{ The \code{k} pivotal units}
-#'
+#' \item{\code{prec_par}}{The efective maximum number of alternative pivots for each group}
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
 #' @references Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
