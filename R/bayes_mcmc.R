@@ -186,16 +186,20 @@ piv_MCMC <- function(y,
                      priors,
                      nMC,
                      piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
-                     clustering = c("diana", "hclust")){
+                     clustering = c("diana", "hclust"),
+                     software =c("rjags", "rstan"),
+                     burn =0.5*nMC){
 
   # Conditions about data dimension----------------
 
   if (is.vector(y)){
+    N <- length(y)
+    if (software=="rjags"){
      if (missing(priors)){
        priors = list(kind = "independence", parameter = "priorsFish",
                      hierarchical = "tau")
      }
-    N <- length(y)
+
     # JAGS code------------------------
 
     # Initial values
@@ -205,7 +209,7 @@ piv_MCMC <- function(y,
       mu_inits[j]<-mean(y[clust_inits==j])
     }
     # Data
-    burn <- 1000
+
 
     # Model
     mod.mist.univ <- BMMmodel(y, k = k, initialValues = list(S0 = 2),
@@ -284,6 +288,68 @@ piv_MCMC <- function(y,
     }
 
 
+    }else if (software=="rstan"){
+
+      data = list(N=N, y=y, k=k)
+      mix_univ <-"
+        data {
+          int<lower=1> k;          // number of mixture components
+          int<lower=1> N;          // number of data points
+          real y[N];               // observations
+          }
+        parameters {
+          simplex[k] theta;        // mixing proportions
+          ordered[k] mu;              // locations of mixture components
+          vector<lower=0>[k] sigma;   // scales of mixture components
+          }
+      transformed parameters{
+          vector[k] log_theta = log(theta);  // cache log calculation
+          vector[k] pz[N];
+              for (n in 1:N){
+                  pz[n] =   normal_lpdf(y[n]|mu, sigma)+
+                            log_theta-
+                            log_sum_exp(normal_lpdf(y[n]|mu, sigma)+
+                            log_theta);
+                            }
+          }
+      model {
+        sigma ~ lognormal(0, 2);
+        mu ~ normal(0, 10);
+            for (n in 1:N) {
+              vector[k] lps = log_theta;
+                for (j in 1:k){
+                    lps[j] += normal_lpdf(y[n] | mu[j], sigma[j]);
+                    target+=pz[n,j];
+                    }
+              target += log_sum_exp(lps);
+                  }
+          }
+     generated quantities{
+        int<lower=1, upper=k> z[N];
+          for (n in 1:N){
+              z[n] = categorical_rng(exp(pz[n]));
+            }
+      }
+      "
+    fit_univ <-  stan(model_code = mix_univ,
+                      data=data,
+                      chains =4,
+                      iter =nMC)
+    sims_univ <- extract(fit_univ)
+
+    J <- 3
+    mcmc.pars <- array(data = NA, dim = c(2*nMC-length(1:burn), k, J))
+    mcmc.pars[ , , 1] <- sims_univ$mu[-(1:burn), ]
+    mcmc.pars[ , , 2] <- sims_univ$sigma[-(1:burn), ]
+    mcmc.pars[ , , 3] <- sims_univ$theta[-(1:burn), ]
+
+    mu <- mcmc.pars[,,1]
+    tau <- mcmc.pars[,,2]
+    prob.st <- mcmc.pars[,,3]
+    group <-  sims_univ$z[-(1:burn), 1:N] #gruppi
+
+
+    }
   }else if (is.matrix(y)){
     N <- dim(y)[1]
 
