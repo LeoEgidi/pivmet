@@ -264,11 +264,13 @@ piv_MCMC <- function(y,
       transformed parameters{
           vector[k] log_theta = log(theta);  // cache log calculation
           vector[k] pz[N];
+          simplex[k] exp_pz[N];
               for (n in 1:N){
                   pz[n] =   normal_lpdf(y[n]|mu, sigma)+
                             log_theta-
                             log_sum_exp(normal_lpdf(y[n]|mu, sigma)+
                             log_theta);
+                  exp_pz[n] = exp(pz[n]);
                             }
           }
       model {
@@ -286,7 +288,7 @@ piv_MCMC <- function(y,
      generated quantities{
         int<lower=1, upper=k> z[N];
           for (n in 1:N){
-              z[n] = categorical_rng(exp(pz[n]));
+              z[n] = categorical_rng(exp_pz[n]);
             }
       }
       "
@@ -297,10 +299,10 @@ piv_MCMC <- function(y,
       sims_univ <- extract(fit_univ)
 
       J <- 3
-      mcmc.pars <- array(data = NA, dim = c(2*nMC-length(1:burn), k, J))
-      mcmc.pars[ , , 1] <- sims_univ$mu[-(1:burn), ]
-      mcmc.pars[ , , 2] <- sims_univ$sigma[-(1:burn), ]
-      mcmc.pars[ , , 3] <- sims_univ$theta[-(1:burn), ]
+      mcmc.pars <- array(data = NA, dim = c(dim(sims_univ$theta)[1], k, J))
+      mcmc.pars[ , , 1] <- sims_univ$mu
+      mcmc.pars[ , , 2] <- sims_univ$sigma
+      mcmc.pars[ , , 3] <- sims_univ$theta
 
       mu <- mcmc.pars[,,1]
       tau <- mcmc.pars[,,2]
