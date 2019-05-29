@@ -375,6 +375,18 @@ piv_MCMC <- function(y,
 
   }else if (is.matrix(y)){
     N <- dim(y)[1]
+    # Parameters' initialization
+    clust_inits <- KMeans(y, k)$cluster
+    #cutree(hclust(dist(y), "average"),k)
+    mu_inits <- matrix(0,k,2)
+    for (j in 1:k){
+      mu_inits[j,] <- cbind(mean(y[clust_inits==j,1]), mean(y[clust_inits==j,2]))
+    }
+    #Reorder mu_inits according to the x-coordinate
+    mu_inits <-
+      mu_inits[sort(mu_inits[,1], decreasing=FALSE, index.return=TRUE)$ix,]
+
+    if (software=="rjags"){
 
     # JAGS code------------------------
 
@@ -412,17 +424,6 @@ piv_MCMC <- function(y,
     pClust[1:k] ~ ddirch( onesRepNclust)
   }"
 
-
-    # Parameters' initialization
-    clust_inits <- KMeans(y, k)$cluster
-    #cutree(hclust(dist(y), "average"),k)
-    mu_inits <- matrix(0,k,2)
-    for (j in 1:k){
-      mu_inits[j,] <- cbind(mean(y[clust_inits==j,1]), mean(y[clust_inits==j,2]))
-    }
-    #Reorder mu_inits according to the x-coordinate
-    mu_inits <-
-      mu_inits[sort(mu_inits[,1], decreasing=FALSE, index.return=TRUE)$ix,]
 
     init1.biv <- dump.format(list(muOfClust=mu_inits,
       tauOfClust= matrix(c(15,0,0,15),ncol=2),
@@ -476,9 +477,101 @@ piv_MCMC <- function(y,
     FreqGruppiJags <- table(group)
     tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
     prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+    }else if(software=="rstan"){
+      data =list(N=N, k=k, y=y, D=2)
+      mix_biv <- "
+        data {
+          int<lower=1> k;          // number of mixture components
+          int<lower=1> N;          // number of data points
+          int D;                   // data dimension
+          matrix[N,D] y;           // observations matrix
+        }
+        parameters {
+          simplex[k] theta;        // mixing proportions
+          vector[D] mu[k];        // locations of mixture components
+          cholesky_factor_corr[D] L_Omega;   // scales of mixture components
+          vector<lower=0>[D] L_sigma;
+          cholesky_factor_corr[D] L_tau_Omega;   // scales of mixture components
+          vector<lower=0>[D] L_tau;
+          }
+        transformed parameters{
+          vector[k] log_theta = log(theta);  // cache log calculation
+          vector[k] pz[N];
+          simplex[k] exp_pz[N];
+          matrix[D,D] L_Sigma=diag_pre_multiply(L_sigma, L_Omega);
+          matrix[D,D] L_Tau=diag_pre_multiply(L_tau, L_tau_Omega);
+
+
+            for (n in 1:N){
+                pz[n]=   multi_normal_cholesky_lpdf(y[n]|mu, L_Sigma)+
+                         log_theta-
+                         log_sum_exp(multi_normal_cholesky_lpdf(y[n]|
+                                                     mu, L_Sigma)+
+                         log_theta);
+                exp_pz[n] = exp(pz[n]);
+              }
+          }
+        model{
+          mu ~ multi_normal_cholesky(rep_vector(0,D), L_Tau);
+            for (n in 1:N) {
+              vector[k] lps = log_theta;
+                for (j in 1:k){
+                    lps[j] += multi_normal_cholesky_lpdf(y[n] |
+                                                   mu[j], L_Sigma);
+                    target+=pz[n,j];
+                }
+              target += log_sum_exp(lps);
+          }
+          }
+        generated quantities{
+          int<lower=1, upper=k> z[N];
+              for (n in 1:N){
+                  z[n] = categorical_rng(exp_pz[n]);
+                }
+          }
+          "
+      fit_biv <-  stan(model_code = mix_biv,
+                        data=data,
+                        chains =4,
+                        iter =nMC)
+      sims_biv <- extract(fit_biv)
+
+      # Extraction
+      ris <- as.matrix(sims_biv)
+
+      # Post- process of the chains----------------------
+      group <- sims_biv$z
+      M <- nrow(group)
+
+      mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
+      for (i in 1:M)
+        mu_pre_switch_compl[i,,] <- t(sims_biv$mu[i,,])
+      # Discard iterations
+      numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
+      sm <- sims_biv$mu[numeffettivogruppi==k,,]
+      true.iter <- dim(sm)[1]
+
+      if (sum(numeffettivogruppi==k)==0){
+        return(print("HMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        #return(1)
+      }else{
+
+        mu_pre_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+        for (i in 1:true.iter)
+          mu_pre_switch[i,,] <- t(sm[i,,])
+      }
+
+
+      group <- sims_biv$z[numeffettivogruppi==k,]
+      FreqGruppiJags <- table(group)
+      #tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
+      #prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+
+  }
+
     group.orig <- group
     verigruppi <- as.double(names(table(group)))
-    prob.st <- prob.st[,verigruppi]
+    #prob.st <- prob.st[,verigruppi]
 
     mu_pre_switch <- mu_pre_switch[,,verigruppi]
 
@@ -504,7 +597,7 @@ piv_MCMC <- function(y,
       }
       mu_switch[i,,] <- mu_pre_switch[i,,perm]
       #tau[i,] <- tau[i,perm]
-      prob.st[i,] <- prob.st[i,perm]
+      #prob.st[i,] <- prob.st[i,perm]
     }
 
     for (i in 1:true.iter){
