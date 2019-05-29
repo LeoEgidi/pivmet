@@ -5,7 +5,8 @@
 \title{JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
 \usage{
 piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
-  "minsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"))
+  "minsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"),
+  software = c("rjags", "rstan"), burn = 0.5 * nMC)
 }
 \arguments{
 \item{y}{N-dimensional data vector/matrix.}

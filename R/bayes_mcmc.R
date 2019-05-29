@@ -589,10 +589,16 @@ piv_MCMC <- function(y,
 
 
 
-  return(list( Freq=Freq, true.iter = true.iter, z=z, Mu = mu_inits,
-    ris=ris, groupPost=group,
-    mu_switch=mu_switch,
-    mu_raw=mu_pre_switch_compl,
-    C=C, grr=grr, pivots = pivots,
-    piv.criterion = piv.criterion))
+  return(list( Freq=Freq,
+               true.iter = true.iter,
+               z=z,
+               Mu = mu_inits,
+               ris=ris,
+               groupPost=group,
+               mu_switch=mu_switch,
+               mu_raw=mu_pre_switch_compl,
+               C=C,
+               grr=grr,
+               pivots = pivots,
+               piv.criterion = piv.criterion))
   }
