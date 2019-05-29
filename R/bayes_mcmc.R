@@ -194,6 +194,12 @@ piv_MCMC <- function(y,
 
   if (is.vector(y)){
     N <- length(y)
+    # Initial values
+    mu_inits<- c()
+    clust_inits <- kmeans(y, k)$cluster
+    for (j in 1:k){
+      mu_inits[j]<-mean(y[clust_inits==j])
+    }
     if (software=="rjags"){
      if (missing(priors)){
        priors = list(kind = "independence", parameter = "priorsFish",
@@ -202,15 +208,7 @@ piv_MCMC <- function(y,
 
     # JAGS code------------------------
 
-    # Initial values
-    mu_inits<- c()
-    clust_inits <- kmeans(y, k)$cluster
-    for (j in 1:k){
-      mu_inits[j]<-mean(y[clust_inits==j])
-    }
     # Data
-
-
     # Model
     mod.mist.univ <- BMMmodel(y, k = k, initialValues = list(S0 = 2),
       priors = priors)
@@ -304,10 +302,14 @@ piv_MCMC <- function(y,
       mcmc.pars[ , , 2] <- sims_univ$sigma
       mcmc.pars[ , , 3] <- sims_univ$theta
 
+      mu_pre_switch_compl <-  mcmc.pars[ , , 1]
+      tau_pre_switch_compl <-  mcmc.pars[ , , 2]
+      prob.st_pre_switch_compl <-  mcmc.pars[ , , 3]
+
       mu <- mcmc.pars[,,1]
       tau <- mcmc.pars[,,2]
       prob.st <- mcmc.pars[,,3]
-      group <-  sims_univ$z[-(1:burn), 1:N] #gruppi
+      group <-  sims_univ$z[, 1:N] #gruppi
       FreqGruppiJags <- table(group)
       numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
@@ -320,8 +322,9 @@ piv_MCMC <- function(y,
       ris_prel <- as.matrix(fit_univ)
       #[-(1:burn),]
       ris <- ris_prel[numeffettivogruppi==k,]
+      group <- group[numeffettivogruppi==k,]
       true.iter <- nrow(ris)
-      group <- ris[,1:N]
+
 
     }
 
