@@ -247,47 +247,6 @@ piv_MCMC <- function(y,
     true.iter <- nrow(ris)
     group <- ris[,1:N]
 
-    group.orig <- group
-    verigruppi <- as.double(names(table(group)))
-
-    cont <- 0
-    for (verogruppo in verigruppi){
-      cont <- cont+1
-      group.orig[group==verogruppo] <- cont          #aggiorna contatore pivot
-    }
-    cont                                           #qualche dubbio su sta parte
-
-    k.orig <- k
-    if (cont>1){
-      k <- cont
-    }
-    mu <- mu[,verigruppi]
-    tau <- tau[,verigruppi]
-    prob.st <- prob.st[,verigruppi]
-
-    M <- nrow(group)
-    group <- group*0
-    mu_switch <- array(rep(0, true.iter*k), dim=c(true.iter,k))
-    z <- array(0,dim=c(N, k, true.iter))
-
-    for (i in 1:true.iter){
-      perm <- sample(1:k,k,replace=FALSE)
-      for (j in 1:k){
-        #post-processing
-        group[i,group.orig[i,]==j] <- perm[j]
-      }
-      mu_switch[i,] <- mu[i,perm]
-      tau[i,] <- tau[i,perm]
-      prob.st[i,] <- prob.st[i,perm]
-    }
-
-    for (i in 1:true.iter){
-      for (j in 1:N){
-        z[j,group[i,j],i] <- 1
-      }
-    }
-
-
     }else if (software=="rstan"){
 
       data = list(N=N, y=y, k=k)
@@ -331,25 +290,84 @@ piv_MCMC <- function(y,
             }
       }
       "
-    fit_univ <-  stan(model_code = mix_univ,
-                      data=data,
-                      chains =4,
-                      iter =nMC)
-    sims_univ <- extract(fit_univ)
+      fit_univ <-  stan(model_code = mix_univ,
+                        data=data,
+                        chains =4,
+                        iter =nMC)
+      sims_univ <- extract(fit_univ)
 
-    J <- 3
-    mcmc.pars <- array(data = NA, dim = c(2*nMC-length(1:burn), k, J))
-    mcmc.pars[ , , 1] <- sims_univ$mu[-(1:burn), ]
-    mcmc.pars[ , , 2] <- sims_univ$sigma[-(1:burn), ]
-    mcmc.pars[ , , 3] <- sims_univ$theta[-(1:burn), ]
+      J <- 3
+      mcmc.pars <- array(data = NA, dim = c(2*nMC-length(1:burn), k, J))
+      mcmc.pars[ , , 1] <- sims_univ$mu[-(1:burn), ]
+      mcmc.pars[ , , 2] <- sims_univ$sigma[-(1:burn), ]
+      mcmc.pars[ , , 3] <- sims_univ$theta[-(1:burn), ]
 
-    mu <- mcmc.pars[,,1]
-    tau <- mcmc.pars[,,2]
-    prob.st <- mcmc.pars[,,3]
-    group <-  sims_univ$z[-(1:burn), 1:N] #gruppi
+      mu <- mcmc.pars[,,1]
+      tau <- mcmc.pars[,,2]
+      prob.st <- mcmc.pars[,,3]
+      group <-  sims_univ$z[-(1:burn), 1:N] #gruppi
+      FreqGruppiJags <- table(group)
+      numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
+      if (sum(numeffettivogruppi==k)==0){
+        return(print("HMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        #return(1)
+      }
+
+      ##saved in the output
+      ris_prel <- as.matrix(fit_univ)
+      #[-(1:burn),]
+      ris <- ris_prel[numeffettivogruppi==k,]
+      true.iter <- nrow(ris)
+      group <- ris[,1:N]
 
     }
+
+
+    ## resambling
+
+    group.orig <- group
+    verigruppi <- as.double(names(table(group)))
+
+    cont <- 0
+    for (verogruppo in verigruppi){
+      cont <- cont+1
+      group.orig[group==verogruppo] <- cont          #aggiorna contatore pivot
+    }
+    cont                                           #qualche dubbio su sta parte
+
+    k.orig <- k
+    if (cont>1){
+      k <- cont
+    }
+    mu <- mu[,verigruppi]
+    tau <- tau[,verigruppi]
+    prob.st <- prob.st[,verigruppi]
+
+    M <- nrow(group)
+    group <- group*0
+    mu_switch <- array(rep(0, true.iter*k), dim=c(true.iter,k))
+    z <- array(0,dim=c(N, k, true.iter))
+
+    for (i in 1:true.iter){
+      perm <- sample(1:k,k,replace=FALSE)
+      for (j in 1:k){
+        #post-processing
+        group[i,group.orig[i,]==j] <- perm[j]
+      }
+      mu_switch[i,] <- mu[i,perm]
+      tau[i,] <- tau[i,perm]
+      prob.st[i,] <- prob.st[i,perm]
+    }
+
+    for (i in 1:true.iter){
+      for (j in 1:N){
+        z[j,group[i,j],i] <- 1
+      }
+    }
+
+
+
   }else if (is.matrix(y)){
     N <- dim(y)[1]
 
