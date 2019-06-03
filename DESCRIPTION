@@ -21,7 +21,7 @@ Encoding: UTF-8
 LazyData: true
 LazyLoad: yes
 SystemRequirements: pandoc (>= 1.12.3), pandoc-citeproc
-Depends:  bayesmix, rjags, runjags, mvtnorm, RcmdrMisc
+Depends:  bayesmix, rstan, rjags, runjags, mvtnorm, RcmdrMisc
 Imports:  cluster, mclust, MASS    
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr

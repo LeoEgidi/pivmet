@@ -1,4 +1,4 @@
-#' JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.
+#' JAGS/Stan Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.
 #'
 #' Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y N-dimensional data vector/matrix.
