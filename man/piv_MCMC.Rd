@@ -2,11 +2,12 @@
 % Please edit documentation in R/bayes_mcmc.R
 \name{piv_MCMC}
 \alias{piv_MCMC}
-\title{JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
+\title{JAGS/Stan Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
 \usage{
 piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
   "minsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"),
-  software = c("rjags", "rstan"), burn = 0.5 * nMC)
+  software = c("rjags", "rstan"), burn = 0.5 * nMC, chains = 4,
+  cores = 1)
 }
 \arguments{
 \item{y}{N-dimensional data vector/matrix.}
@@ -32,6 +33,12 @@ the vignette).}
 Default is \code{"rjags"}.}
 
 \item{burn}{The burn-in period (only if method \code{"rjags"} is selected).}
+
+\item{chains}{A positive integer specifying the number of Markov chains (only if
+\code{software="rstan"}). The default is 4.}
+
+\item{cores}{The number of cores to use when executing the Markov chains in parallel (only if
+\code{software="rstan"}). Default is 1.}
 }
 \value{
 The function gives the MCMC output, the clustering
