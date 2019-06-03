@@ -15,7 +15,7 @@ piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
 
 \item{priors}{Input prior hyperparameters (see Details).}
 
-\item{nMC}{Number of MCMC iterations for the JAGS function execution.}
+\item{nMC}{Number of MCMC iterations for the JAGS/Stan function execution.}
 
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
@@ -27,6 +27,8 @@ the vignette).}
 \item{clustering}{The clustering technique adopted for partitioning the
 \code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
 \code{"hclust"}.}
+
+\item{software}{The selected method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.}
 }
 \value{
 The function gives the MCMC output, the clustering
@@ -64,7 +66,7 @@ selected pivotal criterion.}
 the pivots.}
 }
 \description{
-Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
+Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 }
 \details{
 The function fits univariate and bivariate Bayesian Gaussian mixture models of the form
@@ -96,16 +98,16 @@ if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutati
 p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 is multimodal with (at least) \eqn{k!} modes.
 
-Priors are chosen as weakly informative. For univariate mixtures,
-the specification is the same as the function \code{BMMmodel} of the
+Priors are chosen as weakly informative. For univariate mixtures, when
+\code{software="rjags"} the specification is the same as the function \code{BMMmodel} of the
 \code{bayesmix} package:
 
- \deqn{\mu_j \sim \mathcal{N}(0, 1/B0inv)}
+ \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
  \deqn{\phi_j \sim \mbox{invGamma}(nu0Half, nu0S0Half)}
  \deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1)}
  \deqn{S0 \sim \mbox{Gamma}(g0Half, g0G0Half),}
 
- with default values: \eqn{B0inv=0.1, nu0Half =10, S0=2,
+ with default values: \eqn{\mu_0=0, B0inv=0.1, nu0Half =10, S0=2,
  nu0S0Half= nu0Half\times S0,
  g0Half = 5e-17, g0G0Half = 5e-33}, in accordance with the default
  specification:
@@ -115,7 +117,15 @@ the specification is the same as the function \code{BMMmodel} of the
 
  (see \code{bayesmix} for further details and choices).
 
-For bivariate mixtures, the prior specification is the following:
+ When \code{software="rstan"}, the prior specification is:
+
+ \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
+ \deqn{\phi_j \sim \mbox{Lognormal}(\mu_{\phi}, \sigma_{\phi})}
+ \deqn{\pi \sim \mbox{Uniform}(1,k)},
+
+ with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2}.
+
+For bivariate mixtures, when \code{software="rjags"} the prior specification is the following:
 
 \deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)}
 \deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, 3)}
@@ -130,8 +140,20 @@ equal to 1e+05. The user may specify other values for the hyperparameters
 
 with the constraint for \eqn{S2} and \eqn{S3} to be positive definite.
 
-The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags}
-package for bivariate Gaussian mixtures. After MCMC sampling, this function
+When \code{software="rstan"}, the prior specification is:
+
+\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)},
+
+with \eqn{\bm{mu}_0=c(0,0)} as a default.
+
+
+If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
+for univariate Gaussian mixtures, and the \code{runjags}
+package for bivariate Gaussian mixtures. If \code{software="rstan"} the function performs
+Hamiltonian Monte Carlo (HMC) sampling via the \code{rstan} package (see the vignette and the Stan project
+for any help).
+
+After MCMC sampling, this function
 clusters the units in \code{k} groups,
 calls the \code{piv_sel()} function and yields the
 pivots obtained from one among four different

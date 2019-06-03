@@ -14,8 +14,9 @@
 #' @param clustering The clustering technique adopted for partitioning the
 #' \code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
 #' \code{"hclust"}.
-#' @param software The selected method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
-#' @burn The burn-in period (only if method is \code{"rjags"}).
+#' @param software The selected MCMC method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
+#' Default is \code{"rjags"}.
+#' @param burn The burn-in period (only if method \code{"rjags"} is selected).
 #'
 #' @details
 #' The function fits univariate and bivariate Bayesian Gaussian mixture models of the form
@@ -70,7 +71,7 @@
 #'
 #'  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
 #'  \deqn{\phi_j \sim \mbox{Lognormal}(\mu_{\phi}, \sigma_{\phi})}
-#'  \deqn{\pi \sim \mbox{Uniform}(1,k)},
+#'  \deqn{\pi \sim \mbox{Uniform}(1,k),}
 #'
 #'  with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2}.
 #'
@@ -116,23 +117,23 @@
 #' argument \code{nMC}; this length, corresponding to the value
 #' \code{true.iter} returned by the procedure, is the number of
 #' MCMC iterations for which
-#' the number of JAGS groups exactly coincides with the prespecified
+#' the number of JAGS/Stan groups exactly coincides with the prespecified
 #' number of groups \code{k}.
 #' @return The function gives the MCMC output, the clustering
 #' solutions and the pivotal indexes. Here there is a complete list of outputs.
 #'
 #' \item{\code{Freq}}{  \code{k x 2} matrix where: the first column
 #' reports the number of units allocated to each group
-#' as given by JAGS program; the second
+#' as given by JAGS/Stan program; the second
 #' column reports the same number of units as given by the
 #' chains' post-processing.}
 #' \item{\code{true.iter}}{ The number of MCMC iterations for which
-#' the number of JAGS groups exactly coincides with the prespecified
+#' the number of JAGS/Stan groups exactly coincides with the prespecified
 #' number of groups \code{k}.}
 #' \item{\code{z} }{  \code{N x k x true.iter} array with values: 1,
 #' if the \eqn{i}-th unit belongs to the \eqn{j}-th group at
 #' the \eqn{h}-th iteration; 0, otherwise.}
-#' \item{\code{ris}}{  MCMC output matrix as provided by JAGS.}
+#' \item{\code{ris}}{  MCMC output matrix as provided by JAGS/Stan.}
 #' \item{\code{groupPost}}{ \code{true.iter x N} matrix
 #' with values from \code{1:k} indicating the post-processed group allocation
 #' vector.}
@@ -143,7 +144,7 @@
 #' \item{\code{mu_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
 #' with the raw MCMC chains for the mean parameters as given by JAGS; if
 #' \code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
-#' for the mean parameters as given by JAGS.}
+#' for the mean parameters as given by JAGS/Stan.}
 #' \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
 #' \item{\code{grr}}{Group vector allocation as provided by
 #' \code{"diana"} or \code{"hclust"}.}
@@ -158,7 +159,8 @@
 #'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples
 #'
-#' # Bivariate simulation
+#' ### Bivariate simulation
+#'
 #'\dontrun{
 #' N   <- 200
 #' k   <- 4
@@ -173,8 +175,15 @@
 #' Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]), nrow=2, ncol=2)
 #' W <- c(0.2,0.8)
 #' sim <- piv_sim(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
+#'
+#' ## rjags (default)
 #' res <- piv_MCMC(y = sim$y, k =k, nMC = nMC)
-#' #changing priors
+#'
+#' ## rstan
+#' res_stan <- piv_MCMC(y = sim$y, k =k, nMC = nMC,
+#'                      software ="rstan")
+#'
+#' # changing priors
 #' res2 <- piv_MCMC(y = sim$y,
 #'                  priors = list (
 #'                  mu0=c(1,1),
@@ -184,13 +193,15 @@
 #'}
 #'
 #'
-#' # Fishery data (bayesmix package)
+#' ### Fishery data (bayesmix package)
+#'
 #'\dontrun{
 #' data(fish)
 #' y <- fish[,1]
 #' k <- 5
 #' nMC <- 5000
 #' res <- piv_MCMC(y = y, k = k, nMC = nMC)
+#'
 #' # changing priors
 #' res2   <- piv_MCMC(y = y,
 #'                    priors = list(kind = "condconjugate",
