@@ -17,6 +17,10 @@
 #' @param software The selected MCMC method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
 #' Default is \code{"rjags"}.
 #' @param burn The burn-in period (only if method \code{"rjags"} is selected).
+#' @param cores The number of cores to use when executing the Markov chains in parallel (only if
+#' \code{software="rstan"}).
+#' @param chains A positive integer specifying the number of Markov chains (only if
+#' \code{software="rstan"}). The default is 4.
 #'
 #' @details
 #' The function fits univariate and bivariate Bayesian Gaussian mixture models of the form
