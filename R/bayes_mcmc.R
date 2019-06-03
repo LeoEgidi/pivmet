@@ -1,10 +1,10 @@
 #' JAGS Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.
 #'
-#' Perform MCMC JAGS sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
+#' Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y N-dimensional data vector/matrix.
 #' @param k Number of mixture components.
 #' @param priors Input prior hyperparameters (see Details).
-#' @param nMC Number of MCMC iterations for the JAGS function execution.
+#' @param nMC Number of MCMC iterations for the JAGS/Stan function execution.
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 #' "maxsumdiff"}.
@@ -14,6 +14,8 @@
 #' @param clustering The clustering technique adopted for partitioning the
 #' \code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
 #' \code{"hclust"}.
+#' @param software The selected method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
+#' @burn The burn-in period (only if method is \code{"rjags"}).
 #'
 #' @details
 #' The function fits univariate and bivariate Bayesian Gaussian mixture models of the form
@@ -45,16 +47,16 @@
 #' p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 #' is multimodal with (at least) \eqn{k!} modes.
 #'
-#' Priors are chosen as weakly informative. For univariate mixtures,
-#' the specification is the same as the function \code{BMMmodel} of the
+#' Priors are chosen as weakly informative. For univariate mixtures, when
+#' \code{software="rjags"} the specification is the same as the function \code{BMMmodel} of the
 #' \code{bayesmix} package:
 #'
-#'  \deqn{\mu_j \sim \mathcal{N}(0, 1/B0inv)}
+#'  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
 #'  \deqn{\phi_j \sim \mbox{invGamma}(nu0Half, nu0S0Half)}
 #'  \deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1)}
 #'  \deqn{S0 \sim \mbox{Gamma}(g0Half, g0G0Half),}
 #'
-#'  with default values: \eqn{B0inv=0.1, nu0Half =10, S0=2,
+#'  with default values: \eqn{\mu_0=0, B0inv=0.1, nu0Half =10, S0=2,
 #'  nu0S0Half= nu0Half\times S0,
 #'  g0Half = 5e-17, g0G0Half = 5e-33}, in accordance with the default
 #'  specification:
@@ -64,7 +66,15 @@
 #'
 #'  (see \code{bayesmix} for further details and choices).
 #'
-#'For bivariate mixtures, the prior specification is the following:
+#'  When \code{software="rstan"}, the prior specification is:
+#'
+#'  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
+#'  \deqn{\phi_j \sim \mbox{Lognormal}(\mu_{\phi}, \sigma_{\phi})}
+#'  \deqn{\pi \sim \mbox{Uniform}(1,k)},
+#'
+#'  with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2}.
+#'
+#'For bivariate mixtures, when \code{software="rjags"} the prior specification is the following:
 #'
 #'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)}
 #'\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, 3)}
@@ -79,8 +89,20 @@
 #'
 #'with the constraint for \eqn{S2} and \eqn{S3} to be positive definite.
 #'
-#' The function performs JAGS sampling using the \code{bayesmix} package for univariate Gaussian mixtures, and the \code{runjags}
-#' package for bivariate Gaussian mixtures. After MCMC sampling, this function
+#'When \code{software="rstan"}, the prior specification is:
+#'
+#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)},
+#'
+#'with \eqn{\bm{mu}_0=c(0,0)} as a default.
+#'
+#'
+#' If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
+#' for univariate Gaussian mixtures, and the \code{runjags}
+#' package for bivariate Gaussian mixtures. If \code{software="rstan"} the function performs
+#' Hamiltonian Monte Carlo (HMC) sampling via the \code{rstan} package (see the vignette and the Stan project
+#' for any help).
+#'
+#' After MCMC sampling, this function
 #' clusters the units in \code{k} groups,
 #' calls the \code{piv_sel()} function and yields the
 #' pivots obtained from one among four different
@@ -191,6 +213,9 @@ piv_MCMC <- function(y,
                      burn =0.5*nMC){
 
   # Conditions about data dimension----------------
+  if (missing(software)){
+    software="rjags"
+  }
 
   if (is.vector(y)){
     N <- length(y)
@@ -202,7 +227,8 @@ piv_MCMC <- function(y,
     }
     if (software=="rjags"){
      if (missing(priors)){
-       priors = list(kind = "independence", parameter = "priorsFish",
+       priors = list(kind = "independence",
+                     parameter = "priorsFish",
                      hierarchical = "tau")
      }
 
@@ -246,13 +272,25 @@ piv_MCMC <- function(y,
     group <- ris[,1:N]
 
     }else if (software=="rstan"){
+      if(missing(priors)){
+        mu_0 <- 0
+        B0inv <- 0.1
+        mu_phi <- 0
+        sigma_phi <- 2
+      }
 
-      data = list(N=N, y=y, k=k)
+      data = list(N=N, y=y, k=k,
+                  mu_0=mu_0, B0inv=B0inv,
+                  mu_phi=mu_phi, sigma_phi=sigma_phi)
       mix_univ <-"
         data {
           int<lower=1> k;          // number of mixture components
           int<lower=1> N;          // number of data points
           real y[N];               // observations
+          real mu_0;               // mean hyperparameter
+          real<lower=0> B0inv;     // mean hyperprecision
+          real mu_phi;             // sigma hypermean
+          real<lower=0> sigma_phi; // sigma hyper sd
           }
         parameters {
           simplex[k] theta;        // mixing proportions
@@ -272,8 +310,8 @@ piv_MCMC <- function(y,
                             }
           }
       model {
-        sigma ~ lognormal(0, 2);
-        mu ~ normal(0, 10);
+        sigma ~ lognormal(mu_phi, sigma_phi);
+        mu ~ normal(mu_0, 1/B0inv);
             for (n in 1:N) {
               vector[k] lps = log_theta;
                 for (j in 1:k){
@@ -478,13 +516,17 @@ piv_MCMC <- function(y,
     tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
     prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
     }else if(software=="rstan"){
-      data =list(N=N, k=k, y=y, D=2)
+      if (missing(priors)){
+        mu_0=c(0,0)
+      }
+      data =list(N=N, k=k, y=y, D=2, mu_0=mu_0)
       mix_biv <- "
         data {
           int<lower=1> k;          // number of mixture components
           int<lower=1> N;          // number of data points
           int D;                   // data dimension
           matrix[N,D] y;           // observations matrix
+          vector[D] mu_0;
         }
         parameters {
           simplex[k] theta;        // mixing proportions
@@ -512,7 +554,7 @@ piv_MCMC <- function(y,
               }
           }
         model{
-          mu ~ multi_normal_cholesky(rep_vector(0,D), L_Tau);
+          mu ~ multi_normal_cholesky(mu_0, L_Tau);
             for (n in 1:N) {
               vector[k] lps = log_theta;
                 for (j in 1:k){
