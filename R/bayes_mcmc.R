@@ -75,7 +75,7 @@
 #'
 #'  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
 #'  \deqn{\phi_j \sim \mbox{Lognormal}(\mu_{\phi}, \sigma_{\phi})}
-#'  \deqn{\pi \sim \mbox{Uniform}(1,k),}
+#'  \deqn{\pi_j \sim \mbox{Uniform}(0,1),}
 #'
 #'  with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2}.
 #'
