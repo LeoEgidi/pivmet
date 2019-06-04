@@ -58,14 +58,30 @@ the \eqn{h}-th iteration; 0, otherwise.}
 \item{\code{groupPost}}{ \code{true.iter x N} matrix
 with values from \code{1:k} indicating the post-processed group allocation
 vector.}
-\item{\code{mu_switch}}{  If \code{y} is a vector, a \code{true.iter x k}
+\item{\code{mcmc_mean}}{  If \code{y} is a vector, a \code{true.iter x k}
 matrix with the post-processed MCMC chains for the mean parameters; if
 \code{y} is a matrix, a \code{true.iter x 2 x k} array with
 the post-processed MCMC chains for the mean parameters.}
-\item{\code{mu_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+\item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
 with the raw MCMC chains for the mean parameters as given by JAGS; if
 \code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
 for the mean parameters as given by JAGS/Stan.}
+#' \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \code{true.iter x k}
+matrix with the post-processed MCMC chains for the sd parameters; if
+\code{y} is a matrix, a \code{true.iter x 2} array with
+the post-processed MCMC chains for the sd parameters.}
+\item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
+\code{y} is a matrix, a \code{nMC x 2} array with the raw MCMC chains
+for the sd parameters as given by JAGS/Stan.}
+#' \item{\code{mcmc_weight}}{  If \code{y} is a vector, a \code{true.iter x k}
+matrix with the post-processed MCMC chains for the weights parameters; if
+\code{y} is a matrix, a \code{true.iter x 2 x k} array with
+the post-processed MCMC chains for the weights parameters.}
+\item{\code{mcmc_weights_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+with the raw MCMC chains for the weights parameters as given by JAGS/Stan; if
+\code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
+for the weights parameters as given by JAGS/Stan.}
 \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
 \item{\code{grr}}{Group vector allocation as provided by
 \code{"diana"} or \code{"hclust"}.}

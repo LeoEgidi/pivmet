@@ -15,15 +15,14 @@ This function gives the relabelled posterior estimates--both mean and medians--o
 \item{\code{final_it}}{The final number of valid MCMC iterations,
 as explained in Details}
 \item{\code{final_it_p}}{\code{final_it/nMC}}
-\item{\code{mu_rel_mean}}{ \code{k}-vector (in case of univariate mixture)
-or \code{k x 2}
-matrix (in case of bivariate mixture) of estimated posterior means for the mean parameters.}
-\item{\code{mu_rel_median}}{ \code{k}-vector (in case of univariate mixture)
-or \code{k x 2}
-matrix (in case of bivariate mixture) of estimated posterior medians for the mean parameters.}
-\item{\code{mu_rel}}{\code{final_it x k} matrix (in case of univariate mixtures)
+\item{\code{rel_mean}}{\code{final_it x k} matrix (in case of univariate mixtures)
 or \code{final_it x 2 x k} array (in case of bivariate mixtures)
-for the complete relabelled chains}
+for the relabelled chains of the means.}
+\item{\code{rel_sd}}{\code{final_it x k} matrix (in case of univariate mixtures)
+or \code{final_it x 2} array (in case of bivariate mixtures)
+for the relabelled chains of the sd's.}
+\item{\code{rel_weight}}{\code{final_it x k} matrix
+for the relabelled chains of the weights.}
 }
 \description{
 This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
