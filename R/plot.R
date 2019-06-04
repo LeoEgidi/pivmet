@@ -32,6 +32,7 @@
 piv_plot <- function(y,
                      mcmc,
                      rel_est,
+                     par = c("mean", "sd", "weight", "all"),
                      type = c("chains", "estimates", "hist") ){
   colori <- c("red", "green", "violet", "blue")
 
@@ -41,8 +42,16 @@ piv_plot <- function(y,
     est <- apply(rel_est$rel_mean, c(2,3), median)
   }
 
+  if (par=="mean"){
   chains <- rel_est$rel_mean
   mu_switch <- mcmc$mcmc_mean
+  }else if(par=="sd"){
+  chains <- rel_est$rel_sd
+  mu_switch <- mcmc$mcmc_sd
+  }else if(par=="weight"){
+    chains <- rel_est$rel_weight
+    mu_switch <- mcmc$mcmc_weight
+  }
   n.iter <- rel_est$final_it
   true.means <- mcmc$Mu
 
@@ -50,7 +59,7 @@ if (type=="chains" ){
     if (length(dim(mu_switch))==2){
 
       k <- dim(mu_switch)[2]
-      par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(2,4,2,1))
+      par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4,2,1))
       #plot
       matplot(mu_switch, type="l", xlab="Iterations",
         ylab=expression(mu), main="Raw MCMC chains",
@@ -62,7 +71,7 @@ if (type=="chains" ){
         main=paste("Rel. chains"), cex.main=0.8)
     }else{
       k <- dim(mu_switch)[3]
-      par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(2,4,2,1))
+      par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(5,4,2,1))
       matplot(mu_switch[,1,], type="l", xlab="Iterations",
         ylab=expression(mu[1]), main="Raw MCMC chains",
         cex.main=0.8 )
@@ -82,136 +91,87 @@ if (type=="chains" ){
         main=paste("Rel. chains"), cex.main=0.8)
     }
 
-  }else if (type=="estimates"){
+  }
+  #else if (type=="estimates"){
+  #   if (length(dim(mu_switch))==2){
+  #     switch.means <- colMeans(mu_switch)
+  #     par(mfrow=c(1,2), oma=c(0,0,0,0),
+  #         mar=c(5,4,2,1), las=1, yaxt="n")
+  #     # raw estimates
+  #     plot( true.means, rep(0.3,length(true.means)),
+  #       axes = FALSE , ylab="",ylim=c(0,1),
+  #       xlim=c( min(true.means,
+  #         est)-2,
+  #         max(true.means,
+  #           est)+2  ),
+  #       main=paste("Raw MCMC estimates" ), cex.main =0.8)
+  #     points(switch.means,
+  #       rep(0, length(true.means)), col="red")
+  #     axis(1)
+  #     axis(1, col = "black", tcl = 0)
+  #     par(yaxt="n")
+  #     axis(2)
+  #     par(yaxt="s")
+  #     axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
+  #
+  #     #relabelled estimates
+  #     plot( true.means, rep(0.3,length(true.means)),
+  #       axes = FALSE , ylab="",ylim=c(0,1),
+  #       xlim=c( min(true.means,
+  #         est)-2,
+  #         max(true.means,
+  #           est)+2  ),
+  #       main=paste("Rel. estimates"), cex.main =0.8)
+  #     points(est, rep(0, length(true.means)),
+  #       col="red")
+  #     axis(1)
+  #     axis(1, col = "black", tcl = 0)
+  #     par(yaxt="n")
+  #     axis(2)
+  #     par(yaxt="s")
+  #     axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
+  #   }else{
+  #     par(mfrow=c(1,2), oma =c(0,0,0,0),  mar=c(5,4,2,0.7))
+  #     colori<-c("red", "green", "violet", "blue")
+  #
+  #     l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
+  #     l2<-(3/2)*max(true.means[,1])-min(true.means[,1])/2-5
+  #     u1<-(3/2)*min(true.means[,2])-max(true.means[,2])/2
+  #     u2<-(3/2)*max(true.means[,2])-min(true.means[,2])/2
+  #
+  #     #plot the raw MCMC estimates
+  #     plot(true.means, xlim=c( min(true.means, est)-2,
+  #       max(true.means,est)+2  ),
+  #       ylim=c(u1,u2), main="Raw MCMC",
+  #       xlab=expression(mu[1]), ylab=expression(mu[2]), pch =3,
+  #       cex.main = 0.7)
+  #     points(t(apply(mu_switch, c(2,3), mean)), col="red")
+  #     #plot relabelled estimates
+  #     plot(true.means, xlim=c( min(true.means, est)-1,
+  #       max(true.means, est)+1  ), ylim=c(u1,u2),
+  #       xlab=expression(mu[1]), ylab=expression(mu[2]),
+  #       main="Relabelled",  pch=3, bg=2,
+  #       cex.main = 0.7)
+  #     points(est, col="red")
+  #   }
+  # }
+  else if(type=="hist"){
     if (length(dim(mu_switch))==2){
-      switch.means <- colMeans(mu_switch)
-      par(mfrow=c(1,2), oma=c(0,0,0,0), las=1, yaxt="n")
-      # raw estimates
-      plot( true.means, rep(0.3,length(true.means)),
-        axes = FALSE , ylab="",ylim=c(0,1),
-        xlim=c( min(true.means,
-          est)-2,
-          max(true.means,
-            est)+2  ),
-        main=paste("Raw MCMC estimates" ), cex.main =0.8)
-      points(switch.means,
-        rep(0, length(true.means)), col="red")
-      axis(1)
-      axis(1, col = "black", tcl = 0)
-      par(yaxt="n")
-      axis(2)
-      par(yaxt="s")
-      axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
-
-      #relabelled estimates
-      plot( true.means, rep(0.3,length(true.means)),
-        axes = FALSE , ylab="",ylim=c(0,1),
-        xlim=c( min(true.means,
-          est)-2,
-          max(true.means,
-            est)+2  ),
-        main=paste("Rel. estimates"), cex.main =0.8)
-      points(est, rep(0, length(true.means)),
-        col="red")
-      axis(1)
-      axis(1, col = "black", tcl = 0)
-      par(yaxt="n")
-      axis(2)
-      par(yaxt="s")
-      axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
-    }else{
-      par(mfrow=c(1,2), oma =c(0,0,0,0),  mar=c(5,4,2,0.7))
-      colori<-c("red", "green", "violet", "blue")
-
-      l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
-      l2<-(3/2)*max(true.means[,1])-min(true.means[,1])/2-5
-      u1<-(3/2)*min(true.means[,2])-max(true.means[,2])/2
-      u2<-(3/2)*max(true.means[,2])-min(true.means[,2])/2
-
-      #plot the raw MCMC estimates
-      plot(true.means, xlim=c( min(true.means, est)-2,
-        max(true.means,est)+2  ),
-        ylim=c(u1,u2), main="Raw MCMC",
-        xlab=expression(mu[1]), ylab=expression(mu[2]), pch =3,
-        cex.main = 0.7)
-      points(t(apply(mu_switch, c(2,3), mean)), col="red")
-      #plot relabelled estimates
-      plot(true.means, xlim=c( min(true.means, est)-1,
-        max(true.means, est)+1  ), ylim=c(u1,u2),
-        xlab=expression(mu[1]), ylab=expression(mu[2]),
-        main="Relabelled",  pch=3, bg=2,
-        cex.main = 0.7)
-      points(est, col="red")
-    }
-  }else if(type=="hist"){
-    if (length(dim(mu_switch))==2){
-      par(mfrow=c(1,2))
+      par(mfrow=c(1,2), mar=c(5,5,4,2))
       hist(y, breaks=40, prob = TRUE,
-        main ="Raw MCMC estimates", cex.main =0.8)
+        main ="Raw MCMC estimates", cex.main =0.8,
+        col="navajowhite1", border="navajowhite1")
       points(colMeans(mu_switch), rep(0, length(true.means)),
         col="red", pch=21,  bg="red")
+      lines(density(y), lty=1, lwd=3, col="blue")
       hist(y, breaks=40, prob = TRUE,
-        main=paste("Rel. estimates" ), cex.main=0.8 )
+        main=paste("Rel. estimates" ), cex.main=0.8,
+        col="navajowhite1", border="navajowhite1")
       points(est, rep(0, length(true.means)),
         col="red", pch=21,  bg="red")
+      lines(density(y), lty=1, lwd=3, col="blue")
     }else{
       par(mfrow=c(1,1), mar=c(3,3,2,1), oma =c(0,0,0,0))
-      #   NBiv_mix <- function(x, y, k, rho, mu_x, mu_y,
-      #     sigma_1x, sigma_1y, sigma_2x,sigma_2y, p){
-      #     a <- (2*pi*sigma_1x*sigma_1y*sqrt(1-rho^2))^(-1)
-      #     a2 <- (2*pi*sigma_2x*sigma_2y*sqrt(1-rho^2))^(-1)
-      #     distr <- list()
-      #     for (j in 1:k){
-      #     distr[[j]] <-
-      #     p*a*exp(-.5*(1)*(1-rho^2)^(-1)*
-      #         ( ( (x-mu_x[j])/sigma_1x )^2+
-      #             ((y-mu_y[j])/sigma_1y)^2
-      #             -2*rho*(x-mu_x[j])*(y-mu_y[j])/
-      #             (sigma_1x*sigma_1y)   ))+
-      #             (1-p)*a2*exp(-.5*(1)*(1-rho^2)^(-1)*
-      #             ( ( (x-mu_x[j])/sigma_2x )^2+
-      #             ((y-mu_y[j])/sigma_2y)^2
-      #             -2*rho*(x-mu_x[j])*(y-mu_y[j])/
-      #             (sigma_2x*sigma_2y)   ))
-      # }
-      #
-      #     sum_vec <- matrix(NA, k, length(distr[[j]]))
-      #     for (j in 1:k){
-      #       sum_vec[j,] <- as.vector(distr[[j]])
-      #     }
-      #
-      #     return(apply(sum_vec,2,sum))
-      #
-      #     }
-      #
-      #   xx<-seq(min(y[,1])-1, max(y[,1])+1, length.out = min(100, length(y[,1])/2))
-      #   yy<-seq(min(y[,2])-1, max(y[,2])+1, length.out = min(100, length(y[,1])/2))
-      #   mu_x=add[,1]
-      #   mu_y=add[,2]
-      #   # poniamo rho=1/2
-      #   par(mfrow=c(1,1), oma= c(0,0,0,0))
-      #   z<-outer(xx, yy, NBiv_mix, k = length(add[,1]),
-      #     mu_x=mu_x, mu_y=mu_y, sigma_1x= add2[1], sigma_1y=add2[2],
-      #     sigma_2x=add2[3], sigma_2y=add2[4], p =add2[5], rho=0.5)
-      #   #Raw MCMC
-      #   persp(xx, yy, z, theta=30, phi=30, xlab="x", ylab="y", zlab="f(x,y)",
-      #     expand=0.5, ltheta=120,
-      #     col = "lightblue", shade = 0.1, ticktype = "detailed" ) -> res
-      #   points(trans3d(t(apply(mu_switch, c(2,3), mean))[,1],
-      #     t(apply(mu_switch, c(2,3), mean))[,2], 0, pmat = res), col = 2, pch = 16)
-      #   #Relabelled
-      #    persp(xx, yy, z, theta=30, phi=30, xlab="x", ylab="y", zlab="f(x,y)",
-      #     expand=0.5, ltheta=120,
-      #      col = "lightblue",
-      #      shade = 0.1, ticktype = "detailed",
-      #      main=
-      #        paste("Rel. estimates: method ",
-      #          pivotal.criterion), cex.main=0.8) -> res
-      #    points(trans3d(est[,1,pivotal.criterion],
-      #      est[,2,pivotal.criterion], 0, pmat = res), col = 2, pch = 16)
-
-      # 3d histogram
-
       xy <- y
       nbins <- 20
       x.bin <- seq(floor(min(xy[,1])),
@@ -224,22 +184,12 @@ if (type=="chains" ){
       freq[,2] <- as.numeric(freq[,2])
       freq2D <- diag(nbins)*0
       freq2D[cbind(freq[,1], freq[,2])] <- freq[,3]
-
-      #par(mfrow=c(1,2))
-      #image(x.bin, y.bin, freq2D,
-      #col=topo.colors(max(freq2D)))
-      #contour(x.bin, y.bin, freq2D,
-      #add=TRUE, col=rgb(1,1,1,.7))
-      #palette(rainbow(max(freq2D)))
-      #cols <- (freq2D[-1,-1] +
-      #freq2D[-1,-(nbins-1)] +
-      # freq2D[-(nbins-1),-(nbins-1)] +
-      #freq2D[-(nbins-1),-1])/4
       res <- persp(x.bin, y.bin,
-        freq2D, theta=30, phi=30, xlab="\n\n\nx",
+        freq2D,   xlab="\n\n\nx",
         ylab="\n\n\ny", zlab="\n\n\nf(x,y)",
+        theta=30, phi=30,
         expand=0.5, ltheta=120,
-        col = "lightblue",
+        col = "navajowhite1",
         shade = 0.1, ticktype = "detailed",
         main=
           paste("Rel. estimates"), cex.main=0.8)
@@ -250,25 +200,7 @@ if (type=="chains" ){
 
     }
 
-  }
-  # else if(type=="estimates_hist" & all(pivotal.criterion, c(1:6))){
-  #     par(mfrow=c(3,2))
-  #     hist(y, breaks=40, prob = TRUE,
-  #       main=
-  #       paste("Real data and relabelled estimates (", pivotal.criterion[1], ")" ) )
-  #       points(est[,pivotal.criterion[1]], rep(0, length(true.means)),
-  #       col="red", pch=21,  bg="red")
-  #
-  #     for (j in 2:6){
-  #     hist(y, breaks=40, prob = TRUE,
-  #     main=
-  #     paste("Real data and relabelled estimates (", pivotal.criterion[j], ")" ) )
-  #     points(est[,pivotal.criterion[j]], rep(0, length(true.means)),
-  #       col="red", pch=21,  bg="red")
-  #     }
-  #
-  #     }
-  else if (type=="iter"){
+  }else if (type=="iter"){
     par(mfrow=c(1,1))
     barplot(n.iter, main="Proportion of valid iterations", ylim=c(0,1),
       xlab="Pivotal criterion", ylab="Prop.", names.arg=c(1:7))
@@ -276,30 +208,3 @@ if (type=="chains" ){
 
 }
 
-#   par(mfrow=c(1,2), oma =c(0,0,0,0))
-#   colori<-c("red", "green", "violet", "blue")
-#
-# l1<-(3/2)*min(Mu[,1])-max(Mu[,1])/2+5
-# l2<-(3/2)*max(Mu[,1])-min(Mu[,1])/2-5
-# u1<-(3/2)*min(Mu[,2])-max(Mu[,2])/2
-# u2<-(3/2)*max(Mu[,2])-min(Mu[,2])/2
-#
-# plot(Mu, xlim=c(l1,l2), ylim=c(u1,u2), main="Raw MCMC-Pre Processing", xlab=expression(mu[1]), ylab=expression(mu[2]))
-# for (j in 1:k)
-#   points(output_bayes$mu_pre_switch_compl[,,j], col=colori[j])
-#
-#
-# plot(Mu, xlim=c(l1,l2), ylim=c(u1,u2), main="Raw MCMC output", xlab=expression(mu[1]), ylab=expression(mu[2]))
-# for (j in 1:k)
-#   points(output_bayes$mu_switch[,,j], col=colori[j])
-#
-#
-#
-#
-# plot(Mu, xlim=c(l1,l2), ylim=c(u1,u2),xlab=expression(mu[1]),
-#   ylab=expression(mu[2]), main="Raw MCMC output", col="black", pch=3, bg=2)
-# points(t(apply(output_bayes$mu_switch, c(2,3), mean)), col="red")
-#
-
-#per compilazione manuale
-#system("R CMD Rd2pdf C:/Users/leoeg/OneDrive/Documenti/GitHub/pivmet")
