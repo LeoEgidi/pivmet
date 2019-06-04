@@ -270,8 +270,8 @@ piv_rel<-function(mcmc){
  for (h in 1:nrow(mu_rel_complete)){
   mu_rel_complete[h,1,] <- mu_rel_complete[h,1, ind[h,1,]]
   mu_rel_complete[h,2,] <- mu_rel_complete[h,2, ind[h,2,]]
-  weights_rel_complete[h,1,] <- weights_rel_complete[h,1, ind[h,1,]]
-  weights_rel_complete[h,2,] <- weights_rel_complete[h,2, ind[h,2,]]
+  #weights_rel_complete[h,1] <- weights_rel_complete[h,ind[h,1,]]
+  #weights_rel_complete[h,2] <- weights_rel_complete[h,ind[h,2,]]
   }
   mu_rel_median    <- apply(mu_rel_complete, c(2,3), median)
   mu_rel_mean      <- apply(mu_rel_complete, c(2,3), mean)
