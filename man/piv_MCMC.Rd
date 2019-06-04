@@ -21,8 +21,7 @@ piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 "maxsumdiff"}.
-If \code{k <= 4}, the default method is \code{"MUS"};
-otherwise, the default method is \code{"maxsumdiff"} (see the Details and
+The default method is \code{"maxsumdiff"} (see the Details and
 the vignette).}
 
 \item{clustering}{The clustering technique adopted for partitioning the
@@ -74,6 +73,7 @@ for the mean parameters as given by JAGS/Stan.}
 selected pivotal criterion.}
 \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
 the pivots.}
+\item{\code{model}}{The JAGS/Stan model code.}
 }
 \description{
 Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
