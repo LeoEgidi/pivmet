@@ -78,6 +78,9 @@
 #'  \deqn{\pi_j \sim \mbox{Uniform}(0,1),}
 #'
 #'  with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2}.
+#' The users may specify new hyperparameter values with the argument:
+#'
+#' \code{priors=list(mu_0=1, B0inv=0.2, mu_phi=3, sigma_phi=5)}
 #'
 #'For bivariate mixtures, when \code{software="rjags"} the prior specification is the following:
 #'
@@ -96,9 +99,14 @@
 #'
 #'When \code{software="rstan"}, the prior specification is:
 #'
-#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)},
+#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, LDL^{T})}
+#'\deqn{L \sim \mbox{LKJ}(\eta)}
+#'\deqn{D_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
 #'
-#'with \eqn{\bm{mu}_0=c(0,0)} as a default.
+#'The covariance matrix is expressed in terms of the LDL decomposition \eqn{LDL^{T}},
+#'a variant of the classical Cholesky decomposition, where \eqn{L} is a
+#'lower unit triangular matrix and \eqn{D} is a diagonal matrix.
+#' \eqn{\bm{\mu}_0=c(0,0)} by default.
 #'
 #'
 #' If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
@@ -294,6 +302,27 @@ piv_MCMC <- function(y,
         B0inv <- 0.1
         mu_phi <- 0
         sigma_phi <- 2
+      }else{
+        if (is.null(priors$mu_0)){
+          mu_0 <- 0
+        }else{
+        mu_0 <- priors$mu_0
+        }
+        if (is.null(priors$B0inv)){
+          B0inv <- 0.1
+        }else{
+        B0inv <- priors$B0inv
+        }
+        if (is.null(priors$mu_phi)){
+          mu_phi <- 0
+        }else{
+        mu_phi <- priors$mu_phi
+        }
+        if (is.null(priors$sigma_phi)){
+        sigma_phi <- 2
+        }else{
+        sigma_phi <- priors$sigma_phi
+        }
       }
 
       data = list(N=N, y=y, k=k,
@@ -465,18 +494,18 @@ piv_MCMC <- function(y,
     # Likelihood:
 
     for (i in 1:N){
-    yprev[i,1:2]<-y[i,1:2]
-    y[i,1:2] ~ dmnorm(muOfClust[clust[i],],tauOfClust)
-    clust[i] ~ dcat(pClust[1:k] )
+      yprev[i,1:2]<-y[i,1:2]
+      y[i,1:2] ~ dmnorm(muOfClust[clust[i],],tauOfClust)
+      clust[i] ~ dcat(pClust[1:k] )
     }
 
     # Prior:
 
     for (g in 1:k) {
-    muOfClust[g,1:2] ~ dmnorm(mu0[],S2[,])}
-    tauOfClust[1:2,1:2] ~ dwish(S3[,],3)
-    Sigma[1:2,1:2] <- inverse(tauOfClust[,])
-    pClust[1:k] ~ ddirch( onesRepNclust)
+      muOfClust[g,1:2] ~ dmnorm(mu0[],S2[,])}
+      tauOfClust[1:2,1:2] ~ dwish(S3[,],3)
+      Sigma[1:2,1:2] <- inverse(tauOfClust[,])
+      pClust[1:k] ~ ddirch( onesRepNclust)
   }"
 
 
@@ -534,9 +563,28 @@ piv_MCMC <- function(y,
     prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
     }else if(software=="rstan"){
       if (missing(priors)){
-        mu_0=c(0,0)
+        mu_0 <- c(0,0)
+        eta <- 1
+        sigma_d <- 2.5
+      }else{
+        if (is.null(priors$mu_0)){
+          mu_0 <- c(0,0)
+        }else{
+        mu_0 <- priors$mu_0
+        }
+        if (is.null(priors$eta)){
+          eta <- 1
+        }else{
+          eta  <- priors$eta
+        }
+        if (is.null(priors$sigma_d)){
+          sigma_d <- 2.5
+        }else{
+          sigma_d <- priors$sigma_d
+        }
       }
-      data =list(N=N, k=k, y=y, D=2, mu_0=mu_0)
+      data =list(N=N, k=k, y=y, D=2, mu_0=mu_0,
+                 eta = eta, sigma_d = sigma_d)
       mix_biv <- "
         data {
           int<lower=1> k;          // number of mixture components
@@ -544,6 +592,8 @@ piv_MCMC <- function(y,
           int D;                   // data dimension
           matrix[N,D] y;           // observations matrix
           vector[D] mu_0;
+          real<lower=0> eta;
+          real<lower=0> sigma_d;
         }
         parameters {
           simplex[k] theta;        // mixing proportions
@@ -571,6 +621,8 @@ piv_MCMC <- function(y,
               }
           }
         model{
+          L_Omega ~ lkj_corr_cholesky(eta);
+          L_sigma ~ cauchy(0, sigma_d);
           mu ~ multi_normal_cholesky(mu_0, L_Tau);
             for (n in 1:N) {
               vector[k] lps = log_theta;
