@@ -171,7 +171,7 @@
 #' selected pivotal criterion.}
 #' \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
 #' the pivots.}
-#' \item{\code{model}}{The JAGS/Stan model code.}
+#' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
 #'
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
