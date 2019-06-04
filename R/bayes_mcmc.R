@@ -112,9 +112,9 @@
 #'whereas \eqn{\eta=1} leads to a uniform prior distribution for \eqn{L}.
 #'By default, the hyperparameters are \eqn{\bm{\mu}_0=\bm{0}}, \eqn{\sigma_d=2.5, \eta=1}.
 #'The user may propose some different values with the argument:
-#' \begin{Code}
-#' priors=list(mu_0=c(1,2), sigma_d = 4, eta =2)
-#' \end{Code}
+#'
+#'
+#' \code{priors=list(mu_0=c(1,2), sigma_d = 4, eta =2)}
 #'
 #'
 #' If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
