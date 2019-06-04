@@ -168,14 +168,30 @@
 #' \item{\code{groupPost}}{ \code{true.iter x N} matrix
 #' with values from \code{1:k} indicating the post-processed group allocation
 #' vector.}
-#' \item{\code{mu_switch}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' \item{\code{mcmc_mean}}{  If \code{y} is a vector, a \code{true.iter x k}
 #' matrix with the post-processed MCMC chains for the mean parameters; if
 #' \code{y} is a matrix, a \code{true.iter x 2 x k} array with
 #' the post-processed MCMC chains for the mean parameters.}
-#' \item{\code{mu_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+#' \item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
 #' with the raw MCMC chains for the mean parameters as given by JAGS; if
 #' \code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
 #' for the mean parameters as given by JAGS/Stan.}
+#' #' \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' matrix with the post-processed MCMC chains for the sd parameters; if
+#' \code{y} is a matrix, a \code{true.iter x 2} array with
+#' the post-processed MCMC chains for the sd parameters.}
+#' \item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+#' with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
+#' \code{y} is a matrix, a \code{nMC x 2} array with the raw MCMC chains
+#' for the sd parameters as given by JAGS/Stan.}
+#' #' \item{\code{mcmc_weight}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' matrix with the post-processed MCMC chains for the weights parameters; if
+#' \code{y} is a matrix, a \code{true.iter x 2 x k} array with
+#' the post-processed MCMC chains for the weights parameters.}
+#' \item{\code{mcmc_weights_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+#' with the raw MCMC chains for the weights parameters as given by JAGS/Stan; if
+#' \code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
+#' for the weights parameters as given by JAGS/Stan.}
 #' \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
 #' \item{\code{grr}}{Group vector allocation as provided by
 #' \code{"diana"} or \code{"hclust"}.}
@@ -295,11 +311,11 @@ piv_MCMC <- function(y,
     mcmc.pars[ , , 3] <- ogg.jags$results[-(1:burn), (N+1):(N+k)]
 
     mu_pre_switch_compl <-  mcmc.pars[ , , 1]
-    tau_pre_switch_compl <-  mcmc.pars[ , , 2]
+    tau_pre_switch_compl <-  1/mcmc.pars[ , , 2]
     prob.st_pre_switch_compl <-  mcmc.pars[ , , 3]
 
     mu <- mcmc.pars[,,1]
-    tau <- mcmc.pars[,,2]
+    tau <- 1/mcmc.pars[,,2]
     prob.st <- mcmc.pars[,,3]
     group <-  ogg.jags$results[-(1:burn), 1:N] #gruppi
     FreqGruppiJags <- table(group)
@@ -315,7 +331,14 @@ piv_MCMC <- function(y,
     ris <- ris_prel[numeffettivogruppi==k,]
     true.iter <- nrow(ris)
     group <- ris[,1:N]
+    mu <- mu[numeffettivogruppi==k,]
+    tau <- tau[numeffettivogruppi==k,]
+    prob.st <- prob.st[numeffettivogruppi==k,]
     model_code <- mod.mist.univ$bugs
+    ## just another way to save them
+    mcmc_mean_raw <- mcmc.pars[,,1]
+    mcmc_sd_raw <- mcmc.pars[,,2]
+    mcmc_weight_raw <- mcmc.pars[,,3]
 
     }else if (software=="rstan"){
       if(missing(priors)){
@@ -428,10 +451,17 @@ piv_MCMC <- function(y,
       #[-(1:burn),]
       ris <- ris_prel[numeffettivogruppi==k,]
       group <- group[numeffettivogruppi==k,]
+      mu <- mu[numeffettivogruppi==k,]
+      tau <- tau[numeffettivogruppi==k,]
+      prob.st <- prob.st[numeffettivogruppi==k,]
       true.iter <- nrow(ris)
       model_code <- mix_univ
+      ## just another way to save them
+      mcmc_mean_raw <- mcmc.pars[,,1]
+      mcmc_sd_raw <- mcmc.pars[,,2]
+      mcmc_weight_raw <- mcmc.pars[,,3]
 
-    }
+      }
 
 
     ## resambling
@@ -456,7 +486,7 @@ piv_MCMC <- function(y,
 
     M <- nrow(group)
     group <- group*0
-    mu_switch <- array(rep(0, true.iter*k), dim=c(true.iter,k))
+    mu_switch = tau_switch = prob.st_switch = array(rep(0, true.iter*k), dim=c(true.iter,k))
     z <- array(0,dim=c(N, k, true.iter))
 
     for (i in 1:true.iter){
@@ -466,8 +496,8 @@ piv_MCMC <- function(y,
         group[i,group.orig[i,]==j] <- perm[j]
       }
       mu_switch[i,] <- mu[i,perm]
-      tau[i,] <- tau[i,perm]
-      prob.st[i,] <- prob.st[i,perm]
+      tau_switch[i,] <- tau[i,perm]
+      prob.st_switch[i,] <- prob.st[i,perm]
     }
 
     for (i in 1:true.iter){
@@ -476,6 +506,10 @@ piv_MCMC <- function(y,
       }
     }
 
+    mcmc_mean = mcmc_sd = mcmc_weight = array(0, dim=c(true.iter, k))
+    mcmc_mean <- mu_switch
+    mcmc_sd <- tau_switch
+    mcmc_weight <- prob.st_switch
 
 
   }else if (is.matrix(y)){
@@ -561,13 +595,17 @@ piv_MCMC <- function(y,
 
     # Jags execution
     ogg.jags <- run.jags(model=mod, data=dati, monitor=moni,
-      inits=init1, n.chains=3,plots=FALSE, thin=1,
-      sample=nMC, burnin=1000)
+      inits=init1, n.chains=chains,plots=FALSE, thin=1,
+      sample=nMC, burnin=burn)
     # Extraction
     ris <- ogg.jags$mcmc[[1]]
 
     # Post- process of the chains----------------------
     group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
+
+    # only the variances
+    tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
+    prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
     M <- nrow(group)
     H <- list()
 
@@ -599,9 +637,17 @@ piv_MCMC <- function(y,
 
     group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
     FreqGruppiJags <- table(group)
-    tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
-    prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
     model_code <- mod.mist.biv
+
+    mcmc_mean_raw = mu_pre_switch_compl
+    mcmc_weight_raw = prob.st
+    mcmc_sd_raw = tau
+
+    tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
+    prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+    mu <- mu_pre_switch
+
+
     }else if(software=="rstan"){
       if (missing(priors)){
         mu_0 <- c(0,0)
@@ -684,7 +730,7 @@ piv_MCMC <- function(y,
           "
       fit_biv <-  stan(model_code = mix_biv,
                         data=data,
-                        chains =4,
+                        chains =chains,
                         iter =nMC)
       sims_biv <- extract(fit_biv)
 
@@ -693,6 +739,8 @@ piv_MCMC <- function(y,
 
       # Post- process of the chains----------------------
       group <- sims_biv$z
+      tau <- sims_biv$L_sigma
+      prob.st <- sims_biv$theta
       M <- nrow(group)
 
       mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
@@ -713,19 +761,26 @@ piv_MCMC <- function(y,
           mu_pre_switch[i,,] <- t(sm[i,,])
       }
 
+      mcmc_mean_raw = mu_pre_switch_compl
+      mcmc_weight_raw = prob.st
+      mcmc_sd_raw = tau
 
       group <- sims_biv$z[numeffettivogruppi==k,]
+      mu <- mu_pre_switch
+      tau <- sims_biv$L_sigma[numeffettivogruppi==k, ]
+      prob.st <- sims_biv$theta[numeffettivogruppi==k,]
       FreqGruppiJags <- table(group)
-      #tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
-      #prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+
       model_code <- mix_biv
+
+
   }
 
     group.orig <- group
     verigruppi <- as.double(names(table(group)))
-    #prob.st <- prob.st[,verigruppi]
-
-    mu_pre_switch <- mu_pre_switch[,,verigruppi]
+    prob.st <- prob.st[,verigruppi]
+    mu <- mu[,,verigruppi]
+    #tau <- tau[,verigruppi]
 
     # Switching Post
     cont <- 0
@@ -737,7 +792,8 @@ piv_MCMC <- function(y,
     if (cont > 1){
       k <- cont
     }
-    mu_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+    mu_switch  <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+    prob.st_switch <-  array(0, dim=c(true.iter,k))
     group <- group*0
     z <- array(0,dim=c(N, k, true.iter))
 
@@ -747,9 +803,8 @@ piv_MCMC <- function(y,
         #post-processing
         group[i,group.orig[i,]==j] <- perm[j]
       }
-      mu_switch[i,,] <- mu_pre_switch[i,,perm]
-      #tau[i,] <- tau[i,perm]
-      #prob.st[i,] <- prob.st[i,perm]
+      mu_switch[i,,] <- mu[i,,perm]
+      prob.st_switch[i,] <- prob.st[i,perm]
     }
 
     for (i in 1:true.iter){
@@ -757,6 +812,10 @@ piv_MCMC <- function(y,
         z[j,group[i,j],i] <- 1
       }
     }
+
+    mcmc_mean <- mu_switch
+    mcmc_sd <- tau
+    mcmc_weight <- prob.st_switch
 
 }
 
@@ -837,8 +896,12 @@ piv_MCMC <- function(y,
                Mu = mu_inits,
                ris=ris,
                groupPost=group,
-               mu_switch=mu_switch,
-               mu_raw=mu_pre_switch_compl,
+               mcmc_mean = mcmc_mean,
+               mcmc_sd = mcmc_sd,
+               mcmc_weight = mcmc_weight,
+               mcmc_mean_raw = mcmc_mean_raw,
+               mcmc_sd_raw = mcmc_sd_raw,
+               mcmc_weight_raw = mcmc_weight_raw,
                C=C,
                grr=grr,
                pivots = pivots,

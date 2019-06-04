@@ -108,7 +108,7 @@ Mu    <- seq(-trunc(k/2)*x,trunc(k/2)*x,length=k)
 W     <- c(0.2,0.8)
 sim   <- piv_sim(N,k,Mu,stdev,W=W)
 res   <- piv_MCMC(y = sim$y, k =k, nMC = nMC)
-rel   <- piv_rel(mcmc=res, nMC = nMC)
+rel   <- piv_rel(mcmc=res)
 }
 
 #Bivariate simulation
@@ -128,7 +128,7 @@ Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]),
 W <- c(0.2,0.8)
 sim <- piv_sim(N,k,Mu,stdev,Sigma.p1,Sigma.p2,W)
 res <- piv_MCMC(y = sim$y, k = k, nMC = nMC)
-rel <- piv_rel(mcmc = res, nMC = nMC)
+rel <- piv_rel(mcmc = res)
 piv_plot(y=sim$y, mcmc=res, rel_est = rel, type="chains")
 piv_plot(y=sim$y, mcmc=res, rel_est = rel,
          type="hist")

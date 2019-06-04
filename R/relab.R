@@ -77,15 +77,14 @@
 #' \item{\code{final_it}}{The final number of valid MCMC iterations,
 #' as explained in Details}
 #' \item{\code{final_it_p}}{\code{final_it/nMC}}
-#' \item{\code{mu_rel_mean}}{ \code{k}-vector (in case of univariate mixture)
-#' or \code{k x 2}
-#' matrix (in case of bivariate mixture) of estimated posterior means for the mean parameters.}
-#' \item{\code{mu_rel_median}}{ \code{k}-vector (in case of univariate mixture)
-#' or \code{k x 2}
-#' matrix (in case of bivariate mixture) of estimated posterior medians for the mean parameters.}
-#' \item{\code{mu_rel}}{\code{final_it x k} matrix (in case of univariate mixtures)
+#' \item{\code{rel_mean}}{\code{final_it x k} matrix (in case of univariate mixtures)
 #' or \code{final_it x 2 x k} array (in case of bivariate mixtures)
-#' for the complete relabelled chains}
+#' for the relabelled chains of the means.}
+#' \item{\code{rel_sd}}{\code{final_it x k} matrix (in case of univariate mixtures)
+#' or \code{final_it x 2} array (in case of bivariate mixtures)
+#' for the relabelled chains of the sd's.}
+#' \item{\code{rel_weight}}{\code{final_it x k} matrix
+#' for the relabelled chains of the weights.}
 
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
@@ -137,7 +136,9 @@ piv_rel<-function(mcmc){
   N <- dim(mcmc$z)[1]
   k <- dim(mcmc$z)[2]
   nMC <- mcmc$nMC
-  mu_switch <- mcmc$mu_switch
+  mu_switch <- mcmc$mcmc_mean
+  tau_switch <- mcmc$mcmc_sd
+  prob.st_switch <- mcmc$mcmc_weight
   group <-  mcmc$groupPost
   pivots <- mcmc$pivots
   Mu <- mcmc$Mu
@@ -168,11 +169,23 @@ piv_rel<-function(mcmc){
     mu_rel_mean       <- c()
     mu_rel_median_tr  <- c()
     mu_rel_mean_tr    <- c()
+    tau_rel_median     <- c()  #vector of length k
+    tau_rel_mean       <- c()
+    tau_rel_median_tr  <- c()
+    tau_rel_mean_tr    <- c()
+    weights_rel_median     <- c()  #vector of length k
+    weights_rel_mean       <- c()
+    weights_rel_median_tr  <- c()
+    weights_rel_mean_tr    <- c()
     groupD2           <- groupD[contD==0,]
     mu_switchD        <- mu_switch[contD==0,]
+    tau_switchD       <- tau_switch[contD==0,]
+    prob.st_switchD   <- prob.st_switch[contD==0,]
     true.iterD2       <- sum(contD==0)
     Final_It          <- true.iterD2/nMC
     mu_rel_complete   <- matrix(NA,true.iterD2, k)
+    tau_rel_complete  <- matrix(NA, true.iterD2, k)
+    weights_rel_complete <- matrix(NA, true.iterD2, k)
 
 
     if (true.iterD2!=0){
@@ -183,6 +196,13 @@ piv_rel<-function(mcmc){
             mu_rel_complete[m,j] <-
               mu_switchD[m,
                 vect_rel[groupD2[m, pivots[j]]] ]
+            tau_rel_complete[m,j] <-
+              tau_switchD[m,
+                         vect_rel[groupD2[m, pivots[j]]] ]
+            weights_rel_complete[m,j] <-
+              prob.st_switchD[m,
+                         vect_rel[groupD2[m, pivots[j]]] ]
+
           }
         }
       }else{
@@ -194,23 +214,36 @@ piv_rel<-function(mcmc){
       mu_rel_mean    <- apply(mu_rel_complete, 2, mean)
       mu_rel_median_tr  <- t(mu_rel_median)
       mu_rel_mean_tr    <- t(mu_rel_mean)
+      tau_rel_median  <- apply(tau_rel_complete, 2, median)
+      tau_rel_mean    <- apply(tau_rel_complete, 2, mean)
+      tau_rel_median_tr  <- t(tau_rel_median)
+      tau_rel_mean_tr    <- t(tau_rel_mean)
+      weights_rel_median  <- apply(weights_rel_complete, 2, median)
+      weights_rel_mean    <- apply(weights_rel_complete, 2, mean)
+      weights_rel_median_tr  <- t(weights_rel_median)
+      weights_rel_mean_tr    <- t(weights_rel_mean)
 
   }else{
     k <- dim(mu_switch)[3]
     mu_rel_median  <- array(NA,c(2,k))
     mu_rel_mean    <- array(NA,c(2,k))
+    weights_rel_median <- c()
+    weights_rel_mean <- c()
     groupD2        <- groupD[contD==0,]
     mu_switchD     <- mu_switch[contD==0,,]
+    prob.st_switchD     <- prob.st_switch[contD==0,]
     true.iterD2    <- sum(contD==0)
     Final_It       <- true.iterD2/nMC
     mu_rel_complete  <- array(NA, dim=c(true.iterD2, 2,k))
-
+    weights_rel_complete <- array(NA, dim=c(true.iterD2,k))
 
       if (true.iterD2!=0){
         for (m in 1:true.iterD2){
           for (j in 1:k){
             mu_rel_complete[m,,j] <-
               mu_switchD[m,,groupD2[m, pivots[j]]]
+            weights_rel_complete[m,j] <-
+              prob.st_switchD[m,groupD2[m, pivots[j]]]
           }
         }
       }else{
@@ -237,17 +270,25 @@ piv_rel<-function(mcmc){
  for (h in 1:nrow(mu_rel_complete)){
   mu_rel_complete[h,1,] <- mu_rel_complete[h,1, ind[h,1,]]
   mu_rel_complete[h,2,] <- mu_rel_complete[h,2, ind[h,2,]]
-      }
+  weights_rel_complete[h,1,] <- weights_rel_complete[h,1, ind[h,1,]]
+  weights_rel_complete[h,2,] <- weights_rel_complete[h,2, ind[h,2,]]
+  }
   mu_rel_median    <- apply(mu_rel_complete, c(2,3), median)
   mu_rel_mean      <- apply(mu_rel_complete, c(2,3), mean)
   mu_rel_median_tr <- t(mu_rel_median)
   mu_rel_mean_tr   <- t(mu_rel_mean)
+  weights_rel_median    <- apply(weights_rel_complete, 2, median)
+  weights_rel_mean      <- apply(weights_rel_complete, 2, mean)
+  weights_rel_median_tr <- t(weights_rel_median)
+  weights_rel_mean_tr   <- t(weights_rel_mean)
+  tau_rel_median        <- apply(tau_switch, 2, median)
+  tau_rel_complete      <- tau_switch
     }
 
  return(list( final_it = true.iterD2,
-              mu_rel_median = mu_rel_median_tr,
-              mu_rel_mean = mu_rel_mean_tr,
-              mu_rel = mu_rel_complete,
+              rel_mean = mu_rel_complete,
+              rel_sd = tau_rel_complete,
+              rel_weight = weights_rel_complete,
               final_it_p = Final_It))
 }
 
