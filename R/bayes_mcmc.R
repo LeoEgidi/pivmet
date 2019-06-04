@@ -51,7 +51,14 @@
 #' p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 #' is multimodal with (at least) \eqn{k!} modes.
 #'
-#' Priors are chosen as weakly informative. For univariate mixtures, when
+#' Depending on the selected software, the model parametrization
+#' changes in terms of the prior choices.
+#' Precisely, the JAGS philosophy with the underlying Gibbs sampling
+#' is to use noninformative priors, and conjugate priors are
+#' preferred for computational speed.
+#' Conversely, Stan adopts weakly informative priors,
+#' with no need to explicitly use the conjugacy.
+#' For univariate mixtures, when
 #' \code{software="rjags"} the specification is the same as the function \code{BMMmodel} of the
 #' \code{bayesmix} package:
 #'
