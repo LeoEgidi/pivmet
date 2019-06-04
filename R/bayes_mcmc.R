@@ -85,16 +85,21 @@
 #'
 #'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)}
 #'\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, 3)}
-#'\deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1),}
+#'\deqn{\pi \sim \mbox{Dirichlet}(\bm{\alpha}),}
 #'
-#'where \eqn{S2} and \eqn{S3} are diagonal matrices
-#'with diagonal elements (the variances)
+#'where  \eqn{\bm{\alpha}} is a \eqn{k}-dimensional vector
+#'and \eqn{S_2} and \eqn{S_3}
+#'are positive definite matrices. By default, \eqn{\bm{\mu}_0=\bm{0}},
+#'\eqn{\bm{\alpha}=(1,\ldots,1)} and \eqn{S_2} and \eqn{S_3} are diagonal matrices,
+#'with diagonal elements
 #'equal to 1e+05. The user may specify other values for the hyperparameters
-#'\eqn{\bm{\mu}_0, S2, S3} via \code{priors} argument in such a way:
+#'\eqn{\bm{\mu}_0, S_2, S_3} and \eqn{\bm{\alpha}} via \code{priors} argument in such a way:
 #'
-#'\code{priors =list(mu0 = c(1,1), S2 = ...,S3 = ...)},
 #'
-#'with the constraint for \eqn{S2} and \eqn{S3} to be positive definite.
+#'\code{priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}
+#'
+#' with the constraint for \eqn{S2} and \eqn{S3} to be positive definite,
+#' and \eqn{\bm{\alpha}} a vector of dimension \eqn{k} with nonnegative elements.
 #'
 #'When \code{software="rstan"}, the prior specification is:
 #'
@@ -206,7 +211,7 @@
 #' # changing priors
 #' res2 <- piv_MCMC(y = sim$y,
 #'                  priors = list (
-#'                  mu0=c(1,1),
+#'                  mu_0=c(1,1),
 #'                  S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
 #'                  S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE)),
 #'                  k = k, nMC = nMC)
@@ -485,18 +490,37 @@ piv_MCMC <- function(y,
 
     # Initial values
     if (missing(priors)){
-    mu0 <- as.vector(c(0,0))
+    mu_0 <- as.vector(c(0,0))
     S2 <- matrix(c(1,0,0,1),nrow=2)/100000
     S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+    alpha <- rep(1,k)
     }else{
-      mu0 <- priors$mu0
+      if (is.null(priors$mu_0)){
+        mu_0 <- as.vector(c(0,0))
+      }else{
+      mu_0 <- priors$mu_0
+      }
+      if (is.null(priors$S2)){
+        S2 <- matrix(c(1,0,0,1),nrow=2)/100000
+      }else{
       S2 <- priors$S2
+      }
+      if (is.null(priors$S3)){
+        S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+      }else{
       S3 <- priors$S3
+      }
+      if (is.null(priors$alpha)){
+        alpha <- rep(1, k)
+      }else{
+        alpha <- priors$alpha
+      }
     }
 
     # Data
-    dati.biv <- list(y = y, N = N, k = k, S2= S2, S3= S3, mu0=mu0,
-      onesRepNclust = rep(1,k))
+    dati.biv <- list(y = y, N = N, k = k,
+                     S2= S2, S3= S3, mu_0=mu_0,
+                     alpha = alpha)
 
     # Model
     mod.mist.biv<-"model{
@@ -511,10 +535,10 @@ piv_MCMC <- function(y,
     # Prior:
 
     for (g in 1:k) {
-      muOfClust[g,1:2] ~ dmnorm(mu0[],S2[,])}
+      muOfClust[g,1:2] ~ dmnorm(mu_0[],S2[,])}
       tauOfClust[1:2,1:2] ~ dwish(S3[,],3)
       Sigma[1:2,1:2] <- inverse(tauOfClust[,])
-      pClust[1:k] ~ ddirch( onesRepNclust)
+      pClust[1:k] ~ ddirch(alpha)
   }"
 
 
