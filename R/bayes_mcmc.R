@@ -184,7 +184,7 @@
 #' \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
 #' the pivots.}
 #' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
-#'
+#' \item{\code{nMC}}{The number of MCMC iterations for the JAGS/Stan function execution (same as the input argument above).}
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
@@ -843,5 +843,6 @@ piv_MCMC <- function(y,
                grr=grr,
                pivots = pivots,
                piv.criterion = piv.criterion,
+               nMC = nMC,
                model = model_code))
   }

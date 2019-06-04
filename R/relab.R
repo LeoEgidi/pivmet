@@ -2,7 +2,6 @@
 #'
 #' This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
 #' @param mcmc The output of the MCMC sampling from \code{piv_MCMC}.
-#' @param nMC The number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).
 #'
 #'@details
 #'Prototypical models in which the label switching problem arises
@@ -134,9 +133,10 @@
 #'
 #' @export
 
-piv_rel<-function(mcmc, nMC ){
+piv_rel<-function(mcmc){
   N <- dim(mcmc$z)[1]
   k <- dim(mcmc$z)[2]
+  nMC <- mcmc$nMC
   mu_switch <- mcmc$mu_switch
   group <-  mcmc$groupPost
   pivots <- mcmc$pivots
