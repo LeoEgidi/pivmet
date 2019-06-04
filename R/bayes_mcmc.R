@@ -103,10 +103,18 @@
 #'\deqn{L \sim \mbox{LKJ}(\eta)}
 #'\deqn{D_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
 #'
-#'The covariance matrix is expressed in terms of the LDL decomposition \eqn{LDL^{T}},
-#'a variant of the classical Cholesky decomposition, where \eqn{L} is a
-#'lower unit triangular matrix and \eqn{D} is a diagonal matrix.
-#' \eqn{\bm{\mu}_0=c(0,0)} by default.
+#'The covariance matrix is expressed in terms of the LDL decomposition as \eqn{LDL^{T}},
+#'a variant of the classical Cholesky decomposition, where \eqn{L} is a \eqn{2 \times 2}
+#'lower unit triangular matrix and \eqn{D} is a \eqn{2 \times 2} diagonal matrix.
+#'The Cholesky correlation factor \eqn{L} is assigned a LKJ prior with \eqn{\eta} degrees of freedom,  which,
+#'combined with priors on the standard deviations of each component, induces a prior on the covariance matrix;
+#'as \eqn{\eta \rightarrow \infty} the magnitude of correlations between components decreases,
+#'whereas \eqn{\eta=1} leads to a uniform prior distribution for \eqn{L}.
+#'By default, the hyperparameters are \eqn{\bm{\mu}_0=\bm{0}}, \eqn{\sigma_d=2.5, \eta=1}.
+#'The user may propose some different values with the argument:
+#' \begin{Code}
+#' priors=list(mu_0=c(1,2), sigma_d = 4, eta =2)
+#' \end{Code}
 #'
 #'
 #' If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
