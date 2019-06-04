@@ -303,7 +303,7 @@ piv_MCMC <- function(y,
     ris <- ris_prel[numeffettivogruppi==k,]
     true.iter <- nrow(ris)
     group <- ris[,1:N]
-    model <- mod.mist.univ$bugs
+    model_code <- mod.mist.univ$bugs
 
     }else if (software=="rstan"){
       if(missing(priors)){
@@ -417,7 +417,7 @@ piv_MCMC <- function(y,
       ris <- ris_prel[numeffettivogruppi==k,]
       group <- group[numeffettivogruppi==k,]
       true.iter <- nrow(ris)
-      model <- mix_univ
+      model_code <- mix_univ
 
     }
 
@@ -570,7 +570,7 @@ piv_MCMC <- function(y,
     FreqGruppiJags <- table(group)
     tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
     prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
-    model <- mod.mist.biv
+    model_code <- mod.mist.biv
     }else if(software=="rstan"){
       if (missing(priors)){
         mu_0 <- c(0,0)
@@ -687,7 +687,7 @@ piv_MCMC <- function(y,
       FreqGruppiJags <- table(group)
       #tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
       #prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
-      model <- mix_biv
+      model_code <- mix_biv
   }
 
     group.orig <- group
@@ -812,5 +812,5 @@ piv_MCMC <- function(y,
                grr=grr,
                pivots = pivots,
                piv.criterion = piv.criterion,
-               model = model))
+               model = model_code))
   }
