@@ -74,6 +74,7 @@ selected pivotal criterion.}
 \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
 the pivots.}
 \item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
+\item{\code{nMC}}{The number of MCMC iterations for the JAGS/Stan function execution (same as the input argument above).}
 }
 \description{
 Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.

@@ -4,12 +4,10 @@
 \alias{piv_rel}
 \title{Performing the pivotal relabelling step and computing the relabelled posterior estimates}
 \usage{
-piv_rel(mcmc, nMC)
+piv_rel(mcmc)
 }
 \arguments{
 \item{mcmc}{The output of the MCMC sampling from \code{piv_MCMC}.}
-
-\item{nMC}{The number of total MCMC iterations (given in input to the \code{piv_MCMC} function, or any function suited for MCMC sampling).}
 }
 \value{
 This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
