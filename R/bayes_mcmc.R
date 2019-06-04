@@ -8,8 +8,7 @@
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 #' "maxsumdiff"}.
-#' If \code{k <= 4}, the default method is \code{"MUS"};
-#' otherwise, the default method is \code{"maxsumdiff"} (see the Details and
+#' The default method is \code{"maxsumdiff"} (see the Details and
 #' the vignette).
 #' @param clustering The clustering technique adopted for partitioning the
 #' \code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
@@ -172,6 +171,7 @@
 #' selected pivotal criterion.}
 #' \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
 #' the pivots.}
+#' \item{\code{model}}{The JAGS/Stan model code.}
 #'
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
@@ -303,6 +303,7 @@ piv_MCMC <- function(y,
     ris <- ris_prel[numeffettivogruppi==k,]
     true.iter <- nrow(ris)
     group <- ris[,1:N]
+    model <- mod.mist.univ$bugs
 
     }else if (software=="rstan"){
       if(missing(priors)){
@@ -416,7 +417,7 @@ piv_MCMC <- function(y,
       ris <- ris_prel[numeffettivogruppi==k,]
       group <- group[numeffettivogruppi==k,]
       true.iter <- nrow(ris)
-
+      model <- mix_univ
 
     }
 
@@ -569,6 +570,7 @@ piv_MCMC <- function(y,
     FreqGruppiJags <- table(group)
     tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
     prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+    model <- mod.mist.biv
     }else if(software=="rstan"){
       if (missing(priors)){
         mu_0 <- c(0,0)
@@ -685,7 +687,7 @@ piv_MCMC <- function(y,
       FreqGruppiJags <- table(group)
       #tau <- ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)]
       #prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
-
+      model <- mix_biv
   }
 
     group.orig <- group
@@ -779,15 +781,12 @@ piv_MCMC <- function(y,
     piv.index.pivotal <- c(1,2,3)
     available_met <- 3
     x <- c(1:available_met)
-    prec.par.1 <- min(min(table(grr))-1,5)
     clust  <-  piv_sel(C=C, clusters=as.vector(grr))
-
     pivots <- clust$pivots[,piv.index.pivotal[piv.index]]
   }else if(piv.criterion=="MUS"){
       if (k <=4 & sum(C==0)!=0){
 
-          prec.par.1 <- min(min(table(grr))-1,5)
-          mus_res    <- MUS(C, grr, prec.par.1)
+          mus_res    <- MUS(C, grr)
           clust  <-  mus_res$pivots
 
   }else{
@@ -812,5 +811,6 @@ piv_MCMC <- function(y,
                C=C,
                grr=grr,
                pivots = pivots,
-               piv.criterion = piv.criterion))
+               piv.criterion = piv.criterion,
+               model = model))
   }
