@@ -73,7 +73,7 @@ for the mean parameters as given by JAGS/Stan.}
 selected pivotal criterion.}
 \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
 the pivots.}
-\item{\code{model}}{The JAGS/Stan model code.}
+\item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
 }
 \description{
 Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
@@ -108,7 +108,14 @@ if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutati
 p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
 is multimodal with (at least) \eqn{k!} modes.
 
-Priors are chosen as weakly informative. For univariate mixtures, when
+Depending on the selected software, the model parametrization
+changes in terms of the prior choices.
+Precisely, the JAGS philosophy with the underlying Gibbs sampling
+is to use noninformative priors, and conjugate priors are
+preferred for computational speed.
+Conversely, Stan adopts weakly informative priors,
+with no need to explicitly use the conjugacy.
+For univariate mixtures, when
 \code{software="rjags"} the specification is the same as the function \code{BMMmodel} of the
 \code{bayesmix} package:
 
@@ -142,16 +149,21 @@ For bivariate mixtures, when \code{software="rjags"} the prior specification is 
 
 \deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)}
 \deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, 3)}
-\deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1),}
+\deqn{\pi \sim \mbox{Dirichlet}(\bm{\alpha}),}
 
-where \eqn{S2} and \eqn{S3} are diagonal matrices
-with diagonal elements (the variances)
+where  \eqn{\bm{\alpha}} is a \eqn{k}-dimensional vector
+and \eqn{S_2} and \eqn{S_3}
+are positive definite matrices. By default, \eqn{\bm{\mu}_0=\bm{0}},
+\eqn{\bm{\alpha}=(1,\ldots,1)} and \eqn{S_2} and \eqn{S_3} are diagonal matrices,
+with diagonal elements
 equal to 1e+05. The user may specify other values for the hyperparameters
-\eqn{\bm{\mu}_0, S2, S3} via \code{priors} argument in such a way:
+\eqn{\bm{\mu}_0, S_2, S_3} and \eqn{\bm{\alpha}} via \code{priors} argument in such a way:
 
-\code{priors =list(mu0 = c(1,1), S2 = ...,S3 = ...)},
 
-with the constraint for \eqn{S2} and \eqn{S3} to be positive definite.
+\code{priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}
+
+with the constraint for \eqn{S2} and \eqn{S3} to be positive definite,
+and \eqn{\bm{\alpha}} a vector of dimension \eqn{k} with nonnegative elements.
 
 When \code{software="rstan"}, the prior specification is:
 
@@ -225,7 +237,7 @@ res_stan <- piv_MCMC(y = sim$y, k =k, nMC = nMC,
 # changing priors
 res2 <- piv_MCMC(y = sim$y,
                  priors = list (
-                 mu0=c(1,1),
+                 mu_0=c(1,1),
                  S2 = matrix(c(0.002,0,0, 0.1),2,2, byrow=TRUE),
                  S3 = matrix(c(0.1,0,0,0.1), 2,2, byrow =TRUE)),
                  k = k, nMC = nMC)
