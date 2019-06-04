@@ -59,7 +59,7 @@ if (type=="chains" ){
     if (length(dim(mu_switch))==2){
 
       k <- dim(mu_switch)[2]
-      par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4,2,1))
+      par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4,4,1))
       #plot
       matplot(mu_switch, type="l", xlab="Iterations",
         ylab=expression(mu), main="Raw MCMC chains",
