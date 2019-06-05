@@ -128,21 +128,28 @@ piv_plot <- function(y,
       if (par=="all"){
         par(mfrow=c(2,3), oma=c(0,0,0,0), mar =c(5,3.1,2,1))
         k <- dim(raw)[3]
-        mains = c("mean 1st coord", "mean 2nd coord", "weight")
-        ylabs = c(expression(mu[,1]), expression(mu[,2]), expression(pi))
+        # mains = c("mean 1st coord", "mean 2nd coord", "weight")
+        # ylabs = c(expression(mu[,1]), expression(mu[,2]), expression(pi))
+        #
+        # for (j in 1:3){
+        #   #plot
+        #   matplot(raw[j,,], type="l", xlab="",
+        #           ylab=ylabs[j], main= paste("Raw ", mains[j], sep=""),
+        #           cex.main=1.8, cex.lab =1.8)
+        # }
+        # for (j in 1:3){
+        #   #plot the relabeled
+        #   matplot(rel[j,,], type="l", xlab="Iterations",
+        #           ylab=ylabs[j], main= paste("Rel ", mains[j], sep=""),
+        #           cex.lab =1.8, cex.main=1.8)
+        # }
 
-        for (j in 1:3){
-          #plot
-          matplot(raw[j,,], type="l", xlab="",
-                  ylab=ylabs[j], main= paste("Raw ", mains[j], sep=""),
-                  cex.main=1.8, cex.lab =1.8)
+        h=1
+        plot(raw[1,,h], raw[2, ,h], col=h, pch =15, bg =h)
+        for (h in 2:dim(raw)[3]){
+          points(raw[1,,h], raw[2, ,h], col=h, pch =15, bg=h)
         }
-        for (j in 1:3){
-          #plot the relabeled
-          matplot(rel[j,,], type="l", xlab="Iterations",
-                  ylab=ylabs[j], main= paste("Rel ", mains[j], sep=""),
-                  cex.lab =1.8, cex.main=1.8)
-        }
+
         cat("Description: traceplots of the raw MCMC chains and the relabelled chains for the model parameters means and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.")
 
 
