@@ -126,10 +126,10 @@ piv_plot <- function(y,
       }
     }else{
       if (par=="all"){
-        par(mfrow=c(2,3), oma=c(0,0,0,0), mar =c(5,3.1,2,1))
+        par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(5,4.6,2,1))
         k <- dim(raw)[3]
-        # mains = c("mean 1st coord", "mean 2nd coord", "weight")
-        # ylabs = c(expression(mu[,1]), expression(mu[,2]), expression(pi))
+         mains = c("mean 1st coord", "mean 2nd coord", "weight")
+         ylabs = c(expression(mu[,1]), expression(mu[,2]), expression(pi))
         #
         # for (j in 1:3){
         #   #plot
@@ -145,10 +145,35 @@ piv_plot <- function(y,
         # }
 
         h=1
-        plot(raw[1,,h], raw[2, ,h], col=h, pch =15, bg =h)
-        for (h in 2:dim(raw)[3]){
-          points(raw[1,,h], raw[2, ,h], col=h, pch =15, bg=h)
+        plot(raw[1,,h], raw[2, ,h], col=h, pch =1, bg =h,
+             cex.main =1.8, main ="Raw means", cex.lab=1.8, xlab=
+               expression(mu[1]), ylab =expression(mu[2]),
+             xlim= c(min(raw[1,,]-10), max(raw[1,,])+10),
+             ylim= c(min(raw[2,,]-10), max(raw[2,,])+10))
+        for (h in 2:k){
+          points(raw[1,,h], raw[2, ,h], col=h, pch =1, bg=h)
         }
+
+        matplot(raw[3,,], type="l",
+                          ylab=ylabs[3], main= paste("Raw ", mains[3],"s", sep=""),
+                           cex.main=1.8, cex.lab =1.8, xlab ="Iterations")
+
+        h=1
+        plot(rel[1,,h], rel[2, ,h], col=h, pch =1, bg =h,
+             cex.main =1.8, main ="Rel means", cex.lab=1.8, xlab=
+               expression(mu[1]), ylab =expression(mu[2]),
+             xlim= c(min(rel[1,,]-10), max(rel[1,,])+10),
+             ylim= c(min(rel[2,,]-10), max(rel[2,,])+10))
+        for (h in 2:k){
+          points(rel[1,,h], rel[2, ,h], col=h, pch =1, bg=h)
+        }
+
+        matplot(rel[3,,], type="l",
+                ylab=ylabs[3], main= paste("Rel ", mains[3],"s", sep=""),
+                cex.main=1.8, cex.lab =1.8, xlab ="Iterations")
+
+
+
 
         cat("Description: traceplots of the raw MCMC chains and the relabelled chains for the model parameters means and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.")
 
