@@ -182,30 +182,53 @@ piv_plot <- function(y,
         if (par=="mean"){
 
           k <- dim(raw)[3]
-          par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(5,4,2,1))
-          matplot(raw[,1,], type="l", xlab="",
-                  ylab=expression(mu[1]), main= paste("Raw ", par,"s", sep=""),
-                  cex.lab =1.8, cex.main=1.8 )
-          #plot the second component
-          matplot(raw[,2,], type="l", xlab="",
-                  ylab=expression(mu[2]), main= paste("Raw ", par,"s", sep=""),
-                  cex.lab =1.8, cex.main=1.8)
+          par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4.6,2,1))
+          # matplot(raw[,1,], type="l", xlab="",
+          #         ylab=expression(mu[1]), main= paste("Raw ", par,"s", sep=""),
+          #         cex.lab =1.8, cex.main=1.8 )
+          # #plot the second component
+          # matplot(raw[,2,], type="l", xlab="",
+          #         ylab=expression(mu[2]), main= paste("Raw ", par,"s", sep=""),
+          #         cex.lab =1.8, cex.main=1.8)
+          #
+          # #plot the first relabelled component
+          # matplot(rel[,1,],type="l", xlab="Iterations",
+          #         ylab=expression(mu[1]),
+          #         main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
+          #
+          # #plot the second relabelled component
+          # matplot(rel[,2,],type="l", xlab="Iterations",
+          #         ylab=expression(mu[2]),
+          #         main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
 
-          #plot the first relabelled component
-          matplot(rel[,1,],type="l", xlab="Iterations",
-                  ylab=expression(mu[1]),
-                  main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
+          h=1
+          plot(raw[,1,h], raw[, 2,h], col=h, pch =1, bg =h,
+               cex.main =1.8, main ="Raw means", cex.lab=1.8, xlab=
+                 expression(mu[1]), ylab =expression(mu[2]),
+               xlim= c(min(raw[,1,]-10), max(raw[,1,])+10),
+               ylim= c(min(raw[,2,]-10), max(raw[,2,])+10))
+          for (h in 2:k){
+            points(raw[,1,h], raw[,2 ,h], col=h, pch =1, bg=h)
+          }
 
-          #plot the second relabelled component
-          matplot(rel[,2,],type="l", xlab="Iterations",
-                  ylab=expression(mu[2]),
-                  main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
+          h=1
+          plot(rel[,1,h], rel[,2,h], col=h, pch =1, bg =h,
+               cex.main =1.8, main ="Rel means", cex.lab=1.8, xlab=
+                 expression(mu[1]), ylab =expression(mu[2]),
+               xlim= c(min(rel[,1,]-10), max(rel[,1,])+10),
+               ylim= c(min(rel[,2,]-10), max(rel[,2,])+10))
+          for (h in 2:k){
+            points(rel[,1,h], rel[,2 ,h], col=h, pch =1, bg=h)
+          }
+
+
+
           cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
 
 
 
         }else if(par=="weight"){
-          par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4,2,1))
+          par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4.6,2,1))
 
           matplot(raw, type="l", xlab="Iterations",
                   ylab=expression(pi), main= paste("Raw ", par,"s", sep=""),
