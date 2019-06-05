@@ -420,7 +420,7 @@ piv_MCMC <- function(y,
       "
       fit_univ <-  stan(model_code = mix_univ,
                         data=data,
-                        chains =4,
+                        chains =chains,
                         iter =nMC)
       sims_univ <- extract(fit_univ)
 

@@ -105,7 +105,7 @@ piv_plot <- function(y,
                   ylab=ylabs[j], main= paste("Rel ", mains[j],"s", sep=""),
                   cex.main=1)
         }
-        cat("Description: traceplots of the raw MCMC chains and the relabelled chains for all the model parameters: means, sds and weights")
+        cat("Description: traceplots of the raw MCMC chains and the relabelled chains for all the model parameters: means, sds and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sampler is not able to distinguish between the components.")
 
       }else{
 
@@ -121,8 +121,7 @@ piv_plot <- function(y,
                 ylab="",
                 main= paste("Rel ", par,"s", sep=""), cex.main=0.8)
 
-        cat(paste("Description: traceplot of the raw MCMC chains and the relabelled
-                chains for the "), par,"s parameters.", sep="")
+        cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
       }
     }else{
       if (par=="all"){
@@ -143,7 +142,7 @@ piv_plot <- function(y,
                   ylab=ylabs[j], main= paste("Rel ", mains[j], sep=""),
                   cex.main=0.9)
         }
-        cat("Description: traceplots of the raw MCMC chains and the relabelled chains for the model parameters means and weights")
+        cat("Description: traceplots of the raw MCMC chains and the relabelled chains for the model parameters means and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.")
 
 
       }else{
@@ -168,8 +167,7 @@ piv_plot <- function(y,
           matplot(rel[,2,],type="l", xlab="Iterations",
                   ylab=expression(mu[2]),
                   main= paste("Rel ", par,"s", sep=""), cex.main=0.8)
-          cat(paste("Description: traceplot of the raw MCMC chains and the relabelled
-                chains for the "), par,"s parameters.", sep="")
+          cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
 
 
 
@@ -186,8 +184,7 @@ piv_plot <- function(y,
                   main= paste("Rel ", par,"s", sep=""), cex.main=0.8)
 
 
-          cat(paste("Description: traceplot of the raw MCMC chains and the relabelled
-                chains for the "), par,"s parameters.", sep="")
+          cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
 
         }else if (par=="sd"){
           return(cat("No sds available in two dimensions: they are the same for each group"))
