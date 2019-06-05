@@ -96,14 +96,14 @@ piv_plot <- function(y,
         for (j in 1:3){
           #plot
           matplot(raw[j,,], type="l", xlab="",
-                  ylab=ylabs[j], main= paste("Raw ", mains[j],"s", sep=""),
-                  cex.main=1)
+                  ylab=ylabs[j], main= paste("Raw ", mains[j],"s", sep=""), cex.lab =1.8,
+                  cex.main=1.8)
         }
         for (j in 1:3){
           #plot the relabeled
           matplot(rel[j,,], type="l", xlab="Iterations",
                   ylab=ylabs[j], main= paste("Rel ", mains[j],"s", sep=""),
-                  cex.main=1)
+                  cex.main=1.8, cex.lab =1.8)
         }
         cat("Description: traceplots of the raw MCMC chains and the relabelled chains for all the model parameters: means, sds and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sampler is not able to distinguish between the components.")
 
@@ -114,12 +114,13 @@ piv_plot <- function(y,
         #plot
         matplot(raw, type="l", xlab="Iterations",
                 ylab="", main= paste("Raw ", par,"s", sep=""),
-                cex.main=0.8)
+                cex.main=1.8,cex.lab =1.8)
         #plot the relabeled
         matplot(rel, type="l",
                 xlab="Iterations",
                 ylab="",
-                main= paste("Rel ", par,"s", sep=""), cex.main=0.8)
+                main= paste("Rel ", par,"s", sep=""), cex.main=1.8,
+                cex.lab =1.8)
 
         cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
       }
@@ -134,13 +135,13 @@ piv_plot <- function(y,
           #plot
           matplot(raw[j,,], type="l", xlab="",
                   ylab=ylabs[j], main= paste("Raw ", mains[j], sep=""),
-                  cex.main=0.9)
+                  cex.main=1.8, cex.lab =1.8)
         }
         for (j in 1:3){
           #plot the relabeled
           matplot(rel[j,,], type="l", xlab="Iterations",
                   ylab=ylabs[j], main= paste("Rel ", mains[j], sep=""),
-                  cex.main=0.9)
+                  cex.lab =1.8, cex.main=1.8)
         }
         cat("Description: traceplots of the raw MCMC chains and the relabelled chains for the model parameters means and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.")
 
@@ -152,21 +153,21 @@ piv_plot <- function(y,
           par(mfrow=c(2,2), oma=c(0,0,0,0), mar =c(5,4,2,1))
           matplot(raw[,1,], type="l", xlab="",
                   ylab=expression(mu[1]), main= paste("Raw ", par,"s", sep=""),
-                  cex.main=0.8 )
+                  cex.lab =1.8, cex.main=1.8 )
           #plot the second component
           matplot(raw[,2,], type="l", xlab="",
                   ylab=expression(mu[2]), main= paste("Raw ", par,"s", sep=""),
-                  cex.main=0.8)
+                  cex.lab =1.8, cex.main=1.8)
 
           #plot the first relabelled component
           matplot(rel[,1,],type="l", xlab="Iterations",
                   ylab=expression(mu[1]),
-                  main= paste("Rel ", par,"s", sep=""), cex.main=0.8)
+                  main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
 
           #plot the second relabelled component
           matplot(rel[,2,],type="l", xlab="Iterations",
                   ylab=expression(mu[2]),
-                  main= paste("Rel ", par,"s", sep=""), cex.main=0.8)
+                  main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
           cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
 
 
@@ -176,12 +177,13 @@ piv_plot <- function(y,
 
           matplot(raw, type="l", xlab="Iterations",
                   ylab=expression(pi), main= paste("Raw ", par,"s", sep=""),
-                  cex.main=0.8)
+                  cex.lab =1.8, cex.main=1.8)
 
 
           matplot(rel,type="l", xlab="Iterations",
                   ylab=expression(pi),
-                  main= paste("Rel ", par,"s", sep=""), cex.main=0.8)
+                  main= paste("Rel ", par,"s", sep=""),
+                  cex.lab =1.8, cex.main=1.8)
 
 
           cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
@@ -198,14 +200,14 @@ piv_plot <- function(y,
 
       par(mfrow=c(1,2), mar=c(5,5,4,1))
       hist(y, breaks=40, prob = TRUE,
-           main = paste("Raw means"), cex.main =0.8,
-           col="navajowhite1", border="navajowhite1")
+           main = paste("Raw means"), cex.main =1.8,
+           col="navajowhite1", border="navajowhite1", cex.lab =1.8)
       points(colMeans(mcmc$mcmc_mean_raw), rep(0, length(true.means)),
              col="red", pch=21,  bg="red")
       lines(density(y), lty=1, lwd=3, col="blue")
       hist(y, breaks=40, prob = TRUE,
-           main= paste("Rel means"), cex.main=0.8,
-           col="navajowhite1", border="navajowhite1")
+           main= paste("Rel means"), cex.main=1.8,
+           col="navajowhite1", border="navajowhite1", cex.lab =1.8)
       points(est, rep(0, length(true.means)),
              col="red", pch=21,  bg="red")
       lines(density(y), lty=1, lwd=3, col="blue")
@@ -233,7 +235,8 @@ piv_plot <- function(y,
                    expand=0.5, ltheta=120,
                    col = "navajowhite1",
                    shade = 0.1, ticktype = "detailed",
-                   main= paste("Rel means"), cex.main=0.8)
+                   main= paste("Rel means"), cex.main=1.8,
+                   cex.lab =1.8)
       points(trans3d(est[,1],
                      est[,2], 0,
                      pmat = res), col = "red", pch = 16)
