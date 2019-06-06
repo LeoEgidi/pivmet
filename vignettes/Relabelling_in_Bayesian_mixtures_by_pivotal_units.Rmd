@@ -17,16 +17,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette we explore the relabelling pivotal method proposed in @egidi2018relabelling through the `pivmet` package. First of all, we load the package:
+In this vignette we explore the fit of Gaussian mixture models and the relabelling pivotal method proposed in @egidi2018relabelling through the `pivmet` package. First of all, we load the package:
 
 ```{r load, warning =FALSE, message = FALSE}
 library(pivmet)
 ```
 
 
+The pivmet \proglang{R} package provides a simple framework to (i) fit univariate and bivariate mixture models according to a Bayesian flavour and detect the pivotal units, via the `piv_MCMC` function; (ii) perform the relabelling step via the `piv_rel` function.
+
 There are two main functions designed for our procedure. The function `piv_MCMC`: 
 
-  +  performs MCMC sampling for Gaussian mixture models launching the `JAGSrun` function of the `bayesmix` package for univariate models or the `run.jags` function of the `runjags` package for bivariate models;
+  +  performs MCMC sampling for Gaussian mixture models using the underlying `rjags` or `rstan` packages (chosen by the users through the optional function argument `software`, by default set to `rjags`). Precisely the package uses:  the `JAGSrun` function of the `bayesmix` package for univariate mixture models; the `run.jags` function of the `runjags` package for bivariate mixture models; the `stan` function of the `rstan` package for both univariate and bivariate mixture models;
   
   + post-processes the chains and randomly swithes their values; 
   
@@ -36,11 +38,61 @@ There are two main functions designed for our procedure. The function `piv_MCMC`
   
   The function `piv_rel`: 
   
-  + performs the relabelling algorithm using the $k$ pivotal units as groups identifiers. It yields the relabelled chains and the corresponding posterior estimates.
+  + performs the relabelling algorithm using the $k$ pivotal units as groups identifiers. It yields the relabelled chains and the corresponding posterior estimates. The only argument `mcmc` takes as input the MCMC output from `piv_MCMC`.
+  
+## Example: fishery data 
+
+The Fishery dataset has been previously used by @titterington1985statistical and @papastamoulis2016label 
+ and consists of 256 snapper length measurements. It is contained in the ```bayesmix``` package [@grun2011bayesmix]. We may display the histogram of the data, along with an estimated kernel density.  
+ 
+ ```{r fish_hist, fig.align ='center'}
+data(fish)
+y <- fish[,1]
+hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
+             main ="Fishery data", cex.main =1.7,
+             col="navajowhite1", border="navajowhite1")
+ lines(density(y), lty=1, lwd=3, col="blue")
+ ```
+
+We assume a mixture model with $k=5$ groups:
+ 
+ \begin{equation}
+y_i \sim \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j, \phi^2_j), \ \ i=1,\ldots,n,
+\label{eq:fishery} 
+ \end{equation}
+where $\phi_j$ is the standard deviation of group $j$. We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$, by selecting the default argument ```software="rjags"```, which for one-dimensional mixtures relies on the MCMC sampler provided by the package ```bayesmix```. The burnin period is set to 7500. 
+ 
+```{r fish_data}
+library(pivmet)
+data(fish)
+y <- fish[,1]
+k <- 5
+nMC <- 15000
+res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC,
+software = "rjags")
+```
+
+First of all, we may access the true number of iterations by tiping:
+
+```{r true_iter}
+res$true.iter
+```
+
+We may have a glimpse if label switching ocurred or not by looking at the traceplot for the mean parameters, $\mu_j$. Then, we apply the function ```piv_rel``` to relabel the chains and obtain useful inferences; the only argument for this function is the MCMC result just obtained with ```piv_MCMC```. The function ```piv_plot``` displays some graphical tools, both traceplots (argument ```type="chains"```) and histograms along with the final relabelled means (argument ```type="hist"```).
+
+ 
+```{r fish_rel, fig.align= 'center', fig.width=7}
+rel <- piv_rel(mcmc=res)
+piv_plot(y=y, res, rel, par = "mean", type="chains")
+piv_plot(y=y, res, rel, type="hist")
+```
+
+The first plot displays the traceplots for the parameters $(\boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$. From the first row showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean $\mu_j$ and the weights $\pi_j$, for $j=1,\ldots,k$. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting ```software="rstan"``` in the ```piv_MCMC``` function. 
+<!-- The results are shown in Figure~\ref{fish_chains_stan}. As may be noted from the first plot in the top row, Hamiltonian Monte Carlo (HMC) behind Stan seems definitely more suited to explore the five high-density regions without switching the group labels. However, group probabilities (third plot) and group standard deviations (second plot) overlap each other. The perfect MCMC sampler does not exist. -->
 
 ## Example: bivariate data
 
-Suppose $\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{k}\mathcal{N}_{2}(\boldsymbol{\mu}_{k}, \boldsymbol{\Sigma})$. We may generate Gaussian mixture data through the function `piv_sim`, specifying the desired number of groups $k$. The argument `W` handles the weights for a nested mixture, in which each $j$-th component is in turn modelled as a two-component mixture.
+Suppose $\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})$. We may generate Gaussian mixture data through the function `piv_sim`, specifying the desired number of groups $k$. The argument `W` handles the weights for a nested mixture, in which each $j$-th component is in turn modelled as a two-component mixture.
 
 
 ```{r nested, fig.align ='center'}
@@ -48,9 +100,9 @@ set.seed(50)
 N  <- 200
 k  <- 3
 nMC <- 2000
-M1 <- c(-45,8)
-M2 <- c(45,.1)
-M3 <- c(100,8)
+M1 <- c(-10,8)
+M2 <- c(10,.1)
+M3 <- c(30,8)
 Mu <- matrix(rbind(M1,M2,M3),c(k,2))
 stdev    <- cbind(rep(1,k), rep(200,k))
 Sigma.p1 <- matrix(c(stdev[1,1],0,0,stdev[1,1]),
@@ -63,7 +115,9 @@ sim <- piv_sim(N = N, k = k, Mu = Mu,
 plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 ```
 
-The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of component ```k``` and number of MCMC iterations ```nMC```. It performs JAGS sampling using the ```bayesmix``` package for univariate data and ```runjags``` package for bivariate data. After $H$ MCMC iterations, the function implements a clustering procedure on $k$ groups, and through the optional argument `clustering` the user may choose among agglomerative or divisive hierarchical clustering. Using the latent formulation for mixture models, we denote with $[Z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. The function builds a co-association matrix $C$ across the MCMC sample with generic element:
+The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of component ```k``` and number of MCMC iterations ```nMC```. It performs Gibbs sampling using the ```bayesmix``` package for univariate data and ```runjags``` package for bivariate data by defaul, or if the optional argument is set as `software="rjags"`. It performs Hamiltonian Monte Carlo (HMC) sampling if `software="rjags"`.  
+
+After $H$ MCMC iterations, the function implements a clustering procedure on $k$ groups, and through the optional argument `clustering` the user may choose among agglomerative or divisive hierarchical clustering. Using the latent formulation for mixture models, we denote with $[Z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. The function builds a co-association matrix $C$ across the MCMC sample with generic element:
 
 $$c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[Z_i]_h=[Z_p]_h|,$$
 
@@ -93,18 +147,16 @@ Once we obtain posterior estimates, label switching is likely to occurr. For suc
 [Z_{i}]_h =j & \mbox{ for } i : [Z_i]_h=[Z_{i_{j}}]_h.\\
 \end{align*}
 
-The function `piv_rel` performs the procedure above, and for such task it only needs the `mcmc = rel` argument and `nMC`. Once we correctly relabel the chains, we may plot the relabelled outputs through the function `piv_plot`, with different options for the argument `type`:
+The function `piv_rel` performs the procedure above, and for such task it only needs the `mcmc = res` argument. Once we correctly relabel the chains, we may plot the relabelled outputs through the function `piv_plot`, with different options for the argument `type`:
 
 - `chains`: plot the relabelled chains;
-- `estimates`: plot the point estimates for the parameters of interest;
-- `estimates_hist`: plot the point estimates against the histogram of the data;
-- `iter`: plot the proportions of valid MCMC iterations.
+- `hist`: plot the point estimates against the histogram of the data.
 
+The optional argument `par` takes four possible inputs: `mean`, `sd`, `weight` and `all` for the means, sds, weights or all the three mentioned parameters, respectively. By default, `par="all"`.
 
-```{r pivotal_rel, fig.show='hold', fig.align='center'}
-rel <- piv_rel(mcmc=res, nMC = nMC)
-piv_plot(y = y, mcmc = res, rel_est = rel, type = "chains")
-piv_plot(y = y, mcmc = res, rel_est = rel, type = "estimates")
+```{r pivotal_rel, fig.show='hold', fig.align='center',fig.width=7}
+rel <- piv_rel(mcmc=res)
+piv_plot(y = sim$y, mcmc = res, rel_est = rel, par = "mean", type = "chains")
 piv_plot(y = sim$y, mcmc = res, rel_est = rel, type = "hist")
 ```
 

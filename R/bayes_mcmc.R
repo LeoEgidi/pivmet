@@ -422,7 +422,7 @@ piv_MCMC <- function(y,
                         data=data,
                         chains =chains,
                         iter =nMC)
-      sims_univ <- extract(fit_univ)
+      sims_univ <- rstan::extract(fit_univ)
 
       J <- 3
       mcmc.pars <- array(data = NA, dim = c(dim(sims_univ$theta)[1], k, J))
@@ -732,7 +732,7 @@ piv_MCMC <- function(y,
                         data=data,
                         chains =chains,
                         iter =nMC)
-      sims_biv <- extract(fit_biv)
+      sims_biv <- rstan::extract(fit_biv)
 
       # Extraction
       ris <- as.matrix(sims_biv)
