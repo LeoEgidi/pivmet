@@ -294,7 +294,8 @@ piv_plot <- function(y,
                    cex.lab =1.8)
       points(trans3d(est[,1],
                      est[,2], 0,
-                     pmat = res), col = "red", pch = 16)
+                     pmat = res), col = "red", pch = 16,
+             cex=3.5)
 
       cat("Description: 3d histogram of the data along with the posterior estimates of the relabelled means (red points)")
 
