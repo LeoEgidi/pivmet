@@ -19,6 +19,23 @@ piv_plot(y, mcmc, rel_est, par = c("mean", "sd", "weight", "all"),
 \description{
 Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
 }
+\examples{
+
+# Fishery data
+\dontrun{
+data(fish)
+y <- fish[,1]
+N <- length(y)
+k <- 5
+nMC <- 5000
+res <- piv_MCMC(y = y, k = k, nMC = nMC)
+rel <- piv_rel(mcmc=res, nMC = nMC)
+piv_plot(y, res, rel, "chains")
+piv_plot(y, res, rel, "estimates")
+piv_plot(y, res, rel, "hist")
+}
+
+}
 \author{
 Leonardo Egidi \url{legidi@units.it}
 }
