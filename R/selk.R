@@ -81,7 +81,7 @@ piv_k <- function(y, priors,  ic =c("dic", "loo"),
     }
     k_est <- which.min(DIC)+1
     return(list(dic=DIC, k_est =k_est))
-    }else if (software == "loo"){
+    }else if (ic == "loo"){
       if(missing(priors)){
         mu_0 <- 0
         B0inv <- 0.1
@@ -397,3 +397,4 @@ piv_k <- function(y, priors,  ic =c("dic", "loo"),
 
 
 }
+
