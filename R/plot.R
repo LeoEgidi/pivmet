@@ -289,23 +289,24 @@ piv_plot <- function(y,
                    freq2D,   xlab="\n\n\nx",
                    ylab="\n\n\ny", zlab="\n\n\nf(x,y)",
                    theta=30, phi=30,
-                   expand=0.5, ltheta=120,
-                   col =
-                     "navajowhite1",
+                   expand=0.5, ltheta=1,
+                   lphi=1,
+                   col = "white",
+                     #"navajowhite1",
                    shade = 0.1, ticktype = "detailed",
                    main= paste("Rel means"), cex.main=1.8,
                    cex.lab =1.8)
 
        points(trans3d(est[,1],
-                      est[,2], 0,
+                      est[,2], -2,
                       pmat = res), col = "red", pch = 16,
-              cex=1.5)
-       points(trans3d(est[,1],
-                      est[,2], max(freq[,3])-1,
-                      pmat = res), col = "red", pch = 16,
-              cex=1.5)
-       lines(trans3d(x=est[1,1], y = est[1,2],
-                     z= 12, pmat =res), col="red")
+              cex=3.5)
+       # points(trans3d(est[,1],
+       #                est[,2], max(freq[,3])+1,
+       #                pmat = res), col = "red", pch = 16,
+       #        cex=1.5)
+       #lines(trans3d(est[,1], est[,2],
+        #             max(freq[,3])+1, pmat =res), col="red")
 
       cat("Description: 3d histogram of the data along with the posterior estimates of the relabelled means (red points)")
 
