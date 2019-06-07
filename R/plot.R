@@ -20,7 +20,7 @@
 #' piv_plot(y, res, rel, "chains")
 #' piv_plot(y, res, rel, "estimates")
 #' piv_plot(y, res, rel, "hist")
-#' {}
+#' }
 #'
 #' @author
 #'
@@ -277,25 +277,35 @@ piv_plot <- function(y,
                    ceiling(max(xy[,1])), length=nbins)
       y.bin <- seq(floor(min(xy[,2])),
                    ceiling(max(xy[,2])), length=nbins)
+
       freq <-  as.data.frame(table(findInterval(xy[,1],
                                                 x.bin),findInterval(xy[,2], y.bin)))
       freq[,1] <- as.numeric(freq[,1])
       freq[,2] <- as.numeric(freq[,2])
       freq2D <- diag(nbins)*0
       freq2D[cbind(freq[,1], freq[,2])] <- freq[,3]
+      #cols <- (freq2D[-1,-1] + freq2D[-1,-(nbins-1)] + freq2D[-(nbins-1),-(nbins-1)] + freq2D[-(nbins-1),-1])/4
       res <- persp(x.bin, y.bin,
                    freq2D,   xlab="\n\n\nx",
                    ylab="\n\n\ny", zlab="\n\n\nf(x,y)",
                    theta=30, phi=30,
                    expand=0.5, ltheta=120,
-                   col = "navajowhite1",
+                   col =
+                     "navajowhite1",
                    shade = 0.1, ticktype = "detailed",
                    main= paste("Rel means"), cex.main=1.8,
                    cex.lab =1.8)
-      points(trans3d(est[,1],
-                     est[,2], 0,
-                     pmat = res), col = "red", pch = 16,
-             cex=3.5)
+
+       points(trans3d(est[,1],
+                      est[,2], 0,
+                      pmat = res), col = "red", pch = 16,
+              cex=1.5)
+       points(trans3d(est[,1],
+                      est[,2], max(freq[,3])-1,
+                      pmat = res), col = "red", pch = 16,
+              cex=1.5)
+       lines(trans3d(x=est[1,1], y = est[1,2],
+                     z= 12, pmat =res), col="red")
 
       cat("Description: 3d histogram of the data along with the posterior estimates of the relabelled means (red points)")
 
