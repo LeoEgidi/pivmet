@@ -273,6 +273,17 @@ piv_MCMC <- function(y,
                      chains = 4,
                      cores = 1){
 
+  #### checks
+
+  # piv.criterion
+  list_crit <- c("MUS", "maxsumint", "minsumnoint", "maxsumdiff")
+  if (sum(piv.criterion!=list_crit)==4){
+    stop(paste("Unused argument" , piv.criterion, ". Please select one among the following pivotal
+         criteria: MUS, maxsumint, minsumnoint, maxsumdiff"))
+  }
+
+  ###
+
   # Conditions about data dimension----------------
   if (missing(software)){
     software="rjags"

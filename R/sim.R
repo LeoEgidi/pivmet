@@ -81,6 +81,41 @@ piv_sim <- function(N,
                     W = c(0.5, 0.5)){
   # Generation---------------
 
+
+  #############
+  ## checks
+
+  # W
+
+  if (sum(W)!=1){
+    stop("Check that the sub-weights sum to one!")
+  }else if(length(W)!=2){
+    stop("The sub-weight vector should be of dimension two.")
+  }
+
+  # Sigma.p1 and Sigma.p2
+
+  if (is.positive.definite(Sigma.p1)==FALSE |
+      is.positive.definite(Sigma.p2)==FALSE){
+    stop("Matrix covariances should be positive definite!")
+  }
+
+  # k
+
+  if (is.vector(Mu)){
+    if (k != length(Mu)){
+      stop("The number of mixture components has to be equal
+           to the input means length")
+    }
+  }else if (is.matrix(Mu)){
+    if (k != dim(Mu)[1]){
+      stop("The number of mixture components has to be equal
+           to the input means length")
+    }
+  }
+
+
+  ##########
   if(missing(stdev)){
     stdev <- cbind(rep(1,k), rep(200,k))
   }
