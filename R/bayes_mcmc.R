@@ -282,6 +282,24 @@ piv_MCMC <- function(y,
          criteria: MUS, maxsumint, minsumnoint, maxsumdiff"))
   }
 
+  # clustering
+
+  list_clust <- c("diana", "hclust")
+  if (sum(clustering!=list_clust)==2){
+    stop(paste("Unused argument" , clustering, ". Please select one among the following
+               clustering methods: diana, hclust"))
+  }
+
+  # software
+
+  list_soft <- c("rjags", "rstan")
+  if (sum(software!=list_soft)==2){
+    stop(paste("Unused argument" , software, ". Please select one among the following
+               softwares: rjags, rstan"))
+  }
+
+
+
   ###
 
   # Conditions about data dimension----------------
