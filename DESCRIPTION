@@ -22,7 +22,7 @@ LazyData: true
 LazyLoad: yes
 SystemRequirements: pandoc (>= 1.12.3), pandoc-citeproc
 Depends:  bayesmix, rstan, rjags, runjags, mvtnorm, RcmdrMisc
-Imports:  cluster, mclust, MASS    
+Imports:  cluster, mclust, MASS, corpcor    
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
