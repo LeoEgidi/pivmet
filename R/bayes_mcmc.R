@@ -278,7 +278,7 @@ piv_MCMC <- function(y,
   # piv.criterion
   list_crit <- c("MUS", "maxsumint", "minsumnoint", "maxsumdiff")
   if (sum(piv.criterion!=list_crit)==4){
-    stop(paste("Unused argument" , piv.criterion, ". Please select one among the following pivotal
+    stop(paste("'", object, "'", piv.criterion, " not found. Please select one among the following pivotal
          criteria: MUS, maxsumint, minsumnoint, maxsumdiff"))
   }
 
@@ -286,7 +286,7 @@ piv_MCMC <- function(y,
 
   list_clust <- c("diana", "hclust")
   if (sum(clustering!=list_clust)==2){
-    stop(paste("Unused argument" , clustering, ". Please select one among the following
+    stop(paste("'", clustering, "'", " not found. Please select one among the following
                clustering methods: diana, hclust"))
   }
 
@@ -294,7 +294,7 @@ piv_MCMC <- function(y,
 
   list_soft <- c("rjags", "rstan")
   if (sum(software!=list_soft)==2){
-    stop(paste("Unused argument" , software, ". Please select one among the following
+    stop(paste("'", software, "'", " not found. Please select one among the following
                softwares: rjags, rstan"))
   }
 
