@@ -128,6 +128,38 @@ piv_KMeans <- function (x, centers,
                         prec_par = 10)
 {
 
+
+  ### checks
+
+  # type
+  list_type <- c("KMeans", "hclust")
+  if (sum(type!=list_type)==2){
+    stop(paste("object ", "'", type,"'", " not found.
+    Please select one among the following algorithms:
+    KMeans, hclust", sep=""))
+  }
+
+  # method
+  list_method <- c("single",  "complete", "average", "ward.D", "ward.D2", "mcquitty", "median",
+                 "centroid")
+  if (sum(method!=list_method)==8){
+    stop(paste("object ", "'", method,"'", " not found.
+    Please select one among the following methods for hclust:
+    single,  complete, average, ward.D, ward.D2,
+    mcquitty, median, centroid", sep=""))
+  }
+
+
+  # piv.criterion
+  list_crit <- c("MUS", "maxsumint", "minsumnoint", "maxsumdiff")
+  if (sum(piv.criterion!=list_crit)==4){
+    stop(paste("object ", "'", piv.criterion,"'", " not found.
+    Please select one among the following pivotal
+    criteria: MUS, maxsumint, minsumnoint, maxsumdiff", sep=""))
+  }
+
+  ###
+
   if (missing(piv.criterion)) {
     if (centers <= 4) {
       piv.criterion <- "MUS"
