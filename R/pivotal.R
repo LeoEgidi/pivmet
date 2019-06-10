@@ -93,6 +93,17 @@
 
 piv_sel<-function(C, clusters){
 
+  ### checks
+
+  # dimensions
+
+  if (dim(C)[1]!=length(clusters)){
+    stop("The length of the clusters vector does
+         not coincide with the rows of the matrix C")
+  }
+
+  ###
+
 N <- dim(C)[1]
 k <- length(unique(clusters))
 
