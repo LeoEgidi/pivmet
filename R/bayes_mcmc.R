@@ -280,7 +280,7 @@ piv_MCMC <- function(y,
   if (sum(piv.criterion!=list_crit)==4){
     stop(paste("object", "'", piv.criterion,"'", " not found.
     Please select one among the following pivotal
-    criteria: MUS, maxsumint, minsumnoint, maxsumdiff"))
+    criteria: MUS, maxsumint, minsumnoint, maxsumdiff", sep=""))
   }
 
   # clustering
@@ -289,7 +289,7 @@ piv_MCMC <- function(y,
   if (sum(clustering!=list_clust)==2){
     stop(paste("object", "'", clustering,"'", " not found.
     Please select one among the following
-    clustering methods: diana, hclust"))
+    clustering methods: diana, hclust", sep=""))
   }
 
   # software
@@ -298,12 +298,15 @@ piv_MCMC <- function(y,
   if (sum(software!=list_soft)==2){
     stop(paste("object", "'", software,"'", " not found.
     Please select one among the following
-    softwares: rjags, rstan"))
+    softwares: rjags, rstan", sep=""))
   }
 
   # burn-in
 
-  if (burn > nMC){}
+  if (burn > nMC){
+    stop("Please, 'burn' argument has to be minor than
+         the number of MCMC iterations!", sep="")
+  }
 
 
 

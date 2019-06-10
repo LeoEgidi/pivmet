@@ -133,6 +133,13 @@
 #' @export
 
 piv_rel<-function(mcmc){
+
+  ### checks
+
+
+  ###
+
+
   N <- dim(mcmc$z)[1]
   k <- dim(mcmc$z)[2]
   nMC <- mcmc$nMC

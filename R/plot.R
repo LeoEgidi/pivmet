@@ -36,6 +36,28 @@ piv_plot <- function(y,
                      type = c("chains", "hist") ){
   colori <- c("red", "green", "violet", "blue")
 
+  ### checks
+
+  # par
+  list_par <- c("mean", "sd", "weight", "all")
+  if (sum(par!=list_par)==4){
+    stop(paste("object", "'", par,"'", " not found.
+    Please select one among the following parameters:
+    mean, sd, weight, all", sep=""))
+  }
+
+  # type
+  list_type <- c("chains", "hist")
+  if (sum(par!=list_type)==2){
+    stop(paste("object", "'", type,"'", " not found.
+    Please select one among the following types:
+    chains, hist", sep=""))
+  }
+
+
+
+  ###
+
   if (missing(par)){
     par <- "all"
   }
