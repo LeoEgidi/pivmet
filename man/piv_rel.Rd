@@ -105,7 +105,8 @@ x   <- 3
 stdev <- cbind(rep(1,k), rep(20,k))
 Mu    <- seq(-trunc(k/2)*x,trunc(k/2)*x,length=k)
 W     <- c(0.2,0.8)
-sim   <- piv_sim(N,k,Mu,stdev,W=W)
+sim   <- piv_sim(N = N, k = k, Mu = Mu,
+                 stdev = stdev, W=W)
 res   <- piv_MCMC(y = sim$y, k =k, nMC = nMC)
 rel   <- piv_rel(mcmc=res)
 }
@@ -119,13 +120,15 @@ M1  <- c(-.5,8)
 M2  <- c(25.5,.1)
 M3  <- c(49.5,8)
 Mu  <- matrix(rbind(M1,M2,M3),c(k,2))
-stdev <- cbind(rep(1,k), rep(20,k))
-Sigma.p1 <- matrix(c(stdev[1,1]^2,0,0,stdev[1,1]^2),
+sds <- cbind(rep(1,k), rep(20,k))
+Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2),
                    nrow=2, ncol=2)
-Sigma.p2 <- matrix(c(stdev[1,2]^2,0,0,stdev[1,2]^2),
+Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2),
                    nrow=2, ncol=2)
 W <- c(0.2,0.8)
-sim <- piv_sim(N,k,Mu,stdev,Sigma.p1,Sigma.p2,W)
+sim <- piv_sim(N = N, k = k, Mu = Mu,
+               Sigma.p1 = Sigma.p1,
+               Sigma.p2 = Sigma.p2, W = W)
 res <- piv_MCMC(y = sim$y, k = k, nMC = nMC)
 rel <- piv_rel(mcmc = res)
 piv_plot(y=sim$y, mcmc=res, rel_est = rel, type="chains")
