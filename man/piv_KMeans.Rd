@@ -13,30 +13,32 @@ piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
 \arguments{
 \item{x}{A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
 
-\item{centers}{The number of clusters in the solution.}
+\item{centers}{The number of groups for the the \eqn{k}-means solution.}
 
 \item{alg.type}{The clustering algorithm for the initial partition of the
 \eqn{N} units into the desired number of clusters.
 Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.}
 
-\item{method}{The method used in the \code{hclust} algorithm.}
+\item{method}{If \code{alg.type} is \code{"hclust"}, the character string
+defining the clustering method. The methods implemented are  \code{"single"},
+\code{"complete"}, \code{"average"}, \code{"ward.D"}, \code{"ward.D2"}, \code{"mcquitty"},
+\code{"median"}, \code{"centroid"}. The default is \code{"average"}.}
 
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 "maxsumdiff"}.
 If \code{centers <= 4}, the default method is \code{"MUS"};
-otherwise, the default method is \code{"maxsumdiff"} (see the details and
+otherwise, the default method is \code{"maxsumint"} (see the details and
 the vignette).}
 
-\item{H}{If \code{"MUS"} is selected, this is the number of
-distinct k-means partitions used for building a \eqn{N \times N}
-co-association matrix. Default is 1000.}
+\item{H}{The number of distinct \eqn{k}-means runs used for building the \eqn{N \times N} co-association matrix. Default is 10^3.}
 
-\item{iter.max}{The maximum number of iterations allowed for \code{KMeans}. Default is 10.}
+\item{iter.max}{If \code{alg.type} is \code{"KMeans"}, the maximum number of iterations to be passed to \code{KMeans()}. Default is 10.}
 
-\item{num.seeds}{The number of different starting random seeds to use for \code{KMeans}. Each random seed results in a different solution. Default is 10.}
+\item{num.seeds}{If \code{alg.type} is \code{"KMeans"}, the number of different starting random seeds to be passed to \code{KMeans()}. Default is 10.}
 
-\item{prec_par}{The maximum number of alternative pivots for each group in \code{MUS} algorithm. Default is 10.}
+\item{prec_par}{If \code{piv.criterion} is \code{"MUS"}, the maximum number of competing pivots in each group. If groups' sizes are less than the default value, which is 10,
+then it is set equal to the cardinality of the smallest group in the initial partition.}
 }
 \value{
 A list with components

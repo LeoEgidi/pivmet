@@ -15,7 +15,7 @@ in the same cluster among \eqn{H} distinct partitions.}
 a partition of the \eqn{N} units into, say, \eqn{k} groups.}
 }
 \value{
-\item{\code{pivots}}{ A matrix with \eqn{k} rows and three
+\item{\code{pivots}}{A matrix with \eqn{k} rows and three
 columns containing the indexes of the pivotal units for each method.}
 }
 \description{
