@@ -60,7 +60,7 @@
 #' M2 <- c(45,.1)
 #' M3 <- c(100,8)
 #' Mu <- matrix(rbind(M1,M2,M3),c(k,2))
-#' stdev    <- cbind(rep(1,k), rep(200,k))
+#' stdev    <- cbind(rep(1,k), rep(20,k))
 #' Sigma.p1 <- matrix(c( stdev[1,1]^2, 0,0,
 #'                       stdev[1,1]^2), nrow=2, ncol=2)
 #' Sigma.p2 <- matrix(c(stdev[1,2]^2, 0,0,
@@ -95,6 +95,10 @@ piv_sim <- function(N,
 
   # stdev
 
+  if(missing(stdev)){
+    stdev <- cbind(rep(1,k), rep(20,k))
+  }
+
   if (dim(stdev)[1]!=k){
     stop("The number of rows of stdev has to match
          with the number of mixture components, k.")
@@ -123,9 +127,7 @@ piv_sim <- function(N,
 
 
   ##########
-  if(missing(stdev)){
-    stdev <- cbind(rep(1,k), rep(200,k))
-  }
+
 
   if (is.vector(Mu)){
     true.group <- sample(1:k,N,replace=TRUE,prob=rep(1/k,k))
