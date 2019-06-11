@@ -14,10 +14,12 @@ piv_plot(y, mcmc, rel_est, par = c("mean", "sd", "weight", "all"),
 
 \item{rel_est}{Pivotal estimates as provided by \code{piv_rel}.}
 
-\item{type}{Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"hist"}.}
+\item{par}{The parameters for which estimates are displayed. Choose among: \code{"mean"}, \code{"sd"}, \code{"weight"} and \code{"all"}.}
+
+\item{type}{Type of plots required. Choose among: \code{"chains"},  \code{"hist"}.}
 }
 \description{
-Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
+Plot and visualize MCMC outputs and posterior relabelled chains/estimates.
 }
 \examples{
 

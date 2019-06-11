@@ -102,7 +102,7 @@ nMC <- 2500
 k   <- 3
 p   <- rep(1/k,k)
 x   <- 3
-stdev <- cbind(rep(1,k), rep(200,k))
+stdev <- cbind(rep(1,k), rep(20,k))
 Mu    <- seq(-trunc(k/2)*x,trunc(k/2)*x,length=k)
 W     <- c(0.2,0.8)
 sim   <- piv_sim(N,k,Mu,stdev,W=W)
@@ -119,7 +119,7 @@ M1  <- c(-.5,8)
 M2  <- c(25.5,.1)
 M3  <- c(49.5,8)
 Mu  <- matrix(rbind(M1,M2,M3),c(k,2))
-stdev <- cbind(rep(1,k), rep(200,k))
+stdev <- cbind(rep(1,k), rep(20,k))
 Sigma.p1 <- matrix(c(stdev[1,1]^2,0,0,stdev[1,1]^2),
                    nrow=2, ncol=2)
 Sigma.p2 <- matrix(c(stdev[1,2]^2,0,0,stdev[1,2]^2),
