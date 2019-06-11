@@ -14,7 +14,7 @@
 #' For univariate mixtures only.
 #' @param Sigma.p1 The covariance matrix for the first subgroup. For bivariate mixtures only.
 #' @param Sigma.p2 The covariance matrix for the second subgroup. For bivariate mixtures only.
-#' @param W The vector for the mixture weights of the two subgroups,
+#' @param W The vector for the mixture weights of the two subgroups.
 #' @return
 #'
 #' \item{\code{y}}{The \code{N} simulated observations.}
