@@ -68,32 +68,3 @@ colors_centers <- c("black", "darkgreen", "firebrick")
    pch = 8, cex = 2)
 
 
-## ----musk, fig.show='hold'-----------------------------------------------
-piv_res <- piv_KMeans(x, centers)
-
-## ----musk_plots, echo=FALSE, fig.show='hold'-----------------------------
-#par(mfrow=c(1,2), pty="s")
-colors_cluster <- c("grey", "darkolivegreen3", "coral")
-colors_centers <- c("black", "darkgreen", "firebrick")
-plot(x, col = colors_cluster[truegroup],
-   bg= colors_cluster[truegroup], pch=21, xlab="x[,1]",
-   ylab="x[,2]", cex.lab=1.5,
-   main="True data", cex.main=1.5)
-
-plot(x, col = colors_cluster[piv_res$cluster],
-   bg=colors_cluster[piv_res$cluster], pch=21, xlab="x[,1]",
-   ylab="x[,2]", cex.lab=1.5,
-   main="piv_Kmeans", cex.main=1.5)
-points(x[piv_res$pivots[1],1], x[piv_res$pivots[1],2],
-   pch=24, col=colors_centers[1],bg=colors_centers[1],
-   cex=1.5)
-points(x[piv_res$pivots[2],1], x[piv_res$pivots[2],2],
-   pch=24,  col=colors_centers[2], bg=colors_centers[2],
-   cex=1.5)
-points(x[piv_res$pivots[3],1], x[piv_res$pivots[3],2],
-   pch=24, col=colors_centers[3], bg=colors_centers[3],
-   cex=1.5)
-points(piv_res$centers, col = colors_centers[1:centers],
-   pch = 8, cex = 2)
-
-
