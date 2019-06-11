@@ -1,10 +1,11 @@
 #' Plotting outputs from pivotal relabelling
 #'
-#' Plot and visualize MCMC outputs, posterior relabelled chains and estimates and diagnostics.
+#' Plot and visualize MCMC outputs and posterior relabelled chains/estimates.
 #' @param y Data vector or matrix.
 #' @param mcmc The ouptut of the raw MCMC sampling, as provided by \code{piv_MCMC}.
 #' @param rel_est Pivotal estimates as provided by \code{piv_rel}.
-#' @param type Type of plots required. Choose among: \code{"chains"}, \code{"estimates"}, \code{"hist"}.
+#' @param par The parameters for which estimates are displayed. Choose among: \code{"mean"}, \code{"sd"}, \code{"weight"} and \code{"all"}.
+#' @param type Type of plots required. Choose among: \code{"chains"},  \code{"hist"}.
 #'
 #' @examples
 #'
@@ -52,6 +53,13 @@ piv_plot <- function(y,
     stop(paste("object ", "'", type,"'", " not found.
     Please select one among the following types:
     chains, hist", sep=""))
+  }
+
+  # missing type
+
+  if (missing(type)){
+    stop("Specify a valid type of plot.
+         Choose on among: chains, hist.")
   }
 
 
