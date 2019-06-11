@@ -330,7 +330,7 @@ piv_plot <- function(y,
        #lines(trans3d(est[,1], est[,2],
         #             max(freq[,3])+1, pmat =res), col="red")
 
-      cat("Description: 3d histogram of the data along with the posterior estimates of the relabelled means (red points)")
+      cat("Description: 3d histogram of the data along with the posterior estimates of the relabelled means (triangle points)")
 
     }
 
