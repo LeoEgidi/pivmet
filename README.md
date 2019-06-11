@@ -34,16 +34,41 @@ belonging to the `bayesmix` package:
 ``` r
 library(pivmet)
 #> Loading required package: bayesmix
-#> Loading required package: runjags
+#> Loading required package: rstan
+#> Loading required package: ggplot2
+#> Loading required package: StanHeaders
+#> rstan (Version 2.18.2, GitRev: 2e1f913d3ca3)
+#> For execution on a local, multicore CPU with excess RAM we recommend calling
+#> options(mc.cores = parallel::detectCores()).
+#> To avoid recompilation of unchanged Stan programs, we recommend calling
+#> rstan_options(auto_write = TRUE)
+#> For improved execution time, we recommend calling
+#> Sys.setenv(LOCAL_CPPFLAGS = '-march=native')
+#> although this causes Stan to throw an error on a few processors.
 #> Loading required package: rjags
 #> Loading required package: coda
+#> 
+#> Attaching package: 'coda'
+#> The following object is masked from 'package:rstan':
+#> 
+#>     traceplot
 #> Linked to JAGS 4.3.0
 #> Loaded modules: basemod,bugs
+#> Loading required package: runjags
+#> 
+#> Attaching package: 'runjags'
+#> The following object is masked from 'package:rstan':
+#> 
+#>     extract
 #> Loading required package: mvtnorm
 #> Loading required package: RcmdrMisc
 #> Loading required package: car
 #> Loading required package: carData
 #> Loading required package: sandwich
+#> Warning: replacing previous import 'runjags::extract' by 'rstan::extract'
+#> when loading 'pivmet'
+#> Warning: replacing previous import 'rstan::plot' by 'graphics::plot' when
+#> loading 'pivmet'
 data(fish)
 y <- fish[,1]
 N <- length(y)  # sample size 
@@ -71,17 +96,18 @@ Finally, we can apply pivotal relabelling and inspect the new posterior
 estimates with the functions `piv_rel` and `piv_plot`, respectively:
 
 ``` r
-rel <- piv_rel(mcmc=res, nMC = nMC)
-piv_plot(y, res, rel, "chains")
+rel <- piv_rel(mcmc=res)
+piv_plot(y = y, mcmc = res, rel_est = rel, type = "chains")
 ```
 
 ![](man/figures/README-plot-1.png)<!-- -->
 
-``` r
-piv_plot(y, res, rel, "hist")
-```
+    #> Description: traceplots of the raw MCMC chains and the relabelled chains for all the model parameters: means, sds and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sampler is not able to distinguish between the components.
+    piv_plot(y = y, mcmc = res, rel_est = rel, type = "hist")
 
 ![](man/figures/README-plot-2.png)<!-- -->
+
+    #> Description: histograms of the data along with the estimated posterior means (red points) from raw MCMC and relabelling algorithm. The blue line is the estimated density curve.
 
 ## Example 2. K-means clustering using MUS and other pivotal algorithms
 

@@ -56,9 +56,9 @@ res <- piv_MCMC(y = y, k = k, nMC = nMC)
 Finally, we can apply pivotal relabelling and inspect the new posterior estimates with the functions ```piv_rel``` and ```piv_plot```, respectively:
 
 ```{r plot, message =FALSE, warning = FALSE}
-rel <- piv_rel(mcmc=res, nMC = nMC)
-piv_plot(y, res, rel, "chains")
-piv_plot(y, res, rel, "hist")
+rel <- piv_rel(mcmc=res)
+piv_plot(y = y, mcmc = res, rel_est = rel, type = "chains")
+piv_plot(y = y, mcmc = res, rel_est = rel, type = "hist")
 ```
 
 ## Example 2. K-means clustering using MUS and other pivotal algorithms
@@ -102,8 +102,6 @@ sim_matr <- matrix(1, n,n)
 
 cl <- KMeans(x, centers)$cluster
 mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
-
-
 ```
 
 
