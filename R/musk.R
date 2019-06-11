@@ -133,8 +133,8 @@ piv_KMeans <- function (x, centers,
 
   # type
   list_type <- c("KMeans", "hclust")
-  if (sum(type!=list_type)==2){
-    stop(paste("object ", "'", type,"'", " not found.
+  if (sum(alg.type!=list_type)==2){
+    stop(paste("object ", "'", alg.type,"'", " not found.
     Please select one among the following algorithms:
     KMeans, hclust", sep=""))
   }
