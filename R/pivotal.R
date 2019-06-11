@@ -45,7 +45,7 @@
 #'
 #'@return
 #'
-#'\item{\code{pivots}}{ A matrix with \eqn{k} rows and three
+#'\item{\code{pivots}}{A matrix with \eqn{k} rows and three
 #' columns containing the indexes of the pivotal units for each method.}
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
