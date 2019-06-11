@@ -24,7 +24,7 @@ library(pivmet)
 ```
 
 
-The pivmet \proglang{R} package provides a simple framework to (i) fit univariate and bivariate mixture models according to a Bayesian flavour and detect the pivotal units, via the `piv_MCMC` function; (ii) perform the relabelling step via the `piv_rel` function.
+The pivmet \code{R} package provides a simple framework to (i) fit univariate and bivariate mixture models according to a Bayesian flavour and detect the pivotal units, via the `piv_MCMC` function; (ii) perform the relabelling step via the `piv_rel` function.
 
 There are two main functions designed for our procedure. The function `piv_MCMC`: 
 
@@ -34,11 +34,11 @@ There are two main functions designed for our procedure. The function `piv_MCMC`
   
   + **build a co-association matrix for the $n$ units**.  After $H$ MCMC iterations, the function implements a clustering procedure on $k$ groups, and through the optional argument `clustering` the user may choose among agglomerative or divisive hierarchical clustering. Using the latent formulation for mixture models, we denote with $[Z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. In such a way, a co-association matrix $C$ for the $n$ statistical units is built, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations:
   
-  $$c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[Z_i]_h=[Z_p]_h|,$$
-where $|\cdot|$ denotes the event indicator and $n_{ip}$ is the number of times the units $i, \ p$ belong to the same group along the sampling;
+$$c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[Z_i]_h=[Z_p]_h|,$$
+  where $|\cdot|$ denotes the event indicator and $n_{ip}$ is the number of times the units $i, \ p$ belong to the same group along the sampling;
   
   
-  + **find the pivots**. Using this matrix, the internal function `piv_sel` extracts some units, one for each group, which
+ + **find the pivots**. Using this matrix, the internal function `piv_sel` extracts some units, one for each group, which
 are (pairwise) separated with (posterior) probability one (that
 is, the posterior probability of any two of them being in the
 same group is zero). We call them *pivots*, and denote them with: $i_1,\ldots,i_k$. With the optional argument `piv.criterion`, the user may choose among three (plus one) procedures for extracting the pivotal units. For group $j$ containing $J_j$ units, one can choose:
@@ -48,19 +48,17 @@ same group is zero). We call them *pivots*, and denote them with: $i_1,\ldots,i_
 - $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`maxsumdiff`, default method);
 
 - $i^{*}$ that minimizes $\sum_{p \not\in J_j}c_{ip}$ (`minsumnoint`).
-
 Alternatively, when $k <5$, the user has the optional pivotal criterion `MUS` [@egidi2018mus] based on a sequential search within the matrix $C$.
   
-  The function `piv_rel`: 
+The function `piv_rel`: 
   
-  + **performs the relabelling algorithm** using the $k$ pivotal units as groups identifiers. The pivotal units previously detected play a central role, yielding to the following relabelling:
+  + **performs the relabelling algorithm** using the $k$ pivotal units as groups identifiers. The pivotal units previously detected play a central role, yielding to the following relabelling for the $h$-th iteration:
 
 \begin{align*} 
 [\mu_{j}]_h=&[\mu_{z_{i_{j}}}]_h \\
-[z_{i}]_h =j & \mbox{ for } i : [z_i]_h=[z_{i_{j}}]_h.\\
-\end{align*},
-
-where $\boldsymbol{\mu}=(\mu_1,\mu_2,\ldots,\mu_k)$ is the vector of the means parameters and $ \boldsymbol{z}=(z_1,z_2,\ldots,z_n)$ an i.i.d. vector of latent variables taking values in $\{1,2,\ldots,k \}$ and denoting the group membership of each statistical unit.
+[z_{i}]_h =j & \mbox{ for } i : [z_i]_h=[z_{i_{j}}]_h,\\
+\end{align*}
+  where $\boldsymbol{\mu}=(\mu_1,\mu_2,\ldots,\mu_k)$ is the vector of the means parameters and $\boldsymbol{z}=(z_1,z_2,\ldots,z_n)$ an i.i.d. vector of latent variables taking values in $\{1,2,\ldots,k \}$ and denoting the group membership of each statistical unit.
 
 It yields the relabelled chains and the corresponding posterior estimates. The only argument `mcmc` takes as input the MCMC output from `piv_MCMC`.
   
@@ -89,7 +87,7 @@ where $\mu_j, \phi_j$ are the mean and the standard deviation of group $j$, resp
 $$
 P(z_i=j)=\pi_j, 
 $$
-where $\pi_j$ is the mixture weight asigned to the group $j$.
+where $\pi_j$ is the mixture weight assigned to the group $j$.
 
 We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$. If the argument ```software="rjags"``` is selected (the default option),  Gibbs sampling is performed by the package ```bayesmix```, and  the priors are:
 
@@ -100,7 +98,7 @@ We fit our model by simulating $H=15000$ samples from the posterior distribution
   S_0 \sim & \mbox{Gamma}(g_0/2, g_0G_0/2),
 \end{eqnarray}
 
-with default values: $B_0=0.1$, $\nu_0 =20$, $g_0 = 10^{-17}$, $G_0 = 10^{16}$, $\boldsymbol{\alpha}=(1,1,\ldots,1)$. The users may specify their own hyperparameters with the ```priors``` arguments, declaring a names list such as: ```priors = list(mu_0=2, alpha = rep(2, k))```.
+with default values: $B_0=0.1$, $\nu_0 =20$, $g_0 = 10^{-16}$, $G_0 = 10^{-16}$, $\boldsymbol{\alpha}=(1,1,\ldots,1)$. The users may specify their own hyperparameters with the ```priors``` arguments, declaring a names list such as: ```priors = list(mu_0=2, alpha = rep(2, k), ...)```.
 
 If ```software="rstan"``` is selected, the priors are:
 
@@ -150,7 +148,7 @@ cat(res$model)
 
 <!-- The results are shown in Figure~\ref{fish_chains_stan}. As may be noted from the first plot in the top row, Hamiltonian Monte Carlo (HMC) behind Stan seems definitely more suited to explore the five high-density regions without switching the group labels. However, group probabilities (third plot) and group standard deviations (second plot) overlap each other. The perfect MCMC sampler does not exist. -->
 
-## Example: bivariate data
+## Example: bivariate Gaussian data
 
 Suppose now that $\boldsymbol{y}_i \in \mathbb{R}^2$ and assume that: 
 
