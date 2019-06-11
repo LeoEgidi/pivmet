@@ -108,7 +108,6 @@ Quite often, classical K-means fails in recognizing the *true* groups:
 ```
 
 
-
 ```{r kmeans_plots, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
 
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
@@ -129,7 +128,7 @@ colors_centers <- c("black", "darkgreen", "firebrick")
 ```
 
 
-In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments
+In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm [@kmeans]. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments
 
 ```{r musk, fig.show='hold'}
 piv_res <- piv_KMeans(x, centers)
