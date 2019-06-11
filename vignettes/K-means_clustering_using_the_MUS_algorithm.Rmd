@@ -70,12 +70,10 @@ n3 <- 500
 x  <- matrix(NA, n,2)
 truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
 
-for (i in 1:n1){
- x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))}
-for (i in 1:n2){
- x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
-for (i in 1:n3){
- x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
+
+x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
+x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
+x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3,c(6,6),sigma=diag(2))
 
 H <- 1000
 a <- matrix(NA, H, n)
