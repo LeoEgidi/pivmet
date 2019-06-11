@@ -321,8 +321,8 @@ piv_plot <- function(y,
 
        points(trans3d(est[,1],
                       est[,2], -2,
-                      pmat = res), col = "red", pch = 16,
-              cex=2)
+                      pmat = res), col = "red", pch = 17,
+              cex=1.5)
        # points(trans3d(est[,1],
        #                est[,2], max(freq[,3])+1,
        #                pmat = res), col = "red", pch = 16,
