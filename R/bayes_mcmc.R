@@ -327,10 +327,65 @@ piv_MCMC <- function(y,
     }
     if (software=="rjags"){
      if (missing(priors)){
-       priors = list(kind = "independence",
-                     parameter = "priorsFish",
-                     hierarchical = "tau")
-     }
+       # b0 = 0; B0inv =0.1; nu0Half =5;
+       # g0Half = 1e-17; g0G0Half = 1e16;
+       # e = rep(1,k); S0 =2
+       # priors =  list( "b0" , "B0inv" , "nu0Half",
+       #                 "g0Half", "g0G0Half", "e", "S0")
+         priors=list(kind = "independence",
+                   parameter = "priorsFish",
+                  hierarchical = "tau")
+     }else{
+       if (is.null(priors$mu_0)){
+         b0 <- median(as.matrix(y))
+       }else{
+         b0 <- priors$mu_0
+       }
+
+       if (is.null(priors$B0inv)){
+         B0inv <- 0.1
+       }else{
+         B0inv <- priors$B0inv
+       }
+
+       if (is.null(priors$nu_0)){
+         nu0Half <- 10
+       }else{
+         nu0Half <- priors$nu_0/2
+       }
+
+       if (is.null(priors$g_0)){
+         g0Half <- 0.5*10^-16
+       }else{
+         g0Half <- priors$g_0/2
+       }
+
+       if (is.null(priors$G_0)){
+         g0G0Half <- 0.5*10^-16
+       }else{
+         g0G0Half <- priors$G_0/2
+       }
+
+       if (is.null(priors$alpha)){
+         e <- rep(1,k)
+       }else{
+         e <- priors$alpha
+       }
+
+       if (is.null(priors$S0)){
+         S0 <- 10^-16
+       }else{
+         S0 <- priors$S0
+       }
+
+
+       nu0S0Half = 2*nu0Half*S0/2
+
+       priors =  list( "b0" , "B0inv" , "nu0Half",
+                       "g0Half", "g0G0Half", "e", "S0",
+                       "nu0S0Half")
+
+       }
 
     # JAGS code------------------------
 

@@ -38,11 +38,11 @@ zero co-occurrences;
 
 - the resulting units---hereafter pivots---have the desirable property to be representative of the group they belong to.
 
-We propose four alternative methods for achieving this task. Let $j$ be the group containing units $\mathcal J_j$, the user may choose ${i^*}\in\mathcal J_j$ that maximizes one of the quantities:
+We propose four alternative methods for achieving this task. Let $j, \ j=1,\ldots,k$ be the group containing units $\mathcal J_j$, the user may choose ${i^*}\in\mathcal J_j$ that maximizes one of the quantities:
 
 \begin{align*}
 & \sum_{p\in\mathcal J_j} c_{{i^*}p}  \\
-& \sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{j\not\in\mathcal J_j} c_{{i^*}p}.
+& \sum_{p\in\mathcal J_j} c_{{i^*}p} - \sum_{p\not\in\mathcal J_j} c_{{i^*}p}.
 \end{align*}
 
 These methods give the unit that maximizes the global within similarity (`maxsumint`) and the unit that maximizes the difference between global within and between similarities (`maxsumdiff`), respectively. Alternatively, we may choose $i^{*} \in\mathcal J_j$, which minimizes:
@@ -142,13 +142,13 @@ piv_res <- piv_KMeans(x, centers)
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
 colors_centers <- c("black", "darkgreen", "firebrick")
 plot(x, col = colors_cluster[truegroup],
-   bg= colors_cluster[truegroup], pch=21, xlab="x[,1]",
-   ylab="x[,2]", cex.lab=1.5,
+   bg= colors_cluster[truegroup], pch=21, xlab="y[,1]",
+   ylab="y[,2]", cex.lab=1.5,
    main="True data", cex.main=1.5)
 
 plot(x, col = colors_cluster[piv_res$cluster],
-   bg=colors_cluster[piv_res$cluster], pch=21, xlab="x[,1]",
-   ylab="x[,2]", cex.lab=1.5,
+   bg=colors_cluster[piv_res$cluster], pch=21, xlab="y[,1]",
+   ylab="y[,2]", cex.lab=1.5,
    main="piv_Kmeans", cex.main=1.5)
 points(x[piv_res$pivots[1],1], x[piv_res$pivots[1],2],
    pch=24, col=colors_centers[1],bg=colors_centers[1],
@@ -172,9 +172,9 @@ The function `piv_KMeans` has optional arguments:
 
 - `iter.mus`: the number of different partitions used for building the co-association matrix $C$. Default is $10^3$.
 
-- `prec.par`: with this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ \underset{k}{\min} \ n_{k}-1, 5   \}$, where $n_k$ is the number of units belonging to the group $k, \ k=1,\ldots,K$.
+- `prec.par`: with this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ 10, \underset{j}{\min}n_j \}$, where $n_j$ is the number of units belonging to the group $j, \ j=1,\ldots,k$.
 
-- `alg.type`: the clustering technique applied to the raw data such that the partition is given in input to the `MUS` algorithm. A robust choice is required here---by default, `KMeans` is used.
+- `alg.type`: the clustering technique applied to the raw data such that the partition is given in input to the `MUS` algorithm. One method among `KMeans` and `hclust` may be selected.  A robust choice is required here---by default, `KMeans` is used.
 
 
 

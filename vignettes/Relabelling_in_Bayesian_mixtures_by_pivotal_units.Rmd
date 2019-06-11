@@ -32,7 +32,7 @@ There are two main functions designed for our procedure. The function `piv_MCMC`
   
   + post-processes the chains and randomly swithes their values; 
   
-  + builds a co-association matrix $C$ for the $N$ statistical units, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations;
+  + builds a co-association matrix $C$ for the $n$ statistical units, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations;
   
   + extracts some pivotal units via the internal function `piv_sel`, one for each of the pre-specified $k$ groups.
   
@@ -45,14 +45,14 @@ There are two main functions designed for our procedure. The function `piv_MCMC`
 The Fishery dataset has been previously used by @titterington1985statistical and @papastamoulis2016label 
  and consists of 256 snapper length measurements. It is contained in the ```bayesmix``` package [@grun2011bayesmix]. We may display the histogram of the data, along with an estimated kernel density.  
  
- ```{r fish_hist, fig.align ='center'}
+```{r fish_hist, fig.align ='center', fig.width=5.5}
 data(fish)
 y <- fish[,1]
 hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
              main ="Fishery data", cex.main =1.7,
              col="navajowhite1", border="navajowhite1")
  lines(density(y), lty=1, lwd=3, col="blue")
- ```
+```
 
 We assume a mixture model with $k=5$ groups:
  
@@ -60,7 +60,25 @@ We assume a mixture model with $k=5$ groups:
 y_i \sim \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j, \phi^2_j), \ \ i=1,\ldots,n,
 \label{eq:fishery} 
  \end{equation}
-where $\phi_j$ is the standard deviation of group $j$. We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$, by selecting the default argument ```software="rjags"```, which for one-dimensional mixtures relies on the MCMC sampler provided by the package ```bayesmix```. The burnin period is set to 7500. 
+where $\mu_j, \phi_j$ are the mean and the standard deviation of group $j$, respectively. Moreover, assume that $z_1,\ldots,z_n$ is an unobserved latent sequence of i.i.d. random variables following the multinomial distribution with weights  $\boldsymbol{\pi}=(\pi_{1},\dots,\pi_{k})$, such that:
+
+$$
+P(z_i=j)=\pi_j, 
+$$
+where $\pi_j$ is the mixture weight asigned to the group $j$.
+
+We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$, by selecting the default argument ```software="rjags"```, which for one-dimensional mixtures relies on the MCMC sampler provided by the package ```bayesmix```. If ```software="rjags"``` is selected, the priors are:
+
+\begin{eqnarray}
+\mu_j \sim & \mathcal{N}(\mu_0, 1/B_0)\\
+  \phi_j \sim & \mbox{invGamma}(\nu_0/2, \nu_0S_0/2)\\
+  \pi \sim & \mbox{Dirichlet}(\boldsymbol{\alpha})\\
+  S_0 \sim & \mbox{Gamma}(g_0/2, g_0G_0/2),
+\end{eqnarray}
+
+with default values: $B_0=0.1$, $\nu_0 =20$, $g_0 = 10^{-17}$, $G_0 = 10^{16}$, $\boldsymbol{\alpha}=(1,1,\ldots,1)$.
+
+The burnin period is set to 7500. 
  
 ```{r fish_data}
 library(pivmet)
@@ -78,7 +96,7 @@ First of all, we may access the true number of iterations by tiping:
 res$true.iter
 ```
 
-We may have a glimpse if label switching ocurred or not by looking at the traceplot for the mean parameters, $\mu_j$. Then, we apply the function ```piv_rel``` to relabel the chains and obtain useful inferences; the only argument for this function is the MCMC result just obtained with ```piv_MCMC```. The function ```piv_plot``` displays some graphical tools, both traceplots (argument ```type="chains"```) and histograms along with the final relabelled means (argument ```type="hist"```).
+We may have a glimpse if label switching ocurred or not by looking at the traceplot for the mean parameters, $\mu_j$. To do this, we apply the function ```piv_rel``` to relabel the chains and obtain useful inferences; the only argument for this function is the MCMC result just obtained with ```piv_MCMC```. The function ```piv_plot``` displays some graphical tools, both traceplots (argument ```type="chains"```) and histograms along with the final relabelled means (argument ```type="hist"```). For both plot ttpes, the function returns a printed message explaining how to interpret the results.
 
  
 ```{r fish_rel, fig.align= 'center', fig.width=7}
@@ -88,11 +106,23 @@ piv_plot(y=y, res, rel, type="hist")
 ```
 
 The first plot displays the traceplots for the parameters $(\boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$. From the first row showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean $\mu_j$ and the weights $\pi_j$, for $j=1,\ldots,k$. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting ```software="rstan"``` in the ```piv_MCMC``` function. 
+
+Regardless of the software that we chose, we may extract the JAGS/Stan model by typing:
+
+```{r model_code}
+cat(res$model)
+```
+
+
 <!-- The results are shown in Figure~\ref{fish_chains_stan}. As may be noted from the first plot in the top row, Hamiltonian Monte Carlo (HMC) behind Stan seems definitely more suited to explore the five high-density regions without switching the group labels. However, group probabilities (third plot) and group standard deviations (second plot) overlap each other. The perfect MCMC sampler does not exist. -->
 
 ## Example: bivariate data
 
-Suppose $\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})$. We may generate Gaussian mixture data through the function `piv_sim`, specifying the desired number of groups $k$. The argument `W` handles the weights for a nested mixture, in which each $j$-th component is in turn modelled as a two-component mixture.
+Suppose now that $\boldsymbol{y}_i \in \mathbb{R}^2$ and assume that: 
+
+$$\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})$$
+where $\boldsymbol{\mu}_j$ is the mean vector for group $j$, $\boldsymbol{\Sigma}$ is a positive-definite covariance matrix and the mixture weight $\pi_j= P(z_i=j)$ as for the one-dimensional case.
+We may generate Gaussian mixture data through the function `piv_sim`, specifying the desired number of groups $k$. The argument `W` handles the weights for a nested mixture, in which each $j$-th component is in turn modelled as a two-component mixture.
 
 
 ```{r nested, fig.align ='center'}
