@@ -176,7 +176,7 @@
 #' with the raw MCMC chains for the mean parameters as given by JAGS; if
 #' \code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
 #' for the mean parameters as given by JAGS/Stan.}
-#' #' \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \code{true.iter x k}
 #' matrix with the post-processed MCMC chains for the sd parameters; if
 #' \code{y} is a matrix, a \code{true.iter x 2} array with
 #' the post-processed MCMC chains for the sd parameters.}
@@ -184,7 +184,7 @@
 #' with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
 #' \code{y} is a matrix, a \code{nMC x 2} array with the raw MCMC chains
 #' for the sd parameters as given by JAGS/Stan.}
-#' #' \item{\code{mcmc_weight}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' \item{\code{mcmc_weight}}{  If \code{y} is a vector, a \code{true.iter x k}
 #' matrix with the post-processed MCMC chains for the weights parameters; if
 #' \code{y} is a matrix, a \code{true.iter x 2 x k} array with
 #' the post-processed MCMC chains for the weights parameters.}
@@ -219,8 +219,8 @@
 #' M4  <- c(63.0,.1)
 #' Mu  <- matrix(rbind(M1,M2,M3,M4),c(4,2))
 #' stdev    <- cbind(rep(1,k), rep(200,k))
-#' Sigma.p1 <- matrix(c(stdev[1,1],0,0,stdev[1,1]), nrow=2, ncol=2)
-#' Sigma.p2 <- matrix(c(stdev[1,2],0,0,stdev[1,2]), nrow=2, ncol=2)
+#' Sigma.p1 <- matrix(c(stdev[1,1]^2,0,0,stdev[1,1]^2), nrow=2, ncol=2)
+#' Sigma.p2 <- matrix(c(stdev[1,2]^2,0,0,stdev[1,2]^2), nrow=2, ncol=2)
 #' W <- c(0.2,0.8)
 #' sim <- piv_sim(N,k,Mu, stdev, Sigma.p1,Sigma.p2,W)
 #'
