@@ -168,13 +168,21 @@ points(piv_res$centers, col = colors_centers[1:centers],
 
 The function `piv_KMeans` has optional arguments:
 
-- `piv.criterion`: one among the four different pivotal criteria described above and listed in @egidi2018relabelling: `MUS`, `maxsumint`, `minsumnoint`, `maxsumdiff`. `MUS` is the default criterion when `centers` $\le$ 4, whereas `maxsumdiff` is the default method when `centers` > 4.
+- `alg.type`: The clustering algorithm for the initial partition of the $N$ units into the desired number of clusters. Possible choices are `"KMeans"` (default) and `"hclust"`.
 
-- `iter.mus`: the number of different partitions used for building the co-association matrix $C$. Default is $10^3$.
+- `method`: If `alg.type` is `"hclust"`, the character string defining the clustering method. The methods implemented are  `"single"`,`"complete"`, `"average"`, `"ward.D"`, `"ward.D2"`, `"mcquitty"`,`"median"`, `"centroid"`. The default is `"average"`.
+
+- `piv.criterion`: one among the four different pivotal criteria described above and listed in @egidi2018relabelling: `MUS`, `maxsumint`, `minsumnoint`, `maxsumdiff`. `MUS` is the default criterion when `centers` $\le$ 4, whereas `maxsumint` is the default method when `centers` > 4.
+
+- `H`: the number of distinct $k$-means runs used for building the $N \times N$ co-association matrix. Default is $10^3$.
+
+- `iter.max`: if `alg.type` is `"KMeans"`, the maximum number of iterations to be passed to `KMeans()`. Default is 10.
+
+- `num.seeds`: If `alg.type` is `"KMeans"`, the number of different starting random seeds to be passed to `KMeans()`. Default is 10.
 
 - `prec.par`: with this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ 10, \underset{j}{\min}n_j \}$, where $n_j$ is the number of units belonging to the group $j, \ j=1,\ldots,k$.
 
-- `alg.type`: the clustering technique applied to the raw data such that the partition is given in input to the `MUS` algorithm. One method among `KMeans` and `hclust` may be selected.  A robust choice is required here---by default, `KMeans` is used.
+
 
 
 
