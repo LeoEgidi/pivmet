@@ -10,9 +10,7 @@ import(rjags)
 import(rstan)
 import(bayesmix)
 import(mvtnorm)
-importFrom("graphics", "lines")
-importFrom("graphics", "plot")
-importFrom("stats", "density")
+importFrom("rstan", "extract", "stan")
 importFrom(runjags, extract.runjags)
 importFrom(runjags, run.jags)
 importFrom(runjags, dump.format)
@@ -23,9 +21,9 @@ importFrom(RcmdrMisc, KMeans)
 importFrom(cluster, pam, diana)
 importFrom("grDevices", "trans3d")
 importFrom("graphics", "axis", "barplot", "hist", "matplot", "par",
-             "persp", "plot", "points")
+             "persp", "plot", "points", "lines")
 importFrom("stats", "as.dist", "cutree", "dist", "hclust", "kmeans",
-             "median", "rnorm")
+             "median", "rnorm", "density")
 importFrom("utils", "combn")
 
 
