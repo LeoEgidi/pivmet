@@ -34,39 +34,15 @@ belonging to the `bayesmix` package:
 ``` r
 library(pivmet)
 #> Loading required package: bayesmix
-#> Loading required package: rstan
-#> Loading required package: ggplot2
-#> Loading required package: StanHeaders
-#> rstan (Version 2.18.2, GitRev: 2e1f913d3ca3)
-#> For execution on a local, multicore CPU with excess RAM we recommend calling
-#> options(mc.cores = parallel::detectCores()).
-#> To avoid recompilation of unchanged Stan programs, we recommend calling
-#> rstan_options(auto_write = TRUE)
-#> For improved execution time, we recommend calling
-#> Sys.setenv(LOCAL_CPPFLAGS = '-march=native')
-#> although this causes Stan to throw an error on a few processors.
 #> Loading required package: rjags
 #> Loading required package: coda
-#> 
-#> Attaching package: 'coda'
-#> The following object is masked from 'package:rstan':
-#> 
-#>     traceplot
 #> Linked to JAGS 4.3.0
 #> Loaded modules: basemod,bugs
-#> Loading required package: runjags
-#> 
-#> Attaching package: 'runjags'
-#> The following object is masked from 'package:rstan':
-#> 
-#>     extract
 #> Loading required package: mvtnorm
 #> Loading required package: RcmdrMisc
 #> Loading required package: car
 #> Loading required package: carData
 #> Loading required package: sandwich
-#> Warning: replacing previous import 'runjags::extract' by 'rstan::extract'
-#> when loading 'pivmet'
 #> Warning: replacing previous import 'rstan::plot' by 'graphics::plot' when
 #> loading 'pivmet'
 data(fish)
@@ -165,13 +141,13 @@ par(mfrow=c(1,2))
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
 colors_centers <- c("black", "darkgreen", "firebrick")
  
-plot(x, col = colors_cluster[truegroup]
+graphics::plot(x, col = colors_cluster[truegroup]
                  ,bg= colors_cluster[truegroup], pch=21,
                   xlab="y[,1]",
                   ylab="y[,2]", cex.lab=1.5,
                   main="True data", cex.main=1.5)
  
-plot(x, col = colors_cluster[kmeans_res$cluster], 
+graphics::plot(x, col = colors_cluster[kmeans_res$cluster], 
       bg=colors_cluster[kmeans_res$cluster], pch=21, xlab="y[,1]",
       ylab="y[,2]", cex.lab=1.5,main="K-means",  cex.main=1.5)
 points(kmeans_res$centers, col = colors_centers[1:centers], 
@@ -193,12 +169,12 @@ piv_res <- piv_KMeans(x, centers)
 par(mfrow=c(1,2), pty="s")
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
 colors_centers <- c("black", "darkgreen", "firebrick")
-plot(x, col = colors_cluster[truegroup],
+graphics::plot(x, col = colors_cluster[truegroup],
    bg= colors_cluster[truegroup], pch=21, xlab="x[,1]",
    ylab="x[,2]", cex.lab=1.5,
    main="True data", cex.main=1.5)
 
-plot(x, col = colors_cluster[piv_res$cluster],
+graphics::plot(x, col = colors_cluster[piv_res$cluster],
    bg=colors_cluster[piv_res$cluster], pch=21, xlab="x[,1]",
    ylab="x[,2]", cex.lab=1.5,
    main="piv_Kmeans", cex.main=1.5)
