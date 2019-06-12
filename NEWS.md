@@ -1,4 +1,4 @@
-# pivmet 1.0.0
+# pivmet 0.2.0
 
 * rstan now incorporated to fit mixtures
 * piv_plot improved
