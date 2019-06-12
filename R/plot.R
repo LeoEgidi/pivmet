@@ -175,7 +175,7 @@ piv_plot <- function(y,
         # }
 
         h=1
-        plot(raw[1,,h], raw[2, ,h], col=h, pch =1, bg =h,
+        graphics::plot(raw[1,,h], raw[2, ,h], col=h, pch =1, bg =h,
              cex.main =1.8, main ="Raw means", cex.lab=1.8, xlab=
                expression(mu[1]), ylab =expression(mu[2]),
              xlim= c(min(raw[1,,]-10), max(raw[1,,])+10),
@@ -189,7 +189,7 @@ piv_plot <- function(y,
                            cex.main=1.8, cex.lab =1.8, xlab ="Iterations")
 
         h=1
-        plot(rel[1,,h], rel[2, ,h], col=h, pch =1, bg =h,
+        graphics::plot(rel[1,,h], rel[2, ,h], col=h, pch =1, bg =h,
              cex.main =1.8, main ="Rel means", cex.lab=1.8, xlab=
                expression(mu[1]), ylab =expression(mu[2]),
              xlim= c(min(rel[1,,]-10), max(rel[1,,])+10),
@@ -232,7 +232,7 @@ piv_plot <- function(y,
           #         main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
 
           h=1
-          plot(raw[,1,h], raw[, 2,h], col=h, pch =1, bg =h,
+          graphics::plot(raw[,1,h], raw[, 2,h], col=h, pch =1, bg =h,
                cex.main =1.8, main ="Raw means", cex.lab=1.8, xlab=
                  expression(mu[1]), ylab =expression(mu[2]),
                xlim= c(min(raw[,1,]-10), max(raw[,1,])+10),
@@ -242,7 +242,7 @@ piv_plot <- function(y,
           }
 
           h=1
-          plot(rel[,1,h], rel[,2,h], col=h, pch =1, bg =h,
+          graphics::plot(rel[,1,h], rel[,2,h], col=h, pch =1, bg =h,
                cex.main =1.8, main ="Rel means", cex.lab=1.8, xlab=
                  expression(mu[1]), ylab =expression(mu[2]),
                xlim= c(min(rel[,1,]-10), max(rel[,1,])+10),
