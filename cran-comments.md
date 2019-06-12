@@ -1,18 +1,3 @@
-## Resubmission
-This is a resubmission. Package pivmet was removed from 
-the CRAN repository on January 24th, since check issues 
-reported by professor Brian D. Ripley on December 29th were
-not corrected in time. In this version I fixed the issues
-and I have:
-
-* changed the title in the %\VignetteIndexEntry lines in the vignette sources. Now  they correspond to the vignette title.
-
-* included rmarkdown in the Suggests field in the description.
-
-* fixed the version number and the date field
-
-* included references in the description field.
-
 ## Test environments
 * win-builder (devel and release)
 * local OS X install, R 3.5.2
