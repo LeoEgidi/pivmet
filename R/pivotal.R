@@ -80,7 +80,7 @@
 #'
 #' ris <- piv_sel(C, clusters = km$cluster)
 #'
-#' plot(iris[,1], iris[,2], xlab ="Sepal.Length", ylab= "Sepal.Width",
+#' graphics::plot(iris[,1], iris[,2], xlab ="Sepal.Length", ylab= "Sepal.Width",
 #' col = km$cluster)
 #'
 #'  # Add the pivots according to maxsumdiff criterion

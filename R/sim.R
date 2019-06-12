@@ -68,7 +68,7 @@
 #' W   <- c(0.2,0.8)
 #' sim <- piv_sim(N = N, k = k, Mu = Mu, Sigma.p1 = Sigma.p1,
 #' Sigma.p2 = Sigma.p2, W = W)
-#' plot(sim$y, xlab="y[,1]", ylab="y[,2]")
+#' graphics::plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 #'
 #' @export
 

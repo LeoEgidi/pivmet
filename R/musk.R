@@ -95,12 +95,12 @@
 #'par(mfrow=c(1,2), pty="s")
 #'colors_cluster <- c("grey", "darkolivegreen3", "coral")
 #'colors_centers <- c("black", "darkgreen", "firebrick")
-#'plot(x, col = colors_cluster[truegroup],
+#'graphics::plot(x, col = colors_cluster[truegroup],
 #'    bg= colors_cluster[truegroup], pch=21, xlab="x[,1]",
 #'    ylab="x[,2]", cex.lab=1.5,
 #'    main="True data", cex.main=1.5)
 #'
-#'plot(x, col = colors_cluster[res$cluster],
+#'graphics::plot(x, col = colors_cluster[res$cluster],
 #'    bg=colors_cluster[res$cluster], pch=21, xlab="x[,1]",
 #'    ylab="x[,2]", cex.lab=1.5,
 #'    main="piv_KMeans", cex.main=1.5)
