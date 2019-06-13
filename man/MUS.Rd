@@ -50,8 +50,10 @@ have the desirable property to be representative of
 the group they belong to.
 }
 \examples{
+
 # Data generated from a mixture of three bivariate Gaussian distributions
 
+\dontrun{
 N <- 620
 centers  <- 3
 n1 <- 20
@@ -91,7 +93,7 @@ cl <- KMeans(x, centers)$cluster
 # Find three pivots
 
 mus_alg <- MUS(C = sim_matr, clusters = cl)
-
+}
 
 }
 \references{

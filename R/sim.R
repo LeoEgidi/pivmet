@@ -11,11 +11,12 @@
 #' @param Mu The input mean vector of length \eqn{k} for univariate
 #' Gaussian mixtures; the input \eqn{k \times 2} matrix with the
 #' means' coordinates for bivariate Gaussian mixtures.
-#' @param stdev A \code{k x2} matrix of input standard deviations,
-#' one for each group (from 1 to \code{k}) and for each subgroup (from 1 to 2).
-#' For univariate mixtures only.
-#' @param Sigma.p1 The covariance matrix for the first subgroup. For bivariate mixtures only.
-#' @param Sigma.p2 The covariance matrix for the second subgroup. For bivariate mixtures only.
+#' @param stdev For univariate mixtures, the  \eqn{k \times 2} matrix
+#' of input standard deviations,
+#  where the first column contains the parameters for subgroup 1,
+#' and the second column contains the parameters for subgroup 2.
+#' @param Sigma.p1 The \eqn{2 \times 2} covariance matrix for the first subgroup. For bivariate mixtures only.
+#' @param Sigma.p2 The \eqn{2 \times 2} covariance matrix for the second subgroup. For bivariate mixtures only.
 #' @param W The vector for the mixture weights of the two subgroups.
 #' @return
 #'
@@ -95,16 +96,7 @@ piv_sim <- function(N,
     stop("The sub-weight vector should be of dimension two.")
   }
 
-  # stdev
 
-  if(missing(stdev)){
-    stdev <- cbind(rep(1,k), rep(20,k))
-  }
-
-  if (dim(stdev)[1]!=k){
-    stop("The number of rows of stdev has to match
-         with the number of mixture components, k.")
-  }
 
   # Sigma.p1 and Sigma.p2
 
@@ -116,6 +108,17 @@ piv_sim <- function(N,
   # k
 
   if (is.vector(Mu)){
+    # check stdev
+
+    if(missing(stdev)){
+      stop("Argument 'stdev' missing with no default.")
+      #stdev <- cbind(rep(1,k), rep(20,k))
+    }
+
+    if (dim(stdev)[1]!=k){
+      stop("The number of rows of 'stdev' has to match
+            the number of mixture components, k.")
+    }
     if (k != length(Mu)){
       stop("The number of mixture components has to be equal
            to the input means length")

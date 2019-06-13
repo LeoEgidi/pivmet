@@ -13,7 +13,9 @@ piv_sim(N, k, Mu, stdev, Sigma.p1 = matrix(c(1, 0, 0, 1), 2, 2, byrow =
 
 \item{k}{The desired number of mixture components.}
 
-\item{Mu}{The input mean vector/matrix.}
+\item{Mu}{The input mean vector of length \eqn{k} for univariate
+Gaussian mixtures; the input \eqn{k \times 2} matrix with the
+means' coordinates for bivariate Gaussian mixtures.}
 
 \item{stdev}{A \code{k x2} matrix of input standard deviations,
 one for each group (from 1 to \code{k}) and for each subgroup (from 1 to 2).
