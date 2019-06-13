@@ -150,6 +150,10 @@ piv_sim <- function(N,
 
   }else{
 
+    # checks stdev
+     if (missing(stdev)==FALSE){
+       warning("'stdev' not required for bivariate data")
+     }
 
     true.group <- sample(1:k,N,replace=TRUE,prob=rep(1/k,k))
     Spike <- array(c(Sigma.p1,Sigma.p2), dim=c(2,2,2))
