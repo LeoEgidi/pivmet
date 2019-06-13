@@ -23,8 +23,9 @@
 #' \item{\code{y}}{The \code{N} simulated observations.}
 #' \item{\code{true.group}}{A vector of integers from \code{1:k}
 #' indicating the values of the latent variables \eqn{Z_i}.}
-#' \item{\code{subgroups}}{A \code{2 x N} matrix with values 1 or 2
-#' indicating the subgroup to which each observation is drawn from.}
+#' \item{\code{subgroups}}{A \eqn{k \times N} matrix where
+#' each row contains the index subgroup for the observations
+#' in the \eqn{k}-th group.}
 #'
 #' @details
 #'
