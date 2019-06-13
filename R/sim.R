@@ -89,27 +89,18 @@ piv_sim <- function(N,
   #############
   ## checks
 
-  # W
-
-  if (sum(W)!=1){
-    stop("Check that the sub-weights sum to one!")
-  }else if(length(W)!=2){
-    stop("The sub-weight vector should be of dimension two.")
-  }
-
-
-
-  # Sigma.p1 and Sigma.p2
-
-  if (is.positive.definite(Sigma.p1)==FALSE |
-      is.positive.definite(Sigma.p2)==FALSE){
-    stop("Matrix covariances should be positive definite!")
-  }
-
   # k
+
+ if(is.numeric(Mu)==FALSE){
+    stop("Specify a numeric vector or matrix for 'Mu'")
+  }
 
   if (is.vector(Mu)){
     # check stdev
+    if (k != length(Mu)){
+      stop("The number of input means and the number of
+      components do not match'")
+    }
 
     if(missing(stdev)){
       stop("Argument 'stdev' missing with no default.")
@@ -120,15 +111,33 @@ piv_sim <- function(N,
       stop("The number of rows of 'stdev' has to match
             the number of mixture components, k.")
     }
-    if (k != length(Mu)){
-      stop("The number of mixture components has to be equal
-           to the input means length")
-    }
   }else if (is.matrix(Mu)){
     if (k != dim(Mu)[1]){
-      stop("The number of mixture components has to be equal
-           to the input means length")
+      stop("The number of input means and the number of
+      components do not match")
     }
+
+    # Sigma.p1 and Sigma.p2
+
+    if (is.positive.definite(Sigma.p1)==FALSE |
+        is.positive.definite(Sigma.p2)==FALSE){
+      stop("Matrix covariances should be positive definite!")
+    }
+
+    # checks stdev
+    if (missing(stdev)==FALSE){
+      warning("'stdev' not required for bivariate data")
+    }
+
+
+  }
+
+  # W
+
+  if (sum(W)!=1){
+    stop("Check that the sub-weights sum to one!")
+  }else if(length(W)!=2){
+    stop("The sub-weight vector should be of dimension two.")
   }
 
 
@@ -136,6 +145,7 @@ piv_sim <- function(N,
 
 
   if (is.vector(Mu)){
+
     true.group <- sample(1:k,N,replace=TRUE,prob=rep(1/k,k))
     Spike <- array()
     matrixpi <- matrix(rep(W,k), nrow=k, ncol=2, byrow = T)
@@ -151,10 +161,6 @@ piv_sim <- function(N,
 
   }else{
 
-    # checks stdev
-     if (missing(stdev)==FALSE){
-       warning("'stdev' not required for bivariate data")
-     }
 
     true.group <- sample(1:k,N,replace=TRUE,prob=rep(1/k,k))
     Spike <- array(c(Sigma.p1,Sigma.p2), dim=c(2,2,2))

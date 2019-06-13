@@ -165,19 +165,23 @@ nMC <- 2000
 M1 <- c(-10,8)
 M2 <- c(10,.1)
 M3 <- c(30,8)
-Mu <- matrix(rbind(M1,M2,M3),c(k,2))
-stdev    <- cbind(rep(1,k), rep(15,k))
-Sigma.p1 <- matrix(c(stdev[1,1]^2,0,0,stdev[1,1]^2),
+# matrix of input means
+Mu <- matrix(rbind(M1,M2,M3),c(k,2)) 
+sds    <- cbind(rep(1,k), rep(15,k))
+# covariance matrices for the two subgroups
+Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2),
 nrow=2, ncol=2)
-Sigma.p2 <- matrix(c(stdev[1,2]^2,0,0,stdev[1,2]^2),
- nrow=2, ncol=2)
+Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2),
+nrow=2, ncol=2)
+# subgroups' weights
 W   <- c(0.2,0.8)
+# simulate data
 sim <- piv_sim(N = N, k = k, Mu = Mu,
-  stdev = stdev, Sigma.p1 = Sigma.p1, Sigma.p2 = Sigma.p2, W = W)
+ Sigma.p1 = Sigma.p1, Sigma.p2 = Sigma.p2, W = W)
 graphics::plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 ```
 
-The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of component ```k``` and number of MCMC iterations ```nMC```. It performs Gibbs sampling using the  ```runjags``` package for bivariate data by default, whereas performs Hamiltonian Monte Carlo (HMC) sampling if `software="rstan"`. If `software="rjags"`, the priors are specified as:
+The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of components ```k``` and number of MCMC iterations ```nMC```. It performs Gibbs sampling using the  ```runjags``` package for bivariate data by default. If `software="rstan"`, it performs Hamiltonian Monte Carlo (HMC) sampling. If `software="rjags"`, the priors are specified as:
 
 
 \begin{align}
@@ -189,7 +193,7 @@ The function ```piv_MCMC``` requires only three mandatory arguments: data ```y``
 where  $\boldsymbol{\alpha}$ is a $k$-dimensional vector and $S_2$ and $S_3$ are positive definite matrices. By default, $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\boldsymbol{\alpha}=(1,\ldots,1)$ and $S_2$ and $S_3$ are diagonal matrices,
 with diagonal elements 
 equal to 1e+05. The user may specify other values for the hyperparameters
-$\boldsymbol{\mu}_0, S_2, S_3$ and $\boldsymbol{\alpha}$ via \code{priors} argument in such a way: `priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}`,
+$\boldsymbol{\mu}_0, S_2, S_3$ and $\boldsymbol{\alpha}$: `priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}`,
 with the constraint for $S2$ and $S3$ to be positive definite, and $\boldsymbol{\alpha}$ a vector of dimension $k$ with nonnegative elements.
 
 If `software="rstan"`, the priors are specified as:
