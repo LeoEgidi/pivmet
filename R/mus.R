@@ -50,8 +50,10 @@
 #'
 #'
 #' @examples
+#'
 #' # Data generated from a mixture of three bivariate Gaussian distributions
 #'
+#'\dontrun{
 #' N <- 620
 #' centers  <- 3
 #' n1 <- 20
@@ -91,7 +93,7 @@
 #' # Find three pivots
 #'
 #' mus_alg <- MUS(C = sim_matr, clusters = cl)
-#'
+#'}
 #'
 #'@export
 
