@@ -17,13 +17,13 @@ piv_sim(N, k, Mu, stdev, Sigma.p1 = matrix(c(1, 0, 0, 1), 2, 2, byrow =
 Gaussian mixtures; the input \eqn{k \times 2} matrix with the
 means' coordinates for bivariate Gaussian mixtures.}
 
-\item{stdev}{A \code{k x2} matrix of input standard deviations,
-one for each group (from 1 to \code{k}) and for each subgroup (from 1 to 2).
-For univariate mixtures only.}
+\item{stdev}{For univariate mixtures, the  \eqn{k \times 2} matrix
+of input standard deviations,
+and the second column contains the parameters for subgroup 2.}
 
-\item{Sigma.p1}{The covariance matrix for the first subgroup. For bivariate mixtures only.}
+\item{Sigma.p1}{The \eqn{2 \times 2} covariance matrix for the first subgroup. For bivariate mixtures only.}
 
-\item{Sigma.p2}{The covariance matrix for the second subgroup. For bivariate mixtures only.}
+\item{Sigma.p2}{The \eqn{2 \times 2} covariance matrix for the second subgroup. For bivariate mixtures only.}
 
 \item{W}{The vector for the mixture weights of the two subgroups.}
 }
@@ -31,8 +31,9 @@ For univariate mixtures only.}
 \item{\code{y}}{The \code{N} simulated observations.}
 \item{\code{true.group}}{A vector of integers from \code{1:k}
 indicating the values of the latent variables \eqn{Z_i}.}
-\item{\code{subgroups}}{A \code{2 x N} matrix with values 1 or 2
-indicating the subgroup to which each observation is drawn from.}
+\item{\code{subgroups}}{A \eqn{k \times N} matrix where
+each row contains the index subgroup for the observations
+in the \eqn{k}-th group.}
 }
 \description{
 Simulate N observations from a nested Gaussian mixture model

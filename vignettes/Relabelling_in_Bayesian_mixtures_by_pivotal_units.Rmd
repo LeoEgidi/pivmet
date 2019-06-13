@@ -178,7 +178,6 @@ W   <- c(0.2,0.8)
 # simulate data
 sim <- piv_sim(N = N, k = k, Mu = Mu,
  Sigma.p1 = Sigma.p1, Sigma.p2 = Sigma.p2, W = W)
-graphics::plot(sim$y, xlab="y[,1]", ylab="y[,2]")
 ```
 
 The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of components ```k``` and number of MCMC iterations ```nMC```. It performs Gibbs sampling using the  ```runjags``` package for bivariate data by default. If `software="rstan"`, it performs Hamiltonian Monte Carlo (HMC) sampling. If `software="rjags"`, the priors are specified as:
