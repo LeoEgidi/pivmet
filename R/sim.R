@@ -8,7 +8,9 @@
 #'
 #' @param N The desired sample size.
 #' @param k The desired number of mixture components.
-#' @param Mu The input mean vector/matrix.
+#' @param Mu The input mean vector of length \eqn{k} for univariate
+#' Gaussian mixtures; the input \eqn{k \times 2} matrix with the
+#' means' coordinates for bivariate Gaussian mixtures.
 #' @param stdev A \code{k x2} matrix of input standard deviations,
 #' one for each group (from 1 to \code{k}) and for each subgroup (from 1 to 2).
 #' For univariate mixtures only.
