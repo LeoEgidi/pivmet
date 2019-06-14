@@ -75,17 +75,13 @@
 #' @return This function gives the relabelled posterior estimates--both mean and medians--obtained from the Markov chains of the MCMC sampling.
 #'
 #' \item{\code{final_it}}{The final number of valid MCMC iterations,
-#' as explained in Details}
-#' \item{\code{final_it_p}}{\code{final_it/nMC}}
-#' \item{\code{rel_mean}}{\code{final_it x k} matrix (in case of univariate mixtures)
-#' or \code{final_it x 2 x k} array (in case of bivariate mixtures)
-#' for the relabelled chains of the means.}
-#' \item{\code{rel_sd}}{\code{final_it x k} matrix (in case of univariate mixtures)
-#' or \code{final_it x 2} array (in case of bivariate mixtures)
-#' for the relabelled chains of the sd's.}
-#' \item{\code{rel_weight}}{\code{final_it x k} matrix
-#' for the relabelled chains of the weights.}
-
+#' as explained in Details.}
+#' \item{\code{final_it_p}}{The proportion of final valid MCMC iterations.}
+#' \item{\code{rel_mean}}{The relabelled chains of the means: a \code{final_it}\eqn{\times k} matrix for univariate data,
+#' or a \code{final_it}\eqn{\times 2 \times k} array for bivariate data.}
+#' \item{\code{rel_sd}}{The relabelled chains of the sd's: a \code{final_it}\eqn{\times k} matrix for univariate data,
+#' or a \code{final_it}\eqn{\times 2} matrix for bivariate data.}
+#' \item{\code{rel_weight}}{The relabelled chains of the weights: a \code{final_it}\eqn{\times k} matrix.}
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
