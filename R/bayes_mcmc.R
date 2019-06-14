@@ -3,8 +3,8 @@
 #' Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y N-dimensional data vector/matrix.
 #' @param k Number of mixture components.
-#' @param priors Input prior hyperparameters (see Details).
 #' @param nMC Number of MCMC iterations for the JAGS/Stan function execution.
+#' @param priors Input prior hyperparameters (see Details).
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 #' "maxsumdiff"}.
@@ -266,8 +266,8 @@
 
 piv_MCMC <- function(y,
                      k,
-                     priors,
                      nMC,
+                     priors,
                      piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
                      clustering = c("diana", "hclust"),
                      software =c("rjags", "rstan"),
@@ -328,113 +328,126 @@ piv_MCMC <- function(y,
       mu_inits[j]<-mean(y[clust_inits==j])
     }
     if (software=="rjags"){
-     if (missing(priors)){
-       # b0 = 0; B0inv =0.1; nu0Half =5;
-       # g0Half = 1e-17; g0G0Half = 1e16;
-       # e = rep(1,k); S0 =2
-       # priors =  list( "b0" , "B0inv" , "nu0Half",
-       #                 "g0Half", "g0G0Half", "e", "S0")
-         priors=list(kind = "independence",
-                   parameter = "priorsFish",
-                  hierarchical = "tau")
-     }else{
-       if (is.null(priors$mu_0)){
-         b0 <- median(as.matrix(y))
-       }else{
-         b0 <- priors$mu_0
-       }
+      if (missing(priors)){
+        # b0 = 0; B0inv =0.1; nu0Half =5;
+        # g0Half = 1e-17; g0G0Half = 1e16;
+        # e = rep(1,k); S0 =2
+        # priors =  list( "b0" , "B0inv" , "nu0Half",
+        #                 "g0Half", "g0G0Half", "e", "S0")
+        priors=list(kind = "independence",
+                    parameter = "priorsFish",
+                    hierarchical = "tau")
+      }else{
+        if (is.null(priors$mu_0)){
+          b0 <- median(as.matrix(y))
+        }else{
+          b0 <- priors$mu_0
+        }
 
-       if (is.null(priors$B0inv)){
-         B0inv <- 0.1
-       }else{
-         B0inv <- priors$B0inv
-       }
+        if (is.null(priors$B0inv)){
+          B0inv <- 1/priorsFish(y)$B0
+        }else{
+          B0inv <- priors$B0inv
+        }
 
-       if (is.null(priors$nu_0)){
-         nu0Half <- 10
-       }else{
-         nu0Half <- priors$nu_0/2
-       }
+        if (is.null(priors$nu_0)){
+          nu0Half <- priorsFish(y)$nu0/2
+        }else{
+          nu0Half <- priors$nu_0/2
+        }
 
-       if (is.null(priors$g_0)){
-         g0Half <- 0.5*10^-16
-       }else{
-         g0Half <- priors$g_0/2
-       }
+        if (is.null(priors$g_0)){
+          g0Half <- 0.5*10^-16
+        }else{
+          g0Half <- priors$g_0/2
+        }
 
-       if (is.null(priors$G_0)){
-         g0G0Half <- 0.5*10^-16
-       }else{
-         g0G0Half <- priors$G_0/2
-       }
+        if (is.null(priors$G_0)){
+          g0G0Half <- 0.5*10^-16
+        }else{
+          g0G0Half <- priors$G_0/2
+        }
 
-       if (is.null(priors$alpha)){
-         e <- rep(1,k)
-       }else{
-         e <- priors$alpha
-       }
+        if (is.null(priors$alpha)){
+          e <- rep(1,k)
+        }else{
+          e <- priors$alpha
+        }
 
-       if (is.null(priors$S0)){
-         S0 <- 10^-16
-       }else{
-         S0 <- priors$S0
-       }
+        if (is.null(priors$S0)){
+          S0 <- priorsFish(y)$S0
+        }else{
+          S0 <- priors$S0
+        }
 
 
-       nu0S0Half = 2*nu0Half*S0/2
+        nu0S0Half = nu0Half*S0
 
-       priors =  list( "b0" , "B0inv" , "nu0Half",
-                       "g0Half", "g0G0Half", "e", "S0",
-                       "nu0S0Half")
+        priors <-  BMMpriors(list(kind = "independence",
+                                  parameter= list(b0 = b0,
+                                                  B0inv = B0inv,
+                                                  nu0 = 2*nu0Half,
+                                                  g0Half = g0Half,
+                                                  g0G0Half = g0G0Half
+                                                  #,
+                                                  #nu0S0Half = nu0S0Half,
+                                                  #S0 = 2
+                                  ),
+                                  hierarchical = "tau"),
+                             y, 1-16)
+        priors$var$g0Half <- g0Half
+        priors$var$g0G0Half <- g0G0Half
+        #priors$var$nu0S0Half <- S0*nu0Half
 
-       }
+      }
 
-    # JAGS code------------------------
+      # JAGS code------------------------
 
-    # Data
-    # Model
-    mod.mist.univ <- BMMmodel(y, k = k, initialValues = list(S0 = 2),
-      priors = priors)
-    control <- JAGScontrol(variables = c("mu", "tau", "eta", "S"),
-      burn.in = burn, n.iter = nMC, seed = 10)
-    ogg.jags <- JAGSrun(y, model = mod.mist.univ, control = control)
-    # Parameters' initialization
+      # Data
+      # Model
+      mod.mist.univ <- BMMmodel(y, k = k,
+                                initialValues = list(S0 = 2),
+                                priors = priors)
+      control <- JAGScontrol(variables = c("mu", "tau", "eta", "S"),
+                             burn.in = burn, n.iter = nMC, seed = 10)
+      ogg.jags <- JAGSrun(y, model = mod.mist.univ, control = control)
+      # Parameters' initialization
 
-    J <- 3
-    mcmc.pars <- array(data = NA, dim = c(nMC-length(1:burn), k, J))
-    mcmc.pars[ , , 1] <- ogg.jags$results[-(1:burn), (N+k+1):(N+2*k)]
-    mcmc.pars[ , , 2] <- ogg.jags$results[-(1:burn), (N+2*k+1):(N+3*k)]
-    mcmc.pars[ , , 3] <- ogg.jags$results[-(1:burn), (N+1):(N+k)]
+      J <- 3
+      mcmc.pars <- array(data = NA, dim = c(nMC-length(1:burn), k, J))
+      mcmc.pars[ , , 1] <- ogg.jags$results[-(1:burn), (N+k+1):(N+2*k)]
+      mcmc.pars[ , , 2] <- ogg.jags$results[-(1:burn), (N+2*k+1):(N+3*k)]
+      mcmc.pars[ , , 3] <- ogg.jags$results[-(1:burn), (N+1):(N+k)]
 
-    mu_pre_switch_compl <-  mcmc.pars[ , , 1]
-    tau_pre_switch_compl <-  1/mcmc.pars[ , , 2]
-    prob.st_pre_switch_compl <-  mcmc.pars[ , , 3]
+      mu_pre_switch_compl <-  mcmc.pars[ , , 1]
+      tau_pre_switch_compl <-  1/mcmc.pars[ , , 2]
+      prob.st_pre_switch_compl <-  mcmc.pars[ , , 3]
 
-    mu <- mcmc.pars[,,1]
-    tau <- 1/mcmc.pars[,,2]
-    prob.st <- mcmc.pars[,,3]
-    group <-  ogg.jags$results[-(1:burn), 1:N] #gruppi
-    FreqGruppiJags <- table(group)
-    numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
+      mu <- mcmc.pars[,,1]
+      tau <- 1/mcmc.pars[,,2]
+      prob.st <- mcmc.pars[,,3]
+      group <-  ogg.jags$results[-(1:burn), 1:N] #gruppi
+      FreqGruppiJags <- table(group)
+      numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
-    if (sum(numeffettivogruppi==k)==0){
-      return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
-      #return(1)
-    }
+      if (sum(numeffettivogruppi==k)==0){
+        return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        #return(1)
+      }
 
-    ##saved in the output
-    ris_prel <- ogg.jags$results[-(1:burn),]
-    ris <- ris_prel[numeffettivogruppi==k,]
-    true.iter <- nrow(ris)
-    group <- ris[,1:N]
-    mu <- mu[numeffettivogruppi==k,]
-    tau <- tau[numeffettivogruppi==k,]
-    prob.st <- prob.st[numeffettivogruppi==k,]
-    model_code <- mod.mist.univ$bugs
-    ## just another way to save them
-    mcmc_mean_raw <- mcmc.pars[,,1]
-    mcmc_sd_raw <- mcmc.pars[,,2]
-    mcmc_weight_raw <- mcmc.pars[,,3]
+      ##saved in the output
+      ris_prel <- ogg.jags$results[-(1:burn),]
+      ris <- ris_prel[numeffettivogruppi==k,]
+      true.iter <- nrow(ris)
+      group <- ris[,1:N]
+      mu <- mu[numeffettivogruppi==k,]
+      tau <- tau[numeffettivogruppi==k,]
+      prob.st <- prob.st[numeffettivogruppi==k,]
+      model_code <- mod.mist.univ$bugs
+      ## just another way to save them
+      mcmc_mean_raw <- mcmc.pars[,,1]
+      mcmc_sd_raw <- mcmc.pars[,,2]
+      mcmc_weight_raw <- mcmc.pars[,,3]
 
     }else if (software=="rstan"){
       if(missing(priors)){
@@ -446,22 +459,22 @@ piv_MCMC <- function(y,
         if (is.null(priors$mu_0)){
           mu_0 <- 0
         }else{
-        mu_0 <- priors$mu_0
+          mu_0 <- priors$mu_0
         }
         if (is.null(priors$B0inv)){
           B0inv <- 0.1
         }else{
-        B0inv <- priors$B0inv
+          B0inv <- priors$B0inv
         }
         if (is.null(priors$mu_phi)){
           mu_phi <- 0
         }else{
-        mu_phi <- priors$mu_phi
+          mu_phi <- priors$mu_phi
         }
         if (is.null(priors$sigma_phi)){
-        sigma_phi <- 2
+          sigma_phi <- 2
         }else{
-        sigma_phi <- priors$sigma_phi
+          sigma_phi <- priors$sigma_phi
         }
       }
 
@@ -557,7 +570,7 @@ piv_MCMC <- function(y,
       mcmc_sd_raw <- mcmc.pars[,,2]
       mcmc_weight_raw <- mcmc.pars[,,3]
 
-      }
+    }
 
 
     ## resambling
@@ -623,44 +636,44 @@ piv_MCMC <- function(y,
 
     if (software=="rjags"){
 
-    # JAGS code------------------------
+      # JAGS code------------------------
 
-    # Initial values
-    if (missing(priors)){
-    mu_0 <- as.vector(c(0,0))
-    S2 <- matrix(c(1,0,0,1),nrow=2)/100000
-    S3 <- matrix(c(1,0,0,1),nrow=2)/100000
-    alpha <- rep(1,k)
-    }else{
-      if (is.null(priors$mu_0)){
+      # Initial values
+      if (missing(priors)){
         mu_0 <- as.vector(c(0,0))
-      }else{
-      mu_0 <- priors$mu_0
-      }
-      if (is.null(priors$S2)){
         S2 <- matrix(c(1,0,0,1),nrow=2)/100000
-      }else{
-      S2 <- priors$S2
-      }
-      if (is.null(priors$S3)){
         S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+        alpha <- rep(1,k)
       }else{
-      S3 <- priors$S3
+        if (is.null(priors$mu_0)){
+          mu_0 <- as.vector(c(0,0))
+        }else{
+          mu_0 <- priors$mu_0
+        }
+        if (is.null(priors$S2)){
+          S2 <- matrix(c(1,0,0,1),nrow=2)/100000
+        }else{
+          S2 <- priors$S2
+        }
+        if (is.null(priors$S3)){
+          S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+        }else{
+          S3 <- priors$S3
+        }
+        if (is.null(priors$alpha)){
+          alpha <- rep(1, k)
+        }else{
+          alpha <- priors$alpha
+        }
       }
-      if (is.null(priors$alpha)){
-        alpha <- rep(1, k)
-      }else{
-        alpha <- priors$alpha
-      }
-    }
 
-    # Data
-    dati.biv <- list(y = y, N = N, k = k,
-                     S2= S2, S3= S3, mu_0=mu_0,
-                     alpha = alpha)
+      # Data
+      dati.biv <- list(y = y, N = N, k = k,
+                       S2= S2, S3= S3, mu_0=mu_0,
+                       alpha = alpha)
 
-    # Model
-    mod.mist.biv<-"model{
+      # Model
+      mod.mist.biv<-"model{
     # Likelihood:
 
     for (i in 1:N){
@@ -679,69 +692,69 @@ piv_MCMC <- function(y,
   }"
 
 
-    init1.biv <- dump.format(list(muOfClust=mu_inits,
-      tauOfClust= matrix(c(15,0,0,15),ncol=2),
-      pClust=rep(1/k,k), clust=clust_inits))
-    moni.biv <- c("clust","muOfClust","tauOfClust","pClust")
+      init1.biv <- dump.format(list(muOfClust=mu_inits,
+                                    tauOfClust= matrix(c(15,0,0,15),ncol=2),
+                                    pClust=rep(1/k,k), clust=clust_inits))
+      moni.biv <- c("clust","muOfClust","tauOfClust","pClust")
 
-    mod   <- mod.mist.biv
-    dati  <- dati.biv
-    init1 <- init1.biv
-    moni  <- moni.biv
+      mod   <- mod.mist.biv
+      dati  <- dati.biv
+      init1 <- init1.biv
+      moni  <- moni.biv
 
-    # Jags execution
-    ogg.jags <- run.jags(model=mod, data=dati, monitor=moni,
-      inits=init1, n.chains=chains,plots=FALSE, thin=1,
-      sample=nMC, burnin=burn)
-    # Extraction
-    ris <- ogg.jags$mcmc[[1]]
+      # Jags execution
+      ogg.jags <- run.jags(model=mod, data=dati, monitor=moni,
+                           inits=init1, n.chains=chains,plots=FALSE, thin=1,
+                           sample=nMC, burnin=burn)
+      # Extraction
+      ris <- ogg.jags$mcmc[[1]]
 
-    # Post- process of the chains----------------------
-    group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
+      # Post- process of the chains----------------------
+      group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
 
-    # only the variances
-    tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
-    prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
-    M <- nrow(group)
-    H <- list()
+      # only the variances
+      tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
+      prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+      M <- nrow(group)
+      H <- list()
 
-    mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
-    for (i in 1:k){
-      H[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
-    }
-    for (i in 1:k){
-      mu_pre_switch_compl[,,i] <- as.matrix(H[[i]])
-    }
-    # Discard iterations
-    numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
-    ris <- ris[numeffettivogruppi==k,]
-    true.iter <- nrow(ris)
-
-    if (sum(numeffettivogruppi==k)==0){
-      return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
-      #return(1)
-    }else{
-      L<-list()
-      mu_pre_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+      mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
       for (i in 1:k){
-        L[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
+        H[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
       }
       for (i in 1:k){
-        mu_pre_switch[,,i] <- as.matrix(L[[i]])
+        mu_pre_switch_compl[,,i] <- as.matrix(H[[i]])
       }
-    }
+      # Discard iterations
+      numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
+      ris <- ris[numeffettivogruppi==k,]
+      true.iter <- nrow(ris)
 
-    group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
-    FreqGruppiJags <- table(group)
-    model_code <- mod.mist.biv
+      if (sum(numeffettivogruppi==k)==0){
+        return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        #return(1)
+      }else{
+        L<-list()
+        mu_pre_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+        for (i in 1:k){
+          L[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
+        }
+        for (i in 1:k){
+          mu_pre_switch[,,i] <- as.matrix(L[[i]])
+        }
+      }
 
-    mcmc_mean_raw = mu_pre_switch_compl
-    mcmc_weight_raw = prob.st
-    mcmc_sd_raw = tau
+      group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
+      FreqGruppiJags <- table(group)
+      model_code <- mod.mist.biv
 
-    tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
-    prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
-    mu <- mu_pre_switch
+      mcmc_mean_raw = mu_pre_switch_compl
+      mcmc_weight_raw = prob.st
+      mcmc_sd_raw = tau
+
+      tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
+      prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+      mu <- mu_pre_switch
 
 
     }else if(software=="rstan"){
@@ -753,7 +766,7 @@ piv_MCMC <- function(y,
         if (is.null(priors$mu_0)){
           mu_0 <- c(0,0)
         }else{
-        mu_0 <- priors$mu_0
+          mu_0 <- priors$mu_0
         }
         if (is.null(priors$eta)){
           eta <- 1
@@ -825,9 +838,9 @@ piv_MCMC <- function(y,
           }
           "
       fit_biv <-  stan(model_code = mix_biv,
-                        data=data,
-                        chains =chains,
-                        iter =nMC)
+                       data=data,
+                       chains =chains,
+                       iter =nMC)
       sims_biv <- rstan::extract(fit_biv)
 
       # Extraction
@@ -870,7 +883,7 @@ piv_MCMC <- function(y,
       model_code <- mix_biv
 
 
-  }
+    }
 
     group.orig <- group
     verigruppi <- as.double(names(table(group)))
@@ -913,7 +926,7 @@ piv_MCMC <- function(y,
     mcmc_sd <- tau
     mcmc_weight <- prob.st_switch
 
-}
+  }
 
   FreqGruppiJagsPERM <- table(group)
   Freq <- cbind(FreqGruppiJags,FreqGruppiJagsPERM)
@@ -953,7 +966,7 @@ piv_MCMC <- function(y,
   available_met <- 3
 
   piv.criterion.choices <- c("maxsumint", "minsumnoint",
-    "maxsumdiff")
+                             "maxsumdiff")
 
   if (missing(piv.criterion)){
     piv.criterion <- "maxsumdiff"
@@ -970,19 +983,19 @@ piv_MCMC <- function(y,
     clust  <-  piv_sel(C=C, clusters=as.vector(grr))
     pivots <- clust$pivots[,piv.index.pivotal[piv.index]]
   }else if(piv.criterion=="MUS"){
-      if (k <=4 & sum(C==0)!=0){
+    if (k <=4 & sum(C==0)!=0){
 
-          mus_res    <- MUS(C, grr)
-          clust  <-  mus_res$pivots
+      mus_res    <- MUS(C, grr)
+      clust  <-  mus_res$pivots
 
-  }else{
+    }else{
 
-    print("maxsumdiff criterion instead of MUS has been adopted due to
+      print("maxsumdiff criterion instead of MUS has been adopted due to
           computational efficiency")
-    clust  <-  piv_sel(C=C,  clusters=as.vector(grr))
-    pivots <- clust$pivots[,3]
+      clust  <-  piv_sel(C=C,  clusters=as.vector(grr))
+      pivots <- clust$pivots[,3]
+    }
   }
-}
 
 
 
@@ -1004,4 +1017,4 @@ piv_MCMC <- function(y,
                piv.criterion = piv.criterion,
                nMC = nMC,
                model = model_code))
-  }
+}
