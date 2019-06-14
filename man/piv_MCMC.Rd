@@ -4,19 +4,20 @@
 \alias{piv_MCMC}
 \title{JAGS/Stan Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
 \usage{
-piv_MCMC(y, k, priors, nMC, piv.criterion = c("MUS", "maxsumint",
+piv_MCMC(y, k, nMC, priors, piv.criterion = c("MUS", "maxsumint",
   "minsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"),
   software = c("rjags", "rstan"), burn = 0.5 * nMC, chains = 4,
   cores = 1)
 }
 \arguments{
-\item{y}{N-dimensional data vector/matrix.}
+\item{y}{\eqn{N}-dimensional vector for univariate data or
+\eqn{N \times 2} matrix for bivariate data.}
 
 \item{k}{Number of mixture components.}
 
-\item{priors}{Input prior hyperparameters (see Details).}
-
 \item{nMC}{Number of MCMC iterations for the JAGS/Stan function execution.}
+
+\item{priors}{Input prior hyperparameters (see Details for default options).}
 
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
@@ -24,14 +25,14 @@ for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 The default method is \code{"maxsumdiff"} (see the Details and
 the vignette).}
 
-\item{clustering}{The clustering technique adopted for partitioning the
-\code{N} observations into \code{k} groups. Possible choices: \code{"diana"} (default),
-\code{"hclust"}.}
+\item{clustering}{The algorithm adopted for partitioning the
+\eqn{N} observations into \code{k} groups. Possible choices are \code{"diana"} (default) or
+\code{"hclust"} for divisive and agglomerative hierarchical clustering, respectively.}
 
 \item{software}{The selected MCMC method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
 Default is \code{"rjags"}.}
 
-\item{burn}{The burn-in period (only if method \code{"rjags"} is selected).}
+\item{burn}{The burn-in period (only if method \code{"rjags"} is selected). Default is \code{0.5}\eqn{\times}\code{nMC}.}
 
 \item{chains}{A positive integer specifying the number of Markov chains (only if
 \code{software="rstan"}). The default is 4.}
@@ -43,11 +44,6 @@ Default is \code{"rjags"}.}
 The function gives the MCMC output, the clustering
 solutions and the pivotal indexes. Here there is a complete list of outputs.
 
-\item{\code{Freq}}{  \code{k x 2} matrix where: the first column
-reports the number of units allocated to each group
-as given by JAGS/Stan program; the second
-column reports the same number of units as given by the
-chains' post-processing.}
 \item{\code{true.iter}}{ The number of MCMC iterations for which
 the number of JAGS/Stan groups exactly coincides with the prespecified
 number of groups \code{k}.}

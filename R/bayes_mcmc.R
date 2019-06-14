@@ -157,46 +157,40 @@
 #' \item{\code{true.iter}}{ The number of MCMC iterations for which
 #' the number of JAGS/Stan groups exactly coincides with the prespecified
 #' number of groups \code{k}.}
-#' \item{\code{z} }{  \code{N x k x true.iter} array with values: 1,
-#' if the \eqn{i}-th unit belongs to the \eqn{j}-th group at
-#' the \eqn{h}-th iteration; 0, otherwise.}
-#' \item{\code{ris}}{  MCMC output matrix as provided by JAGS/Stan.}
-#' \item{\code{groupPost}}{ \code{true.iter x N} matrix
+#' \item{\code{Mu}}{An estimate of the groups' means.}
+#' \item{\code{groupPost}}{ \eqn{true.iter \times N} matrix
 #' with values from \code{1:k} indicating the post-processed group allocation
 #' vector.}
-#' \item{\code{mcmc_mean}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' \item{\code{mcmc_mean}}{  If \code{y} is a vector, a \eqn{true.iter \times k}
 #' matrix with the post-processed MCMC chains for the mean parameters; if
-#' \code{y} is a matrix, a \code{true.iter x 2 x k} array with
+#' \code{y} is a matrix, a \eqn{true.iter \times 2 \times k} array with
 #' the post-processed MCMC chains for the mean parameters.}
-#' \item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
-#' with the raw MCMC chains for the mean parameters as given by JAGS; if
-#' \code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
-#' for the mean parameters as given by JAGS/Stan.}
-#' \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \eqn{true.iter \times k}
 #' matrix with the post-processed MCMC chains for the sd parameters; if
-#' \code{y} is a matrix, a \code{true.iter x 2} array with
+#' \code{y} is a matrix, a \eqn{true.iter \times 2 \times k} array with
 #' the post-processed MCMC chains for the sd parameters.}
-#' \item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
-#' with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
-#' \code{y} is a matrix, a \code{nMC x 2} array with the raw MCMC chains
-#' for the sd parameters as given by JAGS/Stan.}
-#' \item{\code{mcmc_weight}}{  If \code{y} is a vector, a \code{true.iter x k}
+#' \item{\code{mcmc_weight}}{  If \code{y} is a vector, a \eqn{true.iter \times k}
 #' matrix with the post-processed MCMC chains for the weights parameters; if
-#' \code{y} is a matrix, a \code{true.iter x 2 x k} array with
+#' \code{y} is a matrix, a \eqn{true.iter \times 2 \times k} array with
 #' the post-processed MCMC chains for the weights parameters.}
-#' \item{\code{mcmc_weights_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+#'\item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+#' with the raw MCMC chains for the mean parameters as given by JAGS; if
+#' \code{y} is a matrix, a \eqn{nMC \times 2 \times k} array with the raw MCMC chains
+#' for the mean parameters as given by JAGS/Stan.}
+#' \item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \eqn{nMC \times k} matrix
+#' with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
+#' \code{y} is a matrix, a \eqn{nMC \times 2 \times k} array with the raw MCMC chains
+#' for the sd parameters as given by JAGS/Stan.}
+#' \item{\code{mcmc_weights_raw}}{ If \code{y} is a vector, a \eqn{nMC \times k} matrix
 #' with the raw MCMC chains for the weights parameters as given by JAGS/Stan; if
-#' \code{y} is a matrix, a \code{nMC x 2 x k} array with the raw MCMC chains
+#' \code{y} is a matrix, a \eqn{nMC \times 2 \times k} array with the raw MCMC chains
 #' for the weights parameters as given by JAGS/Stan.}
-#' \item{\code{C}}{Co-association matrix constructed from the MCMC sample.}
+#' \item{\code{C}}{\eqn{N \times N} co-association matrix constructed from the MCMC sample.}
 #' \item{\code{grr}}{Group vector allocation as provided by
 #' \code{"diana"} or \code{"hclust"}.}
 #' \item{\code{pivots}}{ The pivotal units identified by the
 #' selected pivotal criterion.}
-#' \item{\code{piv.criterion}}{ Gives the pivotal criterion used for identifying
-#' the pivots.}
 #' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
-#' \item{\code{nMC}}{The number of MCMC iterations for the JAGS/Stan function execution (same as the input argument above).}
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
@@ -996,9 +990,9 @@ piv_MCMC <- function(y,
 
 
   return(list( true.iter = true.iter,
-               z=z,
+               #z=z,
                Mu = mu_inits,
-               ris=ris,
+               #ris=ris,
                groupPost=group,
                mcmc_mean = mcmc_mean,
                mcmc_sd = mcmc_sd,

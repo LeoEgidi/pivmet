@@ -143,9 +143,13 @@ piv_rel<-function(mcmc){
   ###
 
 
-  N <- dim(mcmc$z)[1]
-  k <- dim(mcmc$z)[2]
-  nMC <- mcmc$nMC
+  N <- dim(mcmc$groupPost)[2]
+  if (length(dim(mcmc$mcmc_mean_raw))==3){
+  k <- dim(mcmc$mcmc_mean)[3]
+  }else{
+  k <- dim(mcmc$mcmc_mean_raw)[2]
+  }
+  nMC <- dim(mcmc$mcmc_mean_raw)[1]
   mu_switch <- mcmc$mcmc_mean
   tau_switch <- mcmc$mcmc_sd
   prob.st_switch <- mcmc$mcmc_weight
