@@ -695,17 +695,17 @@ piv_MCMC <- function(y,
       ris <- ogg.jags$mcmc[[1]]
 
       # Post- process of the chains----------------------
-      group <- ris[,grep("clust[",colnames(ris),fixed=TRUE)]
+      group <- ris[-(1:burn),grep("clust[",colnames(ris),fixed=TRUE)]
 
       # only the variances
-      tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
-      prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+      tau <- sqrt( (1/ris[-(1:burn),grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
+      prob.st <- ris[-(1:burn),grep("pClust[",colnames(ris),fixed=TRUE)]
       M <- nrow(group)
       H <- list()
 
       mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
       for (i in 1:k){
-        H[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
+        H[[i]] <- ris[-(1:burn),grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
       }
       for (i in 1:k){
         mu_pre_switch_compl[,,i] <- as.matrix(H[[i]])
