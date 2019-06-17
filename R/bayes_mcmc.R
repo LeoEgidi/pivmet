@@ -181,11 +181,10 @@
 #' for the sd parameters as given by JAGS/Stan.}
 #' \item{\code{mcmc_weight_raw}}{A \eqn{nMC \times k} matrix
 #' with the raw MCMC chains for the weights parameters as given by JAGS/Stan.}
-#' \item{\code{C}}{\eqn{N \times N} co-association matrix constructed from the MCMC sample.}
-#' \item{\code{grr}}{Group vector allocation as provided by
+#' \item{\code{C}}{The \eqn{N \times N} co-association matrix constructed from the MCMC sample.}
+#' \item{\code{grr}}{The vector of cluster membership returned by
 #' \code{"diana"} or \code{"hclust"}.}
-#' \item{\code{pivots}}{ The pivotal units identified by the
-#' selected pivotal criterion.}
+#' \item{\code{pivots}}{The vector of indices of pivotal units identified by the selected pivotal criterion.}
 #' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}

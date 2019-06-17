@@ -57,24 +57,20 @@ matrix with the post-processed MCMC chains for the mean parameters; if
 the post-processed MCMC chains for the mean parameters.}
 \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \eqn{true.iter \times k}
 matrix with the post-processed MCMC chains for the sd parameters; if
-\code{y} is a matrix, a \eqn{true.iter \times 2 \times k} array with
+\code{y} is a matrix, a \eqn{true.iter \times 2} array with
 the post-processed MCMC chains for the sd parameters.}
-\item{\code{mcmc_weight}}{  If \code{y} is a vector, a \eqn{true.iter \times k}
-matrix with the post-processed MCMC chains for the weights parameters; if
-\code{y} is a matrix, a \eqn{true.iter \times 2 \times k} array with
-the post-processed MCMC chains for the weights parameters.}
-\item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \code{nMC x k} matrix
+\item{\code{mcmc_weight}}{A \eqn{true.iter \times k}
+matrix with the post-processed MCMC chains for the weights parameters.}
+\item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \eqn{nMC \times k} matrix
 with the raw MCMC chains for the mean parameters as given by JAGS; if
 \code{y} is a matrix, a \eqn{nMC \times 2 \times k} array with the raw MCMC chains
 for the mean parameters as given by JAGS/Stan.}
 \item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \eqn{nMC \times k} matrix
 with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
-\code{y} is a matrix, a \eqn{nMC \times 2 \times k} array with the raw MCMC chains
+\code{y} is a matrix, a \eqn{nMC \times 2} array with the raw MCMC chains
 for the sd parameters as given by JAGS/Stan.}
-\item{\code{mcmc_weights_raw}}{ If \code{y} is a vector, a \eqn{nMC \times k} matrix
-with the raw MCMC chains for the weights parameters as given by JAGS/Stan; if
-\code{y} is a matrix, a \eqn{nMC \times 2 \times k} array with the raw MCMC chains
-for the weights parameters as given by JAGS/Stan.}
+\item{\code{mcmc_weight_raw}}{A \eqn{nMC \times k} matrix
+with the raw MCMC chains for the weights parameters as given by JAGS/Stan.}
 \item{\code{C}}{\eqn{N \times N} co-association matrix constructed from the MCMC sample.}
 \item{\code{grr}}{Group vector allocation as provided by
 \code{"diana"} or \code{"hclust"}.}
