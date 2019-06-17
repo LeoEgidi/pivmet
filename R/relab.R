@@ -216,8 +216,9 @@ piv_rel<-function(mcmc){
           }
         }
       }else{
-        mu_rel_median <- rep(NA,k)
-        mu_rel_mean   <- rep(NA,k)
+        stop("The number of MCMC iterations is too low, try increasing the argument nMC when you use the piv_MCMC function.")
+        #mu_rel_median <- rep(NA,k)
+        #mu_rel_mean   <- rep(NA,k)
       }
 
       mu_rel_median  <- apply(mu_rel_complete, 2, median)
@@ -257,8 +258,9 @@ piv_rel<-function(mcmc){
           }
         }
       }else{
-        mu_rel_median <- matrix(NA,c(2,k))
-        mu_rel_mean   <- matrix(NA,c(2,k))
+        stop("The number of MCMC iterations is too low, try increasing the argument nMC when you use the piv_MCMC function.")
+        #mu_rel_median <- matrix(NA,c(2,k))
+        #mu_rel_mean   <- matrix(NA,c(2,k))
 
       }
 
