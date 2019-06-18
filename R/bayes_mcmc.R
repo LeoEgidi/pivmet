@@ -184,8 +184,7 @@
 #' \item{\code{grr}}{The vector of cluster membership returned by
 #' \code{"diana"} or \code{"hclust"}.}
 #' \item{\code{pivots}}{The vector of indices of pivotal units identified by the selected pivotal criterion.}
-#' \item{\code{print}}{ The printed JAGS/Stan model object.}
-#' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
+#' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{"cat"} function for a nice visualization of the code.}
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
@@ -396,7 +395,7 @@ piv_MCMC <- function(y,
       control <- JAGScontrol(variables = c("mu", "tau", "eta", "S"),
                              burn.in = burn, n.iter = nMC, seed = 10)
       ogg.jags <- JAGSrun(y, model = mod.mist.univ, control = control)
-      printed <- print(ogg.jags)
+      printed <- cat(print(ogg.jags))
       # Parameters' initialization
 
       J <- 3
@@ -517,7 +516,7 @@ piv_MCMC <- function(y,
                         data=data,
                         chains =chains,
                         iter =nMC)
-      printed <- print(fit_univ, pars =c("mu", "theta", "sigma"))
+      printed <- cat(print(fit_univ, pars =c("mu", "theta", "sigma")))
       sims_univ <- rstan::extract(fit_univ)
 
       J <- 3
@@ -694,9 +693,9 @@ piv_MCMC <- function(y,
       ogg.jags <- run.jags(model=mod, data=dati, monitor=moni,
                            inits=init1, n.chains=chains,plots=FALSE, thin=1,
                            sample=nMC, burnin=burn)
-      printed <- add.summary(ogg.jags, vars= c("muOfClust",
+      printed <- print(add.summary(ogg.jags, vars= c("muOfClust",
                       "tauOfClust",
-                      "pClust"))
+                      "pClust")))
       # Extraction
       ris <- ogg.jags$mcmc[[1]]
 
@@ -832,7 +831,7 @@ piv_MCMC <- function(y,
                        data=data,
                        chains =chains,
                        iter =nMC)
-      printed <- print(fit_biv, pars=c("mu", "theta", "L_Sigma"))
+      printed <- cat(print(fit_biv, pars=c("mu", "theta", "L_Sigma")))
       sims_biv <- rstan::extract(fit_biv)
 
       # Extraction
@@ -1005,6 +1004,6 @@ piv_MCMC <- function(y,
                C=C,
                grr=grr,
                pivots = pivots,
-               print = printed,
+               #print = printed,
                model = model_code))
 }

@@ -8,7 +8,7 @@
 #'in the same cluster among \eqn{H} distinct partitions.
 #'@param clusters A vector of integers indicating
 #'a partition of the \eqn{N} units into, say, \eqn{k} groups.
-
+#'
 #'
 #'
 #'@details
