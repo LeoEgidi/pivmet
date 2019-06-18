@@ -17,8 +17,7 @@
 #' @param software The selected MCMC method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
 #' Default is \code{"rjags"}.
 #' @param burn The burn-in period (only if method \code{"rjags"} is selected). Default is \code{0.5}\eqn{\times}\code{nMC}.
-#' @param chains A positive integer specifying the number of Markov chains (only if
-#' \code{software="rstan"}). The default is 4.
+#' @param chains A positive integer specifying the number of Markov chains. The default is 4.
 #' @param cores The number of cores to use when executing the Markov chains in parallel (only if
 #' \code{software="rstan"}). Default is 1.
 #'
@@ -185,6 +184,7 @@
 #' \item{\code{grr}}{The vector of cluster membership returned by
 #' \code{"diana"} or \code{"hclust"}.}
 #' \item{\code{pivots}}{The vector of indices of pivotal units identified by the selected pivotal criterion.}
+#' \item{\code{print}}{ The printed JAGS/Stan model object.}
 #' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
 #'
 #' @author Leonardo Egidi \url{legidi@units.it}
@@ -396,6 +396,7 @@ piv_MCMC <- function(y,
       control <- JAGScontrol(variables = c("mu", "tau", "eta", "S"),
                              burn.in = burn, n.iter = nMC, seed = 10)
       ogg.jags <- JAGSrun(y, model = mod.mist.univ, control = control)
+      printed <- print(ogg.jags)
       # Parameters' initialization
 
       J <- 3
@@ -516,6 +517,7 @@ piv_MCMC <- function(y,
                         data=data,
                         chains =chains,
                         iter =nMC)
+      printed <- print(fit_univ, pars =c("mu", "theta", "sigma"))
       sims_univ <- rstan::extract(fit_univ)
 
       J <- 3
@@ -676,8 +678,9 @@ piv_MCMC <- function(y,
       pClust[1:k] ~ ddirch(alpha)
   }"
 
-
-      init1.biv <- dump.format(list(muOfClust=mu_inits,
+      init1.biv <- list()
+      for (s in 1:chains)
+      init1.biv[[s]] <- dump.format(list(muOfClust=mu_inits,
                                     tauOfClust= matrix(c(15,0,0,15),ncol=2),
                                     pClust=rep(1/k,k), clust=clust_inits))
       moni.biv <- c("clust","muOfClust","tauOfClust","pClust")
@@ -691,6 +694,9 @@ piv_MCMC <- function(y,
       ogg.jags <- run.jags(model=mod, data=dati, monitor=moni,
                            inits=init1, n.chains=chains,plots=FALSE, thin=1,
                            sample=nMC, burnin=burn)
+      printed <- add.summary(ogg.jags, vars= c("muOfClust",
+                      "tauOfClust",
+                      "pClust"))
       # Extraction
       ris <- ogg.jags$mcmc[[1]]
 
@@ -826,6 +832,7 @@ piv_MCMC <- function(y,
                        data=data,
                        chains =chains,
                        iter =nMC)
+      printed <- print(fit_biv, pars=c("mu", "theta", "L_Sigma"))
       sims_biv <- rstan::extract(fit_biv)
 
       # Extraction
@@ -998,5 +1005,6 @@ piv_MCMC <- function(y,
                C=C,
                grr=grr,
                pivots = pivots,
+               print = printed,
                model = model_code))
 }

@@ -133,6 +133,12 @@ piv_KMeans <- function (x, centers,
 
   ### checks
 
+  # data frame
+
+  if(is.data.frame(x)){
+    x <- as.matrix(x)
+  }
+
   # type
   list_type <- c("KMeans", "hclust")
   if (sum(alg.type!=list_type)==2){
