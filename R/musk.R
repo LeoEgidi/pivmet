@@ -102,15 +102,9 @@
 #'    bg=colors_cluster[res$cluster], pch=21, xlab="x[,1]",
 #'    ylab="x[,2]", cex.lab=1.5,
 #'    main="piv_KMeans", cex.main=1.5)
-#'points(x[res$pivots[1],1], x[res$pivots[1],2],
-#'    pch=24, col=colors_centers[1],bg=colors_centers[1],
-#'    cex=1.5)
-#'points(x[res$pivots[2],1], x[res$pivots[2],2],
-#'    pch=24,  col=colors_centers[2], bg=colors_centers[2],
-#'    cex=1.5)
-#'points(x[res$pivots[3],1], x[res$pivots[3],2],
-#'    pch=24, col=colors_centers[3], bg=colors_centers[3],
-#'    cex=1.5)
+#'points(x[res$pivots, 1], x[res$pivots, 2],
+#'       pch=24, col=colors_centers,bg=colors_centers,
+#'       cex=1.5)
 #'points(res$centers, col = colors_centers[1:k],
 #'    pch = 8, cex = 2)
 #'    }
