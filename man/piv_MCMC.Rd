@@ -32,10 +32,9 @@ the vignette).}
 \item{software}{The selected MCMC method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
 Default is \code{"rjags"}.}
 
-\item{burn}{The burn-in period (only if method \code{"rjags"} is selected). Default is \code{0.5}\eqn{\times}\code{nMC}.}
+\item{burn}{The burn-in period (only if method \code{"rjags"} is selected). Default is \code{0.5}\eqn{\times} \code{nMC}.}
 
-\item{chains}{A positive integer specifying the number of Markov chains (only if
-\code{software="rstan"}). The default is 4.}
+\item{chains}{A positive integer specifying the number of Markov chains. The default is 4.}
 
 \item{cores}{The number of cores to use when executing the Markov chains in parallel (only if
 \code{software="rstan"}). Default is 1.}
@@ -61,21 +60,21 @@ matrix with the post-processed MCMC chains for the sd parameters; if
 the post-processed MCMC chains for the sd parameters.}
 \item{\code{mcmc_weight}}{A \eqn{true.iter \times k}
 matrix with the post-processed MCMC chains for the weights parameters.}
-\item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \eqn{nMC-burn \times k} matrix
+\item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \eqn{(nMC-burn) \times k} matrix
 with the raw MCMC chains for the mean parameters as given by JAGS; if
-\code{y} is a matrix, a \eqn{nMC-burn \times 2 \times k} array with the raw MCMC chains
+\code{y} is a matrix, a \eqn{(nMC-burn) \times 2 \times k} array with the raw MCMC chains
 for the mean parameters as given by JAGS/Stan.}
-\item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \eqn{nMC-burn \times k} matrix
+\item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \eqn{(nMC-burn) \times k} matrix
 with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
-\code{y} is a matrix, a \eqn{nMC-burn \times 2} array with the raw MCMC chains
+\code{y} is a matrix, a \eqn{(nMC-burn) \times 2} array with the raw MCMC chains
 for the sd parameters as given by JAGS/Stan.}
-\item{\code{mcmc_weight_raw}}{A \eqn{nMC-burn \times k} matrix
+\item{\code{mcmc_weight_raw}}{A \eqn{(nMC-burn) \times k} matrix
 with the raw MCMC chains for the weights parameters as given by JAGS/Stan.}
 \item{\code{C}}{The \eqn{N \times N} co-association matrix constructed from the MCMC sample.}
 \item{\code{grr}}{The vector of cluster membership returned by
 \code{"diana"} or \code{"hclust"}.}
 \item{\code{pivots}}{The vector of indices of pivotal units identified by the selected pivotal criterion.}
-\item{\code{model}}{The JAGS/Stan model code. Apply the \code{``cat''} function for a nice visualization of the code.}
+\item{\code{model}}{The JAGS/Stan model code. Apply the \code{"cat"} function for a nice visualization of the code.}
 }
 \description{
 Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
