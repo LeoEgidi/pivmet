@@ -16,7 +16,7 @@
 #' \code{"hclust"} for divisive and agglomerative hierarchical clustering, respectively.
 #' @param software The selected MCMC method to fit the model: \code{"rjags"} for the JAGS method, \code{"rstan"} for the Stan method.
 #' Default is \code{"rjags"}.
-#' @param burn The burn-in period (only if method \code{"rjags"} is selected). Default is \code{0.5}\eqn{\times}\code{nMC}.
+#' @param burn The burn-in period (only if method \code{"rjags"} is selected). Default is \code{0.5}\eqn{\times} \code{nMC}.
 #' @param chains A positive integer specifying the number of Markov chains. The default is 4.
 #' @param cores The number of cores to use when executing the Markov chains in parallel (only if
 #' \code{software="rstan"}). Default is 1.
