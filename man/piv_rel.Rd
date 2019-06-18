@@ -15,11 +15,11 @@ This function gives the relabelled posterior estimates--both mean and medians--o
 \item{\code{final_it}}{The final number of valid MCMC iterations,
 as explained in Details.}
 \item{\code{final_it_p}}{The proportion of final valid MCMC iterations.}
-\item{\code{rel_mean}}{The relabelled chains of the means: a \code{final_it}\eqn{\times k} matrix for univariate data,
-or a \code{final_it}\eqn{\times 2 \times k} array for bivariate data.}
-\item{\code{rel_sd}}{The relabelled chains of the sd's: a \code{final_it}\eqn{\times k} matrix for univariate data,
-or a \code{final_it}\eqn{\times 2} matrix for bivariate data.}
-\item{\code{rel_weight}}{The relabelled chains of the weights: a \code{final_it}\eqn{\times k} matrix.}
+\item{\code{rel_mean}}{The relabelled chains of the means: a \code{final_it} \eqn{\times k} matrix for univariate data,
+or a \code{final_it} \eqn{\times 2 \times k} array for bivariate data.}
+\item{\code{rel_sd}}{The relabelled chains of the sd's: a \code{final_it} \eqn{\times k} matrix for univariate data,
+or a \code{final_it} \eqn{\times 2} matrix for bivariate data.}
+\item{\code{rel_weight}}{The relabelled chains of the weights: a \code{final_it} \eqn{\times k} matrix.}
 }
 \description{
 This function allows to perform the pivotal relabelling procedure described in Egidi et al. (2018) and to obtain the relabelled posterior estimates.
