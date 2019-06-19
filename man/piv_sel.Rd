@@ -19,12 +19,13 @@ a partition of the \eqn{N} units into, say, \eqn{k} groups.}
 columns containing the indexes of the pivotal units for each method.}
 }
 \description{
-Finding the pivots according to three different
-methods involving a co-association matrix C.
+Finding pivotal units from a data partition and a
+co-association matrix C
+according to three different methods.
 }
 \details{
 Given a set of \eqn{N} observations \eqn{(y_{1},y_{2},...,y_{N})}
-(\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \geq 1}),
+(\eqn{y_i} may be a \eqn{d}-dimensional vector, \eqn{d \ge 1}),
 consider clustering methods to obtain \eqn{H} distinct partitions
 into \eqn{k} groups.
 The matrix \code{C} is the co-association matrix,
