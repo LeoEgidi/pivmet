@@ -37,10 +37,10 @@
 #'
 #' @return
 #'
-#' \item{\code{pivots}}{ The vector of the index position for the \code{k} selcted pivotal units.}
-#' \item{\code{prec_par}}{The efective maximum number of alternative pivots for each group}
+#' \item{\code{pivots}}{ A vector of integers in 1:N denoting the indeces of the \code{k} selcted pivotal units.}
+#' \item{\code{prec_par}}{The effective number of alternative pivots considered for each group. See details.}
 #'
-#' @author Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
+#' @author Leonardo Egidi \url{legidi@units.it}, Roberta Pappadà
 #' @references Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
 #'  Maxima Units Search(MUS) algorithm:
 #' methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) Studies in
@@ -62,12 +62,10 @@
 #' x  <- matrix(NA, N,2)
 #' truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
 #'
-#' for (i in 1:n1){
-#'  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))}
-#' for (i in 1:n2){
-#'  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))}
-#' for (i in 1:n3){
-#'  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))}
+#'
+#'  x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
+#'  x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
+#'  x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3, c(6,6), sigma=diag(2))
 #'
 #' # Build a similarity matrix from clustering ensembles
 #'
