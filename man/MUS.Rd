@@ -12,14 +12,14 @@ For instance, a similarity matrix estimated from a \eqn{N \times D} data matrix 
 are statistical units, or a co-association matrix resulting from clustering
 ensembles.}
 
-\item{clusters}{A vector of integers from \code{1:k} (with \code{k <= 4})
-indicating a partition of the \eqn{N} units resulting from clustering.}
+\item{clusters}{A vector of integers from \code{1:k}
+indicating the cluster to which each point is allocated (it requires \code{k <= 4}, see Details).}
 
-\item{prec_par}{Optional argument. The maximum number of alternative pivots for each group.
+\item{prec_par}{Optional argument. The maximum number of candidate pivots for each group.
 Default is 10.}
 }
 \value{
-\item{\code{pivots}}{ The \code{k} pivotal units}
+\item{\code{pivots}}{ The vector of the index position for the \code{k} selcted pivotal units.}
 \item{\code{prec_par}}{The efective maximum number of alternative pivots for each group}
 }
 \description{

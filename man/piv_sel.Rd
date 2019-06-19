@@ -58,8 +58,9 @@ See the vignette for further details.
 # Iris data
 
 data(iris)
+# select the columns of variables
 x<- iris[,1:4]
-N <- length(iris[,1])
+N <- nrow(x)
 H <- 1000
 a <- matrix(NA, H, N)
 
@@ -79,16 +80,16 @@ for (i in 1:(N-1)){
 
 km <- kmeans(x, centers =3)
 
-# Find the pivots according to the three possible pivotal criterion
+# Apply three pivotal criteria to the co-association matrix
 
 ris <- piv_sel(C, clusters = km$cluster)
 
 graphics::plot(iris[,1], iris[,2], xlab ="Sepal.Length", ylab= "Sepal.Width",
 col = km$cluster)
 
- # Add the pivots according to maxsumdiff criterion
+ # Add the pivots chosen by the maxsumdiff criterion
 
-points( x[ris$pivot[,3], c( "Sepal.Length","Sepal.Width" )], col = 1:3,
+points( x[ris$pivots[,3], 1:2], col = 1:3,
 cex =2, pch = 8 )
 
 }

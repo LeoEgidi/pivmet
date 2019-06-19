@@ -112,9 +112,8 @@
 
 
 piv_KMeans <- function (x, centers,
-                        alg.type = c("KMeans", "hclust"),
-                        method = c("single",  "complete", "average", "ward.D", "ward.D2", "mcquitty", "median",
-                                   "centroid"),
+                        alg.type = "KMeans",
+                        method = "average",
                         piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
                         H = 1000,
                         iter.max = 10,
