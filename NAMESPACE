@@ -51,6 +51,7 @@ importFrom(rstan,
 importFrom(runjags, extract.runjags)
 importFrom(runjags, run.jags)
 importFrom(runjags, dump.format)
+importFrom(runjags, add.summary)
 importFrom(corpcor, is.positive.definite)
 importFrom(MASS, mvrnorm)
 importFrom(mclust, adjustedRandIndex)
