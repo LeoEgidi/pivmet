@@ -26,29 +26,31 @@ library(pivmet)
 
 The pivmet \code{R} package provides a simple framework to (i) fit univariate and bivariate mixture models according to a Bayesian flavour and detect the pivotal units, via the `piv_MCMC` function; (ii) perform the relabelling step via the `piv_rel` function.
 
-There are two main functions designed for our procedure. The function `piv_MCMC`: 
+There are two main functions used for this task.
 
-  +  **performs MCMC sampling** for Gaussian mixture models using the underlying `rjags` or `rstan` packages (chosen by the users through the optional function argument `software`, by default set to `rjags`). Precisely the package uses:  the `JAGSrun` function of the `bayesmix` package for univariate mixture models; the `run.jags` function of the `runjags` package for bivariate mixture models; the `stan` function of the `rstan` package for both univariate and bivariate mixture models;
-  
-  + **post-processes the chains** and randomly swithes their values; 
-  
-  + **build a co-association matrix for the $n$ units**.  After $H$ MCMC iterations, the function implements a clustering procedure on $k$ groups, and through the optional argument `clustering` the user may choose among agglomerative or divisive hierarchical clustering. Using the latent formulation for mixture models, we denote with $[Z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. In such a way, a co-association matrix $C$ for the $n$ statistical units is built, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations:
-  
-$$c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[Z_i]_h=[Z_p]_h|,$$
-  where $|\cdot|$ denotes the event indicator and $n_{ip}$ is the number of times the units $i, \ p$ belong to the same group along the sampling;
-  
-  
- + **find the pivots**. Using this matrix, the internal function `piv_sel` extracts some units, one for each group, which
-are (pairwise) separated with (posterior) probability one (that
-is, the posterior probability of any two of them being in the
-same group is zero). We call them *pivots*, and denote them with: $i_1,\ldots,i_k$. With the optional argument `piv.criterion`, the user may choose among three (plus one) procedures for extracting the pivotal units. For group $j$ containing $J_j$ units, one can choose:
+The function `piv_MCMC`: 
 
--  $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}$ (`maxsumint`);
+  +  **performs MCMC sampling** for Gaussian mixture models using the underlying `rjags` or `rstan` packages (chosen by the users through the optional function argument `software`, by default set to `rjags`). Precisely the package uses:  the `JAGSrun` function of the `bayesmix` package for univariate mixture models; the `run.jags` function of the `runjags` package for bivariate mixture models; the `stan` function of the `rstan` package for both univariate and bivariate mixture models.
+  
+  + **Post-processes the chains** and randomly swithes their values.
+  
+  + **Builds a co-association matrix for the $N$ units**.  After $H$ MCMC iterations, the function implements a clustering procedure with $k$ groups, the user may choose among agglomerative or divisive hierarchical clustering through the optional argument `clustering`. Using the latent formulation for mixture models, we denote with $[z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. In such a way, a co-association matrix $C$ for the $N$ statistical units is built, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations:
+  
+$$c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[z_i]_h=[z_p]_h|,$$
+  where $|\cdot|$ denotes the event indicator and $n_{ip}$ is the number of times the units $i, \ p$ belong to the same group along the sampling.
+  
+  
+ + **Extracts the pivots**, one for each group, which
+are (pairwise) separated  units with (posterior) probability one (that
+is, the posterior probability of any two of them being in the same group is approximately zero). We denote them by $i_1,\ldots,i_k$. The user may choose among four procedures for extracting the pivotal units with the optional argument `piv.criterion`. For group $j$ containing $J_j$ units, one can choose:
 
-- $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`maxsumdiff`, default method);
+-  $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}$ (`"maxsumint"`);
 
-- $i^{*}$ that minimizes $\sum_{p \not\in J_j}c_{ip}$ (`minsumnoint`).
-Alternatively, when $k <5$, the user has the optional pivotal criterion `MUS` [@egidi2018mus] based on a sequential search within the matrix $C$.
+- $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`"maxsumdiff"`, default method);
+
+- $i^{*}$ that minimizes $\sum_{p \not\in J_j}c_{ip}$ (`"minsumnoint"`). 
+
+These three methods are applied by the internal function `piv_sel`. Alternatively, when $k <5$, the user can set `piv.criterion="MUS"` [@egidi2018mus] which performs a sequential search of identity submatrices within the matrix $C$ via the internal function `MUS`.
   
 The function `piv_rel`: 
   
@@ -58,9 +60,91 @@ The function `piv_rel`:
 [\mu_{j}]_h=&[\mu_{z_{i_{j}}}]_h \\
 [z_{i}]_h =j & \mbox{ for } i : [z_i]_h=[z_{i_{j}}]_h,\\
 \end{align*}
-  where $\boldsymbol{\mu}=(\mu_1,\mu_2,\ldots,\mu_k)$ is the vector of the means parameters and $\boldsymbol{z}=(z_1,z_2,\ldots,z_n)$ an i.i.d. vector of latent variables taking values in $\{1,2,\ldots,k \}$ and denoting the group membership of each statistical unit.
+  where $\boldsymbol{\mu}=(\mu_1,\mu_2,\ldots,\mu_k)$ is the vector of the means parameters and $\boldsymbol{z}=(z_1,z_2,\ldots,z_N)$ an i.i.d. vector of latent variables taking values in $\{1,2,\ldots,k \}$ and denoting the group membership of each statistical unit.
 
-It yields the relabelled chains and the corresponding posterior estimates. The only argument `mcmc` takes as input the MCMC output from `piv_MCMC`.
+`piv_rel` takes as input the MCMC output from `piv_MCMC` and returns the relabelled chains and the corresponding posterior estimates.
+
+## Example: bivariate Gaussian data
+
+Suppose now that $\boldsymbol{y}_i \in \mathbb{R}^2$ and assume that: 
+
+$$\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})$$
+where $\boldsymbol{\mu}_j$ is the mean vector for group $j$, $\boldsymbol{\Sigma}$ is a positive-definite covariance matrix and the mixture weight $\pi_j= P(z_i=j)$ as for the one-dimensional case.
+We may generate Gaussian mixture data through the function `piv_sim`, specifying the sample size $N$, the desired number of groups $k$ and the $k \times 2$ matrix for the $k$ mean vectors. The argument `W` handles the weights for a nested mixture, in which the $j$-th component is in turn modelled as a two-component mixture, with covariance matrices $\boldsymbol{\Sigma}_{p1}, \boldsymbol{\Sigma}_{p2}$, respectively.
+
+
+```{r nested, fig.align ='center'}
+set.seed(50)
+N  <- 200
+k  <- 3
+nMC <- 2000
+M1 <- c(-10,8)
+M2 <- c(10,.1)
+M3 <- c(30,8)
+# matrix of input means
+Mu <- matrix(rbind(M1,M2,M3),c(k,2)) 
+sds    <- cbind(rep(1,k), rep(15,k))
+# covariance matrices for the two subgroups
+Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2),
+nrow=2, ncol=2)
+Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2),
+nrow=2, ncol=2)
+# subgroups' weights
+W   <- c(0.2,0.8)
+# simulate data
+sim <- piv_sim(N = N, k = k, Mu = Mu,
+ Sigma.p1 = Sigma.p1, Sigma.p2 = Sigma.p2, W = W)
+```
+
+The function ```piv_MCMC``` requires only three mandatory arguments: the data object ```y```, the number of components ```k``` and the number of MCMC iterations, ```nMC```. By default, it performs Gibbs sampling using the  ```runjags``` package. If `software="rjags"`, for bivariate data the priors are specified as:
+
+
+\begin{align}
+\boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, S_2)\\
+ 1/\Sigma \sim & \mbox{Wishart}(S_3, 3)\\
+\pi \sim & \mbox{Dirichlet}(\boldsymbol{\alpha}),
+\end{align}
+
+where  $\boldsymbol{\alpha}$ is a $k$-dimensional vector and $S_2$ and $S_3$ are positive definite matrices. By default, $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\boldsymbol{\alpha}=(1,\ldots,1)$ and $S_2$ and $S_3$ are diagonal matrices,
+with diagonal elements 
+equal to 1e+05. Different values can be specified for the hyperparameters
+$\boldsymbol{\mu}_0, S_2, S_3$ and $\boldsymbol{\alpha}$: `priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}`,
+with the constraint for $S2$ and $S3$ to be positive definite, and $\boldsymbol{\alpha}$ a vector of dimension $k$ with nonnegative elements.
+
+If `software="rstan"`, the function performs Hamiltonian Monte Carlo (HMC) sampling. In this case the priors are specified as:
+
+\begin{align}
+ \boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, LDL^{T})\\
+ L \sim & \mbox{LKJ}(\eta)\\
+D_{1,2} \sim & \mbox{HalfCauchy}(0, \sigma_d).
+ \end{align}
+
+The covariance matrix is expressed in terms of the LDL decomposition as $LDL^{T}$,
+a variant of the classical Cholesky decomposition, where $L$ is a $2 \times 2$
+lower unit triangular matrix and $D$ is a $2 \times 2$ diagonal matrix.
+ The Cholesky correlation factor $L$ is assigned a LKJ prior with $\eta$ degrees of freedom,  which, combined with priors on the standard deviations of each component, induces a prior on the covariance matrix; as $\eta \rightarrow \infty$ the magnitude of correlations between components decreases, whereas $\eta=1$ leads to a uniform prior distribution for $L$.  By default, the hyperparameters are $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\sigma_d=2.5, \eta=1$.  Different values can be chosen with the argument: `priors=list(mu_0=c(1,2), sigma_d = 4, eta = 2)`.
+ 
+We fit the model using `rjags` with 2000 MCMC iterations and default priors:
+
+
+```{r mcmc, message =  FALSE, warning = FALSE}
+res <- piv_MCMC(y = sim$y, k= k, nMC =nMC)
+```
+
+Once we obtain posterior estimates, label switching is likely to occurr. For such a reason, we need to relabel our chains as explained above. In order to relabel the chains, the function `piv_rel` can be used, which only needs the `mcmc = res` argument.  Relabelled outputs can be displayed through the function `piv_plot`, with different options for the argument `type`:
+
+- `chains`: plot the relabelled chains;
+- `hist`: plot the point estimates against the histogram of the data.
+
+The optional argument `par` takes four possible alternative choices: `mean`, `sd`, `weight` and `all` for the means, standard deviations, weights or all the three mentioned parameters, respectively. By default, `par="all"`.
+
+```{r pivotal_rel, fig.show='hold', fig.align='center',fig.width=7}
+rel <- piv_rel(mcmc=res)
+piv_plot(y = sim$y, mcmc = res, rel_est = rel, par = "mean", type = "chains")
+piv_plot(y = sim$y, mcmc = res, rel_est = rel, type = "hist")
+```
+
+
   
 ## Example: fishery data 
 
@@ -84,12 +168,10 @@ y_i \sim \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j, \phi^2_j), \ \ i=1,\ldots,n,
  \end{equation}
 where $\mu_j, \phi_j$ are the mean and the standard deviation of group $j$, respectively. Moreover, assume that $z_1,\ldots,z_n$ is an unobserved latent sequence of i.i.d. random variables following the multinomial distribution with weights  $\boldsymbol{\pi}=(\pi_{1},\dots,\pi_{k})$, such that:
 
-$$
-P(z_i=j)=\pi_j, 
-$$
+$$P(z_i=j)=\pi_j,$$
 where $\pi_j$ is the mixture weight assigned to the group $j$.
 
-We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$. If the argument ```software="rjags"``` is selected (the default option),  Gibbs sampling is performed by the package ```bayesmix```, and  the priors are:
+We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$. In the univariate case, if the argument ```software="rjags"``` is selected (the default option),  Gibbs sampling is performed by the package ```bayesmix```, and  the priors are:
 
 \begin{eqnarray}
 \mu_j \sim & \mathcal{N}(\mu_0, 1/B_0)\\
@@ -113,9 +195,6 @@ where the vector of the weights $\boldsymbol{\pi}=(\pi_1,\ldots,\pi_k)$ is a $k$
 We fit the model using the ```rjags``` method, and we set the burnin period to 7500. 
  
 ```{r fish_data}
-library(pivmet)
-data(fish)
-y <- fish[,1]
 k <- 5
 nMC <- 15000
 res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC,
@@ -147,86 +226,6 @@ cat(res$model)
 
 
 <!-- The results are shown in Figure~\ref{fish_chains_stan}. As may be noted from the first plot in the top row, Hamiltonian Monte Carlo (HMC) behind Stan seems definitely more suited to explore the five high-density regions without switching the group labels. However, group probabilities (third plot) and group standard deviations (second plot) overlap each other. The perfect MCMC sampler does not exist. -->
-
-## Example: bivariate Gaussian data
-
-Suppose now that $\boldsymbol{y}_i \in \mathbb{R}^2$ and assume that: 
-
-$$\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})$$
-where $\boldsymbol{\mu}_j$ is the mean vector for group $j$, $\boldsymbol{\Sigma}$ is a positive-definite covariance matrix and the mixture weight $\pi_j= P(z_i=j)$ as for the one-dimensional case.
-We may generate Gaussian mixture data through the function `piv_sim`, specifying the desired number of groups $k$. The argument `W` handles the weights for a nested mixture, in which each $j$-th component is in turn modelled as a two-component mixture, with covariance matrices $\boldsymbol{\Sigma}_{p1}, \boldsymbol{\Sigma}_{p2}$, respectively.
-
-
-```{r nested, fig.align ='center'}
-set.seed(50)
-N  <- 200
-k  <- 3
-nMC <- 2000
-M1 <- c(-10,8)
-M2 <- c(10,.1)
-M3 <- c(30,8)
-# matrix of input means
-Mu <- matrix(rbind(M1,M2,M3),c(k,2)) 
-sds    <- cbind(rep(1,k), rep(15,k))
-# covariance matrices for the two subgroups
-Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2),
-nrow=2, ncol=2)
-Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2),
-nrow=2, ncol=2)
-# subgroups' weights
-W   <- c(0.2,0.8)
-# simulate data
-sim <- piv_sim(N = N, k = k, Mu = Mu,
- Sigma.p1 = Sigma.p1, Sigma.p2 = Sigma.p2, W = W)
-```
-
-The function ```piv_MCMC``` requires only three mandatory arguments: data ```y```, number of components ```k``` and number of MCMC iterations ```nMC```. It performs Gibbs sampling using the  ```runjags``` package for bivariate data by default. If `software="rstan"`, it performs Hamiltonian Monte Carlo (HMC) sampling. If `software="rjags"`, the priors are specified as:
-
-
-\begin{align}
-\boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, S_2)\\
- 1/\Sigma \sim & \mbox{Wishart}(S_3, 3)\\
-\pi \sim & \mbox{Dirichlet}(\boldsymbol{\alpha}),
-\end{align}
-
-where  $\boldsymbol{\alpha}$ is a $k$-dimensional vector and $S_2$ and $S_3$ are positive definite matrices. By default, $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\boldsymbol{\alpha}=(1,\ldots,1)$ and $S_2$ and $S_3$ are diagonal matrices,
-with diagonal elements 
-equal to 1e+05. The user may specify other values for the hyperparameters
-$\boldsymbol{\mu}_0, S_2, S_3$ and $\boldsymbol{\alpha}$: `priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}`,
-with the constraint for $S2$ and $S3$ to be positive definite, and $\boldsymbol{\alpha}$ a vector of dimension $k$ with nonnegative elements.
-
-If `software="rstan"`, the priors are specified as:
-
-\begin{align}
- \boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, LDL^{T})\\
- L \sim & \mbox{LKJ}(\eta)\\
-D_{1,2} \sim & \mbox{HalfCauchy}(0, \sigma_d).
- \end{align}
-
-The covariance matrix is expressed in terms of the LDL decomposition as $LDL^{T}$,
-a variant of the classical Cholesky decomposition, where $L$ is a $2 \times 2$
-lower unit triangular matrix and $D$ is a $2 \times 2$ diagonal matrix.
- The Cholesky correlation factor $L$ is assigned a LKJ prior with $\eta$ degrees of freedom,  which, combined with priors on the standard deviations of each component, induces a prior on the covariance matrix; as $\eta \rightarrow \infty$ the magnitude of correlations between components decreases, whereas $\eta=1$ leads to a uniform prior distribution for $L$.  By default, the hyperparameters are $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\sigma_d=2.5, \eta=1$. The user may propose some different values with the argument: `priors=list(mu_0=c(1,2), sigma_d = 4, eta = 2)`.
- 
- We fit the model using `rjags` with 2000 MCMC iterations and default priors:
-
-
-```{r mcmc, message =  FALSE, warning = FALSE}
-res <- piv_MCMC(y = sim$y, k= k, nMC =nMC)
-```
-
-Once we obtain posterior estimates, label switching is likely to occurr. For such a reason, we need to relabel our chains as explained above. The function `piv_rel` performs our procedure, and for such task it only needs the `mcmc = res` argument. Once we correctly relabel the chains, we may plot the relabelled outputs through the function `piv_plot`, with different options for the argument `type`:
-
-- `chains`: plot the relabelled chains;
-- `hist`: plot the point estimates against the histogram of the data.
-
-The optional argument `par` takes four possible inputs: `mean`, `sd`, `weight` and `all` for the means, sds, weights or all the three mentioned parameters, respectively. By default, `par="all"`.
-
-```{r pivotal_rel, fig.show='hold', fig.align='center',fig.width=7}
-rel <- piv_rel(mcmc=res)
-piv_plot(y = sim$y, mcmc = res, rel_est = rel, par = "mean", type = "chains")
-piv_plot(y = sim$y, mcmc = res, rel_est = rel, type = "hist")
-```
 
 
 ## References

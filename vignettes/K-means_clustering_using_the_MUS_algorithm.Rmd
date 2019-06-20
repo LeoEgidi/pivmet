@@ -99,9 +99,9 @@ mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 
 
 
-## piv_KMeans
+## piv_KMeans: k-means clustering via pivotal units
 
-Quite often, classical K-means fails in recognizing the *true* groups:
+In some situations, classical K-means fails in recognizing the *true* groups:
 
 ```{r kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
  kmeans_res <- KMeans(x, centers)
@@ -128,7 +128,7 @@ graphics::plot(x, col = colors_cluster[kmeans_res$cluster],
 ```
 
 
-In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm [@kmeans]. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments
+For instance, when the groups are unbalanced or non-spherical shaped, we may need a more robust version of the classical K-means. The pivotal units may be used as initial seeds for K-means method [@kmeans]. The function `piv_KMeans` works as the `kmeans` function, with some optional arguments
 
 ```{r musk, fig.show='hold'}
 piv_res <- piv_KMeans(x, centers)
