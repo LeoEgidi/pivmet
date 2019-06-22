@@ -51,7 +51,7 @@ A list with components
 \item{\code{betwennss}}{The between-cluster sum of squared distances.}
 \item{\code{size}}{ The number of points in each cluster.}
 \item{\code{iter}}{The number of (outer) iterations.}
-\item{\code{ifault}}{integer: indicator of a possible algorithm problem – for experts.}
+\item{\code{ifault}}{integer: indicator of a possible algorithm problem (for experts).}
 }
 \description{
 Perform classical k-means clustering on a data matrix using pivots as
