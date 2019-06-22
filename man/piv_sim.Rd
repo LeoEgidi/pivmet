@@ -19,6 +19,7 @@ means' coordinates for bivariate Gaussian mixtures.}
 
 \item{stdev}{For univariate mixtures, the  \eqn{k \times 2} matrix
 of input standard deviations,
+where the first column contains the parameters for subgroup 1,
 and the second column contains the parameters for subgroup 2.}
 
 \item{Sigma.p1}{The \eqn{2 \times 2} covariance matrix for the first subgroup. For bivariate mixtures only.}
