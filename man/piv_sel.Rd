@@ -11,7 +11,7 @@ piv_sel(C, clusters)
 a matrix whose elements are co-occurrences of pair of units
 in the same cluster among \eqn{H} distinct partitions.}
 
-\item{clusters}{A vector of integers indicating
+\item{clusters}{A vector of integers from \eqn{1:k} indicating
 a partition of the \eqn{N} units into, say, \eqn{k} groups.}
 }
 \value{

@@ -177,7 +177,7 @@ The function `piv_KMeans` has optional arguments:
 
 - `num.seeds`: If `alg.type` is `"KMeans"`, the number of different starting random seeds to be passed to `KMeans()`. Default is 10.
 
-- `prec.par`: with this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ 10, \underset{j}{\min}n_j \}$, where $n_j$ is the number of units belonging to the group $j, \ j=1,\ldots,k$.
+- `prec_par`: with this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ 10, \underset{j}{\min}n_j \}$, where $n_j$ is the number of units belonging to the group $j, \ j=1,\ldots,k$.
 
 
 

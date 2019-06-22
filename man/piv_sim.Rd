@@ -29,8 +29,8 @@ and the second column contains the parameters for subgroup 2.}
 \item{W}{The vector for the mixture weights of the two subgroups.}
 }
 \value{
-\item{\code{y}}{The \code{N} simulated observations.}
-\item{\code{true.group}}{A vector of integers from \code{1:k}
+\item{\code{y}}{The \eqn{N} simulated observations.}
+\item{\code{true.group}}{A vector of integers from \eqn{1:k}
 indicating the values of the latent variables \eqn{Z_i}.}
 \item{\code{subgroups}}{A \eqn{k \times N} matrix where
 each row contains the index subgroup for the observations
