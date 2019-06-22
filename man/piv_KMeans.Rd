@@ -68,6 +68,53 @@ function of the \code{RcmdrMisc} package)
 with a fixed number of clusters
 in order to build the co-association matrix of data units.
 }
+\examples{
+
+# Data generated from a mixture of three bivariate Gaussian distributions
+
+\dontrun{
+N  <- 620
+k  <- 3
+n1 <- 20
+n2 <- 100
+n3 <- 500
+x  <- matrix(NA, N,2)
+truegroup <- c( rep(1,n1), rep(2, n2), rep(3, n3))
+
+ x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
+ x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
+ x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3, c(6,6), sigma=diag(2))
+
+# Apply piv_KMeans with MUS as pivotal criterion
+
+res <- piv_KMeans(x, k)
+
+# Apply piv_KMeans with maxsumdiff as pivotal criterion
+
+res2 <- piv_KMeans(x, k, piv.criterion ="maxsumdiff")
+
+# Plot the data and the clustering solution
+
+par(mfrow=c(1,2), pty="s")
+colors_cluster <- c("grey", "darkolivegreen3", "coral")
+colors_centers <- c("black", "darkgreen", "firebrick")
+graphics::plot(x, col = colors_cluster[truegroup],
+   bg= colors_cluster[truegroup], pch=21, xlab="x[,1]",
+   ylab="x[,2]", cex.lab=1.5,
+   main="True data", cex.main=1.5)
+
+graphics::plot(x, col = colors_cluster[res$cluster],
+   bg=colors_cluster[res$cluster], pch=21, xlab="x[,1]",
+   ylab="x[,2]", cex.lab=1.5,
+   main="piv_KMeans", cex.main=1.5)
+points(x[res$pivots, 1], x[res$pivots, 2],
+      pch=24, col=colors_centers,bg=colors_centers,
+      cex=1.5)
+points(res$centers, col = colors_centers[1:k],
+   pch = 8, cex = 2)
+}
+
+}
 \references{
 Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
 K-means seeding via MUS algorithm. Conference Paper,

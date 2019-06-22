@@ -5,7 +5,7 @@
 * Fix the case k=2 with piv_KMeans
 * piv_KMeans faster
 * Fix some bugs of the MUS algorithm
-* Add the \code{tol} argument in MUS function.
+* Efficient mixtures with rstan
 
 # pivmet 0.1.1
 
