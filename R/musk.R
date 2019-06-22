@@ -63,9 +63,10 @@
 #'K-means seeding via MUS algorithm. Conference Paper,
 #'Book of Short Papers, SIS2018, ISBN: 9788891910233.
 #'
-#'@examples
+#' @examples
 #'
 #' # Data generated from a mixture of three bivariate Gaussian distributions
+#'
 #'\dontrun{
 #'N  <- 620
 #'k  <- 3
@@ -107,7 +108,7 @@
 #'       cex=1.5)
 #'points(res$centers, col = colors_centers[1:k],
 #'    pch = 8, cex = 2)
-#'    }
+#'}
 #'
 #'@export
 
