@@ -45,3 +45,20 @@ hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
              col="navajowhite1", border="navajowhite1")
  lines(density(y), lty=1, lwd=3, col="blue")
 
+## ----fish_data-----------------------------------------------------------
+k <- 5
+nMC <- 15000
+res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC,
+software = "rjags")
+
+## ----true_iter-----------------------------------------------------------
+res$true.iter
+
+## ----fish_rel, fig.align= 'center', fig.width=7--------------------------
+rel <- piv_rel(mcmc=res)
+piv_plot(y=y, res, rel, par = "mean", type="chains")
+piv_plot(y=y, res, rel, type="hist")
+
+## ----model_code----------------------------------------------------------
+cat(res$model)
+
