@@ -50,7 +50,7 @@
 #'\item{\code{betwennss}}{The between-cluster sum of squared distances.}
 #'\item{\code{size}}{ The number of points in each cluster.}
 #'\item{\code{iter}}{The number of (outer) iterations.}
-#'\item{\code{ifault}}{integer: indicator of a possible algorithm problem – for experts.}
+#'\item{\code{ifault}}{integer: indicator of a possible algorithm problem (for experts).}
 #'
 #'
 #'
@@ -108,6 +108,8 @@
 #'points(res$centers, col = colors_centers[1:k],
 #'    pch = 8, cex = 2)
 #'    }
+#'
+#'@export
 
 
 
