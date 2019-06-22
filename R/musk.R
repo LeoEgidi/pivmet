@@ -78,7 +78,6 @@
 #'
 #'  x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
 #'  x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
-#'for (i in 1:n3){
 #'  x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3, c(6,6), sigma=diag(2))
 #'
 #' # Apply piv_KMeans with MUS as pivotal criterion
