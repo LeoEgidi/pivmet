@@ -38,7 +38,7 @@
 #' With the argument \code{prec_par} the user may increase
 #' the powerful of the underlying MUS algorithm (see @egidi2018mus for details).
 #' Given the default value 10, the function internally computes an
-#' effective \code{prec_par} as \eqn{\min\{ 10, \underset{j}{\min}n_j \}},
+#' effective \code{prec_par} as \eqn{\min( 10, \min n_j )},
 #' where \eqn{n_j} is the number of units belonging to the group
 #' \eqn{j, \ j=1,\ldots,k}.
 #'
