@@ -39,5 +39,5 @@ piv_plot(y, res, rel, "hist")
 
 }
 \author{
-Leonardo Egidi \url{legidi@units.it}
+Leonardo Egidi \email{legidi@units.it}
 }

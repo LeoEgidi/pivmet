@@ -109,5 +109,5 @@ Theoretical and Applied Statistics,
 Springer Proceedings in Mathematics and Statistics 227, pp. 71–81.
 }
 \author{
-Leonardo Egidi \url{legidi@units.it}, Roberta Pappadà
+Leonardo Egidi \email{legidi@units.it}, Roberta Pappadà
 }

@@ -121,5 +121,5 @@ K-means seeding via MUS algorithm. Conference Paper,
 Book of Short Papers, SIS2018, ISBN: 9788891910233.
 }
 \author{
-Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
+Leonardo Egidi \email{legidi@units.it}, Roberta Pappada
 }

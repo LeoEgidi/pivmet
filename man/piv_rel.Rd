@@ -139,5 +139,5 @@ Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesi
 Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 }
 \author{
-Leonardo Egidi \url{legidi@units.it}
+Leonardo Egidi \email{legidi@units.it}
 }
