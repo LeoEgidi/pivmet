@@ -186,7 +186,7 @@
 #' \item{\code{pivots}}{The vector of indices of pivotal units identified by the selected pivotal criterion.}
 #' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{"cat"} function for a nice visualization of the code.}
 #'
-#' @author Leonardo Egidi \url{legidi@units.it}
+#' @author Leonardo Egidi \email{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 #'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples

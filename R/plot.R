@@ -25,7 +25,7 @@
 #'
 #' @author
 #'
-#' Leonardo Egidi \url{legidi@units.it}
+#' Leonardo Egidi \email{legidi@units.it}
 #'
 #' @export
 

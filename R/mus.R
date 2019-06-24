@@ -47,7 +47,7 @@
 #' \item{\code{pivots}}{ A vector of integers in 1:N denoting the indeces of the \code{k} selcted pivotal units.}
 #' \item{\code{prec_par}}{The effective number of alternative pivots considered for each group. See Details.}
 #'
-#' @author Leonardo Egidi \url{legidi@units.it}, Roberta Pappadà
+#' @author Leonardo Egidi \email{legidi@units.it}, Roberta Pappadà
 #' @references Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
 #'  Maxima Units Search(MUS) algorithm:
 #' methodology and applications. In: Perna, C. , Pratesi, M., Ruiz-Gazen A. (eds.) Studies in

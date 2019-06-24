@@ -83,7 +83,7 @@
 #' or a \code{final_it} \eqn{\times 2} matrix for bivariate data.}
 #' \item{\code{rel_weight}}{The relabelled chains of the weights: a \code{final_it} \eqn{\times k} matrix.}
 #'
-#' @author Leonardo Egidi \url{legidi@units.it}
+#' @author Leonardo Egidi \email{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
 #'Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 #' @examples

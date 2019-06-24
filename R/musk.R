@@ -56,7 +56,7 @@
 #'
 #'
 #'
-#'@author Leonardo Egidi \url{legidi@units.it}, Roberta Pappada
+#'@author Leonardo Egidi \email{legidi@units.it}, Roberta Pappada
 #'@references
 #'
 #'Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018).
