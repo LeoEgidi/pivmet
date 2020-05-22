@@ -21,9 +21,11 @@ Encoding: UTF-8
 LazyData: true
 LazyLoad: yes
 SystemRequirements: pandoc (>= 1.12.3), pandoc-citeproc
-Depends:  bayesmix, rjags, mvtnorm, RcmdrMisc
-Imports:  cluster, mclust, MASS, corpcor, runjags, rstan    
+Depends: R
+Imports: cluster, mclust, MASS, 
+          corpcor, runjags, rstan, bayesmix, 
+          rjags, mvtnorm, RcmdrMisc
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 BuildManual: yes
