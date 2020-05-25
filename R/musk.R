@@ -114,7 +114,7 @@
 
 
 piv_KMeans <- function (x, centers,
-                        alg.type = "KMeans",
+                        alg.type = c("KMeans", "hclust"),
                         method = "average",
                         piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
                         H = 1000,
@@ -134,30 +134,17 @@ piv_KMeans <- function (x, centers,
 
   # type
   list_type <- c("KMeans", "hclust")
-  if (sum(alg.type!=list_type)==2){
-    stop(paste("object ", "'", alg.type,"'", " not found.
-    Please select one among the following algorithms:
-    KMeans, hclust", sep=""))
-  }
+  alg.type <- match.arg(alg.type, list_type)
 
   # method
   list_method <- c("single",  "complete", "average", "ward.D", "ward.D2", "mcquitty", "median",
                  "centroid")
-  if (sum(method!=list_method)==8){
-    stop(paste("object ", "'", method,"'", " not found.
-    Please select one among the following methods for hclust:
-    single,  complete, average, ward.D, ward.D2,
-    mcquitty, median, centroid", sep=""))
-  }
+  method <- match.arg(method, list_method)
 
 
   # piv.criterion
   list_crit <- c("MUS", "maxsumint", "minsumnoint", "maxsumdiff")
-  if (sum(piv.criterion!=list_crit)==4){
-    stop(paste("object ", "'", piv.criterion,"'", " not found.
-    Please select one among the following pivotal
-    criteria: MUS, maxsumint, minsumnoint, maxsumdiff", sep=""))
-  }
+  piv.criterion <- match.arg(piv.criterion, list_crit)
 
   ###
 

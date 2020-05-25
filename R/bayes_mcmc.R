@@ -2,7 +2,7 @@
 #'
 #' Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y \eqn{N}-dimensional vector for univariate data or
-#' \eqn{N \times 2} matrix for bivariate data.
+#' \eqn{N \times D} matrix for bivariate data.
 #' @param k Number of mixture components.
 #' @param nMC Number of MCMC iterations for the JAGS/Stan function execution.
 #' @param priors Input prior hyperparameters (see Details for default options).
@@ -252,9 +252,9 @@ piv_MCMC <- function(y,
                      k,
                      nMC,
                      priors,
-                     piv.criterion = "maxsumdiff",
-                     clustering = "diana",
-                     software = "rjags",
+                     piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
+                     clustering = c("diana", "hclust"),
+                     software = c("rjags", "rstan"),
                      burn =0.5*nMC,
                      chains = 4,
                      cores = 1){
@@ -263,29 +263,17 @@ piv_MCMC <- function(y,
 
   # piv.criterion
   list_crit <- c("MUS", "maxsumint", "minsumnoint", "maxsumdiff")
-  if (sum(piv.criterion!=list_crit)==4){
-    stop(paste("object ", "'", piv.criterion,"'", " not found.
-    Please select one among the following pivotal
-    criteria: MUS, maxsumint, minsumnoint, maxsumdiff", sep=""))
-  }
+  piv.criterion <- match.arg(piv.criterion, list_crit)
 
   # clustering
 
   list_clust <- c("diana", "hclust")
-  if (sum(clustering!=list_clust)==2){
-    stop(paste("object ", "'", clustering,"'", " not found.
-    Please select one among the following
-    clustering methods: diana, hclust", sep=""))
-  }
+  clustering <- match.arg(clustering, lista_clust)
 
   # software
 
   list_soft <- c("rjags", "rstan")
-  if (sum(software!=list_soft)==2){
-    stop(paste("object ", "'", software,"'", " not found.
-    Please select one among the following
-    softwares: rjags, rstan", sep=""))
-  }
+  software <- match.arg(software, lista_soft)
 
   # burn-in
 
@@ -293,7 +281,6 @@ piv_MCMC <- function(y,
     stop("Please, 'burn' argument has to be minor than
          the number of MCMC iterations!", sep="")
   }
-
 
 
   ###
@@ -609,6 +596,7 @@ piv_MCMC <- function(y,
 
   }else if (is.matrix(y)){
     N <- dim(y)[1]
+    D <- dim(y)[2]
     # Parameters' initialization
     clust_inits <- KMeans(y, k)$cluster
     #cutree(hclust(dist(y), "average"),k)
@@ -654,7 +642,7 @@ piv_MCMC <- function(y,
       }
 
       # Data
-      dati.biv <- list(y = y, N = N, k = k,
+      dati.biv <- list(y = y, N = N, k = k, D = D,
                        S2= S2, S3= S3, mu_0=mu_0,
                        alpha = alpha)
 
@@ -663,17 +651,17 @@ piv_MCMC <- function(y,
     # Likelihood:
 
     for (i in 1:N){
-      yprev[i,1:2]<-y[i,1:2]
-      y[i,1:2] ~ dmnorm(muOfClust[clust[i],],tauOfClust)
+      yprev[i,1:D]<-y[i,1:D]
+      y[i,1:D] ~ dmnorm(muOfClust[clust[i],],tauOfClust)
       clust[i] ~ dcat(pClust[1:k] )
     }
 
     # Prior:
 
     for (g in 1:k) {
-      muOfClust[g,1:2] ~ dmnorm(mu_0[],S2[,])}
-      tauOfClust[1:2,1:2] ~ dwish(S3[,],3)
-      Sigma[1:2,1:2] <- inverse(tauOfClust[,])
+      muOfClust[g,1:D] ~ dmnorm(mu_0[],S2[,])}
+      tauOfClust[1:D,1:D] ~ dwish(S3[,],3)
+      Sigma[1:D,1:D] <- inverse(tauOfClust[,])
       pClust[1:k] ~ ddirch(alpha)
   }"
 
@@ -769,7 +757,7 @@ piv_MCMC <- function(y,
           sigma_d <- priors$sigma_d
         }
       }
-      data =list(N=N, k=k, y=y, D=2, mu_0=mu_0,
+      data =list(N=N, k=k, y=y, D=D, mu_0=mu_0,
                  eta = eta, sigma_d = sigma_d)
       mix_biv <- "
         data {
@@ -843,7 +831,7 @@ piv_MCMC <- function(y,
       prob.st <- sims_biv$theta
       M <- nrow(group)
 
-      mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
+      mu_pre_switch_compl <- array(rep(0, M*D*k), dim=c(M,D,k))
       for (i in 1:M)
         mu_pre_switch_compl[i,,] <- t(sims_biv$mu[i,,])
       # Discard iterations
@@ -856,7 +844,7 @@ piv_MCMC <- function(y,
         #return(1)
       }else{
 
-        mu_pre_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+        mu_pre_switch <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
         for (i in 1:true.iter)
           mu_pre_switch[i,,] <- t(sm[i,,])
       }
@@ -892,7 +880,7 @@ piv_MCMC <- function(y,
     if (cont > 1){
       k <- cont
     }
-    mu_switch  <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+    mu_switch  <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
     prob.st_switch <-  array(0, dim=c(true.iter,k))
     group <- group*0
     z <- array(0,dim=c(N, k, true.iter))
