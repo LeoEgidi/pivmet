@@ -268,12 +268,12 @@ piv_MCMC <- function(y,
   # clustering
 
   list_clust <- c("diana", "hclust")
-  clustering <- match.arg(clustering, lista_clust)
+  clustering <- match.arg(clustering, list_clust)
 
   # software
 
   list_soft <- c("rjags", "rstan")
-  software <- match.arg(software, lista_soft)
+  software <- match.arg(software, list_soft)
 
   # burn-in
 

@@ -48,7 +48,7 @@ piv_plot <- function(y,
 
   # par
   list_par <- c("mean", "sd", "weight", "all")
-  par <- match.arg(par, lista_par)
+  par <- match.arg(par, list_par)
 
   # type
   list_type <- c("chains", "hist")
