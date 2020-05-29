@@ -105,7 +105,7 @@ mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 In some situations, classical K-means fails in recognizing the *true* groups:
 
 ```{r kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
- kmeans_res <- KMeans(x, centers)
+ kmeans_res <- RcmdrMisc::KMeans(x, centers)
 ```
 
 

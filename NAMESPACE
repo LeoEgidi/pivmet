@@ -8,7 +8,7 @@ export(MUS)
 export(piv_KMeans)
 import(rjags)
 importFrom(bayesmix, BMMmodel, BMMpriors, priorsFish,
-           JAGScontrol, JAGSrun)
+           JAGScontrol, JAGSrun, fish)
 importFrom(mvtnorm, rmvnorm)
 #import(rstan)
 importFrom(rstan,
