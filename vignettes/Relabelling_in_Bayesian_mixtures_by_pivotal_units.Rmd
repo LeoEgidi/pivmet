@@ -129,7 +129,8 @@ We fit the model using `rjags` with 2000 MCMC iterations and default priors:
 
 
 ```{r mcmc, message =  FALSE, warning = FALSE}
-res <- piv_MCMC(y = sim$y, k= k, nMC =nMC)
+res <- piv_MCMC(y = sim$y, k= k, nMC =nMC, 
+                piv.criterion = "maxsumdiff")
 ```
 
 Once we obtain posterior estimates, label switching is likely to occurr. For such a reason, we need to relabel our chains as explained above. In order to relabel the chains, the function `piv_rel` can be used, which only needs the `mcmc = res` argument.  Relabelled outputs can be displayed through the function `piv_plot`, with different options for the argument `type`:
