@@ -21,6 +21,7 @@ In this vignette we explore the K-means algorithm performed using the MUS algori
 
 ```{r load, warning =FALSE, message=FALSE}
 library(pivmet)
+library(mvtnorm)
 ```
 
 
