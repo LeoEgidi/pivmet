@@ -341,9 +341,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-10" title="10">truegroup &lt;-<span class="st"> </span><span class="kw">c</span>( <span class="kw">rep</span>(<span class="dv">1</span>,n1), <span class="kw">rep</span>(<span class="dv">2</span>, n2), <span class="kw">rep</span>(<span class="dv">3</span>, n3))</a>
 <a class="sourceLine" id="cb2-11" title="11"></a>
 <a class="sourceLine" id="cb2-12" title="12"></a>
-<a class="sourceLine" id="cb2-13" title="13">x[<span class="dv">1</span><span class="op">:</span>n1,]=<span class="kw">rmvnorm</span>(n1, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>), <span class="dt">sigma=</span><span class="kw">diag</span>(<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb2-14" title="14">x[(n1<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>(n1<span class="op">+</span>n2),]=<span class="kw">rmvnorm</span>(n2, <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">0</span>), <span class="dt">sigma=</span><span class="kw">diag</span>(<span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb2-15" title="15">x[(n1<span class="op">+</span>n2<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>(n1<span class="op">+</span>n2<span class="op">+</span>n3),]=<span class="kw">rmvnorm</span>(n3,<span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">6</span>),<span class="dt">sigma=</span><span class="kw">diag</span>(<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb2-13" title="13">x[<span class="dv">1</span><span class="op">:</span>n1,] &lt;-<span class="st"> </span><span class="kw">rmvnorm</span>(n1, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>), <span class="dt">sigma=</span><span class="kw">diag</span>(<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb2-14" title="14">x[(n1<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>(n1<span class="op">+</span>n2),] &lt;-<span class="st"> </span><span class="kw">rmvnorm</span>(n2, <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">0</span>), <span class="dt">sigma=</span><span class="kw">diag</span>(<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb2-15" title="15">x[(n1<span class="op">+</span>n2<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>(n1<span class="op">+</span>n2<span class="op">+</span>n3),] &lt;-<span class="st"> </span><span class="kw">rmvnorm</span>(n3,<span class="kw">c</span>(<span class="dv">6</span>,<span class="dv">6</span>),<span class="dt">sigma=</span><span class="kw">diag</span>(<span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb2-16" title="16"></a>
 <a class="sourceLine" id="cb2-17" title="17">H &lt;-<span class="st"> </span><span class="dv">1000</span></a>
 <a class="sourceLine" id="cb2-18" title="18">a &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, H, n)</a>
@@ -361,7 +361,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-30" title="30">    }</a>
 <a class="sourceLine" id="cb2-31" title="31">  }</a>
 <a class="sourceLine" id="cb2-32" title="32"></a>
-<a class="sourceLine" id="cb2-33" title="33">cl &lt;-<span class="st"> </span><span class="kw">KMeans</span>(x, centers)<span class="op">$</span>cluster</a>
+<a class="sourceLine" id="cb2-33" title="33">cl &lt;-<span class="st"> </span>RcmdrMisc<span class="op">::</span><span class="kw">KMeans</span>(x, centers)<span class="op">$</span>cluster</a>
 <a class="sourceLine" id="cb2-34" title="34">mus_alg &lt;-<span class="st"> </span><span class="kw">MUS</span>(<span class="dt">C =</span> sim_matr, <span class="dt">clusters =</span> cl, <span class="dt">prec_par =</span> <span class="dv">5</span>)</a></code></pre></div>
 </div>
 <div id="piv_kmeans-k-means-clustering-via-pivotal-units" class="section level2">
