@@ -9,14 +9,14 @@
 #' @param N The desired sample size.
 #' @param k The desired number of mixture components.
 #' @param Mu The input mean vector of length \eqn{k} for univariate
-#' Gaussian mixtures; the input \eqn{k \times 2} matrix with the
-#' means' coordinates for bivariate Gaussian mixtures.
+#' Gaussian mixtures; the input \eqn{k \times D} matrix with the
+#' means' coordinates for multivariate Gaussian mixtures.
 #' @param stdev For univariate mixtures, the  \eqn{k \times 2} matrix
 #' of input standard deviations,
 #' where the first column contains the parameters for subgroup 1,
 #' and the second column contains the parameters for subgroup 2.
-#' @param Sigma.p1 The \eqn{2 \times 2} covariance matrix for the first subgroup. For bivariate mixtures only.
-#' @param Sigma.p2 The \eqn{2 \times 2} covariance matrix for the second subgroup. For bivariate mixtures only.
+#' @param Sigma.p1 The \eqn{D \times D} covariance matrix for the first subgroup. For multivariate mixtures only.
+#' @param Sigma.p2 The \eqn{D \times D} covariance matrix for the second subgroup. For multivariate mixtures only.
 #' @param W The vector for the mixture weights of the two subgroups.
 #' @return
 #'
@@ -36,10 +36,10 @@
 #' (Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}(\mu_{j}, \sigma^{2}_{js}),
 #' }
 #'
-#' or from a bivariate nested Gaussian mixture:
+#' or from a multivariate nested Gaussian mixture:
 #'
 #' \deqn{
-#' (Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}),
+#' (Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{D}(\bm{\mu}_{j}, \Sigma_{s}),
 #' }
 #'
 #' where \eqn{\sigma^{2}_{js}} is the variance for the group \eqn{j} and
@@ -60,15 +60,16 @@
 #'
 #' N  <- 2000
 #' k  <- 3
+#' D <- 2
 #' M1 <- c(-45,8)
 #' M2 <- c(45,.1)
 #' M3 <- c(100,8)
-#' Mu <- matrix(rbind(M1,M2,M3),c(k,2))
+#' Mu <- matrix(rbind(M1,M2,M3),c(k,D))
 #' sds <- cbind(rep(1,k), rep(20,k))
 #' Sigma.p1 <- matrix(c( sds[1,1]^2, 0,0,
-#'                       sds[1,1]^2), nrow=2, ncol=2)
+#'                       sds[1,1]^2), nrow=D, ncol=D)
 #' Sigma.p2 <- matrix(c(sds[1,2]^2, 0,0,
-#'                       sds[1,2]^2), nrow=2, ncol=2)
+#'                       sds[1,2]^2), nrow=D, ncol=D)
 #' W   <- c(0.2,0.8)
 #' sim <- piv_sim(N = N, k = k, Mu = Mu, Sigma.p1 = Sigma.p1,
 #' Sigma.p2 = Sigma.p2, W = W)
@@ -80,8 +81,8 @@ piv_sim <- function(N,
                     k,
                     Mu,
                     stdev,
-                    Sigma.p1 = matrix(c(1,0,0,1),2,2, byrow = TRUE),
-                    Sigma.p2 = matrix(c(100,0,0,100),2,2, byrow = TRUE),
+                    Sigma.p1 = diag(2),
+                    Sigma.p2 = 100*diag(2),
                     W = c(0.5, 0.5)){
   # Generation---------------
 
@@ -161,9 +162,13 @@ piv_sim <- function(N,
 
   }else{
 
-
+    D <- dim(Mu)[2]
+    if (dim(Sigma.p1)[2] + dim(Sigma.p2)[2] != 2*D ){
+      stop("The number of dimensions in the covariance
+           matrices is not well posed")
+    }
     true.group <- sample(1:k,N,replace=TRUE,prob=rep(1/k,k))
-    Spike <- array(c(Sigma.p1,Sigma.p2), dim=c(2,2,2))
+    Spike <- array(c(Sigma.p1,Sigma.p2), dim=c(D,D,2))
     # Probability matrix of subgroups
     matrixpi <- matrix(rep(W,k), nrow=k, ncol=2, byrow = T)
     sotto.gruppi <- matrix(0, nrow=k, ncol=N)
@@ -174,7 +179,7 @@ piv_sim <- function(N,
   }
 
   # Simulation of N units from a mixture of mixtures
-  y <- matrix(NA,nrow=N,ncol=2)
+  y <- matrix(NA,nrow=N,ncol=D)
 
   for (i in 1:length(true.group)){
     y[i,] <- mvrnorm(1, Mu[true.group[i],],

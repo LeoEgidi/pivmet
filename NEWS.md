@@ -1,3 +1,10 @@
+# pivmet 0.3.0
+
+* drop package dependencies
+* multivariate mixtures (piv_sim, piv_mcmc, piv_rel, piv_plot)
+* stan divergences
+*
+
 # pivmet 0.2.0
 
 * rstan now incorporated to fit mixtures

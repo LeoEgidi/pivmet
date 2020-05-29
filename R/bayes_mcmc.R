@@ -263,6 +263,9 @@ piv_MCMC <- function(y,
   #### checks
 
   # piv.criterion
+  if (missing(piv.criterion)){
+    piv.criterion <- "maxsumdiff"
+  }
   list_crit <- c("MUS", "maxsumint", "minsumnoint", "maxsumdiff")
   piv.criterion <- match.arg(piv.criterion, list_crit)
 
@@ -601,10 +604,11 @@ piv_MCMC <- function(y,
     # Parameters' initialization
     clust_inits <- KMeans(y, k)$cluster
     #cutree(hclust(dist(y), "average"),k)
-    mu_inits <- matrix(0,k,2)
+    mu_inits <- matrix(0,k,D)
     for (j in 1:k){
-      mu_inits[j,] <- cbind(mean(y[clust_inits==j,1]), mean(y[clust_inits==j,2]))
-    }
+      for (d in 1:D){
+      mu_inits[j, d] <- mean(y[clust_inits==j,d])
+    }}
     #Reorder mu_inits according to the x-coordinate
     mu_inits <-
       mu_inits[sort(mu_inits[,1], decreasing=FALSE, index.return=TRUE)$ix,]
@@ -615,23 +619,23 @@ piv_MCMC <- function(y,
 
       # Initial values
       if (missing(priors)){
-        mu_0 <- as.vector(c(0,0))
-        S2 <- matrix(c(1,0,0,1),nrow=2)/100000
-        S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+        mu_0 <- rep(0, D)
+        S2 <- diag(D)/100000
+        S3 <- diag(D)/100000
         alpha <- rep(1,k)
       }else{
         if (is.null(priors$mu_0)){
-          mu_0 <- as.vector(c(0,0))
+          mu_0 <- rep(0, D)
         }else{
           mu_0 <- priors$mu_0
         }
         if (is.null(priors$S2)){
-          S2 <- matrix(c(1,0,0,1),nrow=2)/100000
+          S2 <- diag(D)/100000
         }else{
           S2 <- priors$S2
         }
         if (is.null(priors$S3)){
-          S3 <- matrix(c(1,0,0,1),nrow=2)/100000
+          S3 <- diag(D)/100000
         }else{
           S3 <- priors$S3
         }
@@ -697,7 +701,7 @@ piv_MCMC <- function(y,
       M <- nrow(group)
       H <- list()
 
-      mu_pre_switch_compl <- array(rep(0, M*2*k), dim=c(M,2,k))
+      mu_pre_switch_compl <- array(rep(0, M*D*k), dim=c(M,D,k))
       for (i in 1:k){
         H[[i]] <- ris[-(1:burn),grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
       }
@@ -714,7 +718,7 @@ piv_MCMC <- function(y,
         #return(1)
       }else{
         L<-list()
-        mu_pre_switch <- array(rep(0, true.iter*2*k), dim=c(true.iter,2,k))
+        mu_pre_switch <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
         for (i in 1:k){
           L[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
         }
@@ -738,12 +742,12 @@ piv_MCMC <- function(y,
 
     }else if(software=="rstan"){
       if (missing(priors)){
-        mu_0 <- c(0,0)
+        mu_0 <- rep(0, D)
         eta <- 1
         sigma_d <- 2.5
       }else{
         if (is.null(priors$mu_0)){
-          mu_0 <- c(0,0)
+          mu_0 <- rep(0, D)
         }else{
           mu_0 <- priors$mu_0
         }
