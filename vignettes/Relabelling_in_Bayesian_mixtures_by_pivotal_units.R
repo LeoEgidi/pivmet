@@ -6,6 +6,7 @@ knitr::opts_chunk$set(
 
 ## ----load, warning =FALSE, message = FALSE-------------------------------
 library(pivmet)
+library(bayesmix)
 
 ## ----nested, fig.align ='center'-----------------------------------------
 set.seed(50)
@@ -53,12 +54,4 @@ software = "rjags")
 
 ## ----true_iter-----------------------------------------------------------
 res$true.iter
-
-## ----fish_rel, fig.align= 'center', fig.width=7--------------------------
-rel <- piv_rel(mcmc=res)
-piv_plot(y=y, res, rel, par = "mean", type="chains")
-piv_plot(y=y, res, rel, type="hist")
-
-## ----model_code----------------------------------------------------------
-cat(res$model)
 

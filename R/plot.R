@@ -42,10 +42,11 @@ piv_plot <- function(y,
   ### checks
 
   # data dimension
-
+ if (!is.null(dim(y))){
   if (dim(y)[2]>2){
     stop("No plots available for D>2!")
   }
+ }
 
   # par
   list_par <- c("mean", "sd", "weight", "all")

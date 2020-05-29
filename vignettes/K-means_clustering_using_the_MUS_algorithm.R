@@ -47,7 +47,7 @@ mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 
 
 ## ----kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE----
- kmeans_res <- KMeans(x, centers)
+ kmeans_res <- RcmdrMisc::KMeans(x, centers)
 
 ## ----kmeans_plots, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE----
 
