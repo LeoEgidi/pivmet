@@ -4,8 +4,7 @@
 \alias{piv_sim}
 \title{Generate Data from a Gaussian Nested Mixture}
 \usage{
-piv_sim(N, k, Mu, stdev, Sigma.p1 = matrix(c(1, 0, 0, 1), 2, 2, byrow =
-  TRUE), Sigma.p2 = matrix(c(100, 0, 0, 100), 2, 2, byrow = TRUE),
+piv_sim(N, k, Mu, stdev, Sigma.p1 = diag(2), Sigma.p2 = 100 * diag(2),
   W = c(0.5, 0.5))
 }
 \arguments{
@@ -14,17 +13,17 @@ piv_sim(N, k, Mu, stdev, Sigma.p1 = matrix(c(1, 0, 0, 1), 2, 2, byrow =
 \item{k}{The desired number of mixture components.}
 
 \item{Mu}{The input mean vector of length \eqn{k} for univariate
-Gaussian mixtures; the input \eqn{k \times 2} matrix with the
-means' coordinates for bivariate Gaussian mixtures.}
+Gaussian mixtures; the input \eqn{k \times D} matrix with the
+means' coordinates for multivariate Gaussian mixtures.}
 
 \item{stdev}{For univariate mixtures, the  \eqn{k \times 2} matrix
 of input standard deviations,
 where the first column contains the parameters for subgroup 1,
 and the second column contains the parameters for subgroup 2.}
 
-\item{Sigma.p1}{The \eqn{2 \times 2} covariance matrix for the first subgroup. For bivariate mixtures only.}
+\item{Sigma.p1}{The \eqn{D \times D} covariance matrix for the first subgroup. For multivariate mixtures only.}
 
-\item{Sigma.p2}{The \eqn{2 \times 2} covariance matrix for the second subgroup. For bivariate mixtures only.}
+\item{Sigma.p2}{The \eqn{D \times D} covariance matrix for the second subgroup. For multivariate mixtures only.}
 
 \item{W}{The vector for the mixture weights of the two subgroups.}
 }
@@ -50,10 +49,10 @@ Gaussian mixture:
 (Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}(\mu_{j}, \sigma^{2}_{js}),
 }
 
-or from a bivariate nested Gaussian mixture:
+or from a multivariate nested Gaussian mixture:
 
 \deqn{
-(Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{2}(\bm{\mu}_{j}, \Sigma_{s}),
+(Y_i|Z_i=j) \sim \sum_{s=1}^{2} p_{js}\, \mathcal{N}_{D}(\bm{\mu}_{j}, \Sigma_{s}),
 }
 
 where \eqn{\sigma^{2}_{js}} is the variance for the group \eqn{j} and
@@ -75,15 +74,16 @@ and \code{Sigma.p2} respectively; \eqn{\mu_j} and
 
 N  <- 2000
 k  <- 3
+D <- 2
 M1 <- c(-45,8)
 M2 <- c(45,.1)
 M3 <- c(100,8)
-Mu <- matrix(rbind(M1,M2,M3),c(k,2))
+Mu <- matrix(rbind(M1,M2,M3),c(k,D))
 sds <- cbind(rep(1,k), rep(20,k))
 Sigma.p1 <- matrix(c( sds[1,1]^2, 0,0,
-                      sds[1,1]^2), nrow=2, ncol=2)
+                      sds[1,1]^2), nrow=D, ncol=D)
 Sigma.p2 <- matrix(c(sds[1,2]^2, 0,0,
-                      sds[1,2]^2), nrow=2, ncol=2)
+                      sds[1,2]^2), nrow=D, ncol=D)
 W   <- c(0.2,0.8)
 sim <- piv_sim(N = N, k = k, Mu = Mu, Sigma.p1 = Sigma.p1,
 Sigma.p2 = Sigma.p2, W = W)
