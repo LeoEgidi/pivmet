@@ -230,6 +230,7 @@
 #' ### Fishery data (bayesmix package)
 #'
 #'\dontrun{
+#' library(bayesmix)
 #' data(fish)
 #' y <- fish[,1]
 #' k <- 5
