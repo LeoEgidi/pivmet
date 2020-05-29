@@ -250,6 +250,7 @@ res2 <- piv_MCMC(y = sim$y,
 ### Fishery data (bayesmix package)
 
 \dontrun{
+library(bayesmix)
 data(fish)
 y <- fish[,1]
 k <- 5

@@ -25,6 +25,7 @@ Plot and visualize MCMC outputs and posterior relabelled chains/estimates.
 
 # Fishery data
 \dontrun{
+library(bayesmix)
 data(fish)
 y <- fish[,1]
 N <- length(y)
