@@ -6,6 +6,7 @@ knitr::opts_chunk$set(
 
 ## ----load, warning =FALSE, message=FALSE---------------------------------
 library(pivmet)
+library(mvtnorm)
 
 ## ----mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE------
 #generate some data
