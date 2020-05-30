@@ -657,25 +657,25 @@ piv_MCMC <- function(y,
 
     for (i in 1:N){
       yprev[i,1:D]<-y[i,1:D]
-      y[i,1:D] ~ dmnorm(muOfClust[clust[i],],tauOfClust)
-      clust[i] ~ dcat(pClust[1:k] )
+      y[i,1:D] ~ dmnorm(mu[clust[i],],tau)
+      clust[i] ~ dcat(theta[1:k] )
     }
 
     # Prior:
 
     for (g in 1:k) {
-      muOfClust[g,1:D] ~ dmnorm(mu_0[],S2[,])}
-      tauOfClust[1:D,1:D] ~ dwish(S3[,],3)
-      Sigma[1:D,1:D] <- inverse(tauOfClust[,])
-      pClust[1:k] ~ ddirch(alpha)
+      mu[g,1:D] ~ dmnorm(mu_0[],S2[,])}
+      tau[1:D,1:D] ~ dwish(S3[,],3)
+      Sigma[1:D,1:D] <- inverse(tau[,])
+      theta[1:k] ~ ddirch(alpha)
   }"
 
       init1.biv <- list()
       for (s in 1:chains)
-      init1.biv[[s]] <- dump.format(list(muOfClust=mu_inits,
-                                    tauOfClust= 15*diag(D),
-                                    pClust=rep(1/k,k), clust=clust_inits))
-      moni.biv <- c("clust","muOfClust","tauOfClust","pClust")
+      init1.biv[[s]] <- dump.format(list(mu=mu_inits,
+                                    tau= 15*diag(D),
+                                    theta=rep(1/k,k), clust=clust_inits))
+      moni.biv <- c("clust","mu","tau","theta")
 
       mod   <- mod.mist.biv
       dati  <- dati.biv
@@ -686,9 +686,9 @@ piv_MCMC <- function(y,
       ogg.jags <- run.jags(model=mod, data=dati, monitor=moni,
                            inits=init1, n.chains=chains,plots=FALSE, thin=1,
                            sample=nMC, burnin=burn)
-      printed <- print(add.summary(ogg.jags, vars= c("muOfClust",
-                      "tauOfClust",
-                      "pClust")))
+      printed <- print(add.summary(ogg.jags, vars= c("mu",
+                      "tau",
+                      "theta")))
       # Extraction
       ris <- ogg.jags$mcmc[[1]]
 
@@ -696,14 +696,17 @@ piv_MCMC <- function(y,
       group <- ris[-(1:burn),grep("clust[",colnames(ris),fixed=TRUE)]
 
       # only the variances
-      tau <- sqrt( (1/ris[-(1:burn),grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
-      prob.st <- ris[-(1:burn),grep("pClust[",colnames(ris),fixed=TRUE)]
+      tau <- sqrt( (1/ris[-(1:burn),grep("tau[",colnames(ris),fixed=TRUE)])[,c(1,4)])
+      prob.st <- ris[-(1:burn),grep("theta[",colnames(ris),fixed=TRUE)]
       M <- nrow(group)
       H <- list()
 
       mu_pre_switch_compl <- array(rep(0, M*D*k), dim=c(M,D,k))
       for (i in 1:k){
-        H[[i]] <- ris[-(1:burn),grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
+        H[[i]] <- ris[-(1:burn),
+                      grep(paste("mu[",i, sep=""),
+                           colnames(ris),fixed=TRUE)]
+                         #[,c(i,i+k)]
       }
       for (i in 1:k){
         mu_pre_switch_compl[,,i] <- as.matrix(H[[i]])
@@ -720,7 +723,9 @@ piv_MCMC <- function(y,
         L<-list()
         mu_pre_switch <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
         for (i in 1:k){
-          L[[i]] <- ris[,grep("muOfClust",colnames(ris),fixed=TRUE)][,c(i,i+k)]
+          L[[i]] <- ris[,grep(paste("mu[", i, sep=""),
+                                    colnames(ris),fixed=TRUE)]
+          #[,c(i,i+k)]
         }
         for (i in 1:k){
           mu_pre_switch[,,i] <- as.matrix(L[[i]])
@@ -735,8 +740,8 @@ piv_MCMC <- function(y,
       mcmc_weight_raw = prob.st
       mcmc_sd_raw = tau
 
-      tau <- sqrt( (1/ris[,grep("tauOfClust[",colnames(ris),fixed=TRUE)])[,c(1,4)])
-      prob.st <- ris[,grep("pClust[",colnames(ris),fixed=TRUE)]
+      tau <- sqrt( (1/ris[,grep("tau[",colnames(ris),fixed=TRUE)])[,c(1,4)])
+      prob.st <- ris[,grep("theta[",colnames(ris),fixed=TRUE)]
       mu <- mu_pre_switch
 
 
