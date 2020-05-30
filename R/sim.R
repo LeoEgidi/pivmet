@@ -64,12 +64,9 @@
 #' M1 <- c(-45,8)
 #' M2 <- c(45,.1)
 #' M3 <- c(100,8)
-#' Mu <- matrix(rbind(M1,M2,M3),c(k,D))
-#' sds <- cbind(rep(1,k), rep(20,k))
-#' Sigma.p1 <- matrix(c( sds[1,1]^2, 0,0,
-#'                       sds[1,1]^2), nrow=D, ncol=D)
-#' Sigma.p2 <- matrix(c(sds[1,2]^2, 0,0,
-#'                       sds[1,2]^2), nrow=D, ncol=D)
+#' Mu <- rbind(M1,M2,M3)
+#' Sigma.p1 <- diag(D)
+#' Sigma.p2 <- 20*diag(D)
 #' W   <- c(0.2,0.8)
 #' sim <- piv_sim(N = N, k = k, Mu = Mu, Sigma.p1 = Sigma.p1,
 #' Sigma.p2 = Sigma.p2, W = W)
