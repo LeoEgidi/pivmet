@@ -122,7 +122,7 @@ D_{1,2} \sim & \mbox{HalfCauchy}(0, \sigma_d).
 The covariance matrix is expressed in terms of the LDL decomposition as $LD^*L^{T}$,
 a variant of the classical Cholesky decomposition, where $L$ is a $2 \times 2$
 lower unit triangular matrix and $D^*$ is a $2 \times 2$ diagonal matrix.
- The Cholesky correlation factor $L$ is assigned a LKJ prior with $\eta$ degrees of freedom,  which, combined with priors on the standard deviations of each component, induces a prior on the covariance matrix; as $\eta \rightarrow \infty$ the magnitude of correlations between components decreases, whereas $\eta=1$ leads to a uniform prior distribution for $L$.  By default, the hyperparameters are $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\sigma_d=2.5, \eta=1$.  Different values can be chosen with the argument: `priors=list(mu_0=c(1,2), sigma_d = 4, eta = 2)`.
+ The Cholesky correlation factor $L$ is assigned a LKJ prior with $\epsilon$ degrees of freedom,  which, combined with priors on the standard deviations of each component, induces a prior on the covariance matrix; as $\epsilon \rightarrow \infty$ the magnitude of correlations between components decreases, whereas $\epsilon=1$ leads to a uniform prior distribution for $L$.  By default, the hyperparameters are $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\sigma_d=2.5, \epsilon=1$.  Different values can be chosen with the argument: `priors=list(mu_0=c(1,2), sigma_d = 4, epsilon = 2)`.
  
 We fit the model using `rjags` with 2000 MCMC iterations and default priors:
 
