@@ -22,7 +22,7 @@
 #' \code{software="rstan"}). Default is 1.
 #'
 #' @details
-#' The function fits univariate and bivariate Bayesian Gaussian mixture models of the form
+#' The function fits univariate and multivariate Bayesian Gaussian mixture models of the form
 #' (here for univariate only):
 #' \deqn{(Y_i|Z_i=j) \sim \mathcal{N}(\mu_j,\phi_j),}
 #' where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k},
@@ -88,10 +88,10 @@
 #'
 #' \code{priors=list(mu_0=1, B0inv=0.2, mu_phi=3, sigma_phi=5)}
 #'
-#'For bivariate mixtures, when \code{software="rjags"} the prior specification is the following:
+#'For multivariate mixtures, when \code{software="rjags"} the prior specification is the following:
 #'
-#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, S2)}
-#'\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, 3)}
+#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, S2)}
+#'\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, D+1)}
 #'\deqn{\pi \sim \mbox{Dirichlet}(\bm{\alpha}),}
 #'
 #'where  \eqn{\bm{\alpha}} is a \eqn{k}-dimensional vector
@@ -110,13 +110,13 @@
 #'
 #'When \code{software="rstan"}, the prior specification is:
 #'
-#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_2(\bm{\mu}_0, LDL^{T})}
+#'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, LD*L^{T})}
 #'\deqn{L \sim \mbox{LKJ}(\eta)}
 #'\deqn{D_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
 #'
-#'The covariance matrix is expressed in terms of the LDL decomposition as \eqn{LDL^{T}},
-#'a variant of the classical Cholesky decomposition, where \eqn{L} is a \eqn{2 \times 2}
-#'lower unit triangular matrix and \eqn{D} is a \eqn{2 \times 2} diagonal matrix.
+#'The covariance matrix is expressed in terms of the LDL decomposition as \eqn{LD*L^{T}},
+#'a variant of the classical Cholesky decomposition, where \eqn{L} is a \eqn{D \times D}
+#'lower unit triangular matrix and \eqn{D*} is a \eqn{D \times D} diagonal matrix.
 #'The Cholesky correlation factor \eqn{L} is assigned a LKJ prior with \eqn{\eta} degrees of freedom,  which,
 #'combined with priors on the standard deviations of each component, induces a prior on the covariance matrix;
 #'as \eqn{\eta \rightarrow \infty} the magnitude of correlations between components decreases,
@@ -130,7 +130,7 @@
 #'
 #' If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
 #' for univariate Gaussian mixtures, and the \code{runjags}
-#' package for bivariate Gaussian mixtures. If \code{software="rstan"} the function performs
+#' package for multivariate Gaussian mixtures. If \code{software="rstan"} the function performs
 #' Hamiltonian Monte Carlo (HMC) sampling via the \code{rstan} package (see the vignette and the Stan project
 #' for any help).
 #'
@@ -162,21 +162,21 @@
 #' vector.}
 #' \item{\code{mcmc_mean}}{  If \code{y} is a vector, a \eqn{true.iter \times k}
 #' matrix with the post-processed MCMC chains for the mean parameters; if
-#' \code{y} is a matrix, a \eqn{true.iter \times 2 \times k} array with
+#' \code{y} is a matrix, a \eqn{true.iter \times D \times k} array with
 #' the post-processed MCMC chains for the mean parameters.}
 #' \item{\code{mcmc_sd}}{  If \code{y} is a vector, a \eqn{true.iter \times k}
 #' matrix with the post-processed MCMC chains for the sd parameters; if
-#' \code{y} is a matrix, a \eqn{true.iter \times 2} array with
+#' \code{y} is a matrix, a \eqn{true.iter \times D} array with
 #' the post-processed MCMC chains for the sd parameters.}
 #' \item{\code{mcmc_weight}}{A \eqn{true.iter \times k}
 #' matrix with the post-processed MCMC chains for the weights parameters.}
 #'\item{\code{mcmc_mean_raw}}{ If \code{y} is a vector, a \eqn{(nMC-burn) \times k} matrix
 #' with the raw MCMC chains for the mean parameters as given by JAGS; if
-#' \code{y} is a matrix, a \eqn{(nMC-burn) \times 2 \times k} array with the raw MCMC chains
+#' \code{y} is a matrix, a \eqn{(nMC-burn) \times D \times k} array with the raw MCMC chains
 #' for the mean parameters as given by JAGS/Stan.}
 #' \item{\code{mcmc_sd_raw}}{ If \code{y} is a vector, a \eqn{(nMC-burn) \times k} matrix
 #' with the raw MCMC chains for the sd parameters as given by JAGS/Stan; if
-#' \code{y} is a matrix, a \eqn{(nMC-burn) \times 2} array with the raw MCMC chains
+#' \code{y} is a matrix, a \eqn{(nMC-burn) \times D} array with the raw MCMC chains
 #' for the sd parameters as given by JAGS/Stan.}
 #' \item{\code{mcmc_weight_raw}}{A \eqn{(nMC-burn) \times k} matrix
 #' with the raw MCMC chains for the weights parameters as given by JAGS/Stan.}
@@ -196,15 +196,15 @@
 #'\dontrun{
 #' N   <- 200
 #' k   <- 4
+#' D <- 2
 #' nMC <- 1000
-#' M1  <-c(-.5,8)
+#' M1  <- c(-.5,8)
 #' M2  <- c(25.5,.1)
 #' M3  <- c(49.5,8)
 #' M4  <- c(63.0,.1)
-#' Mu  <- matrix(rbind(M1,M2,M3,M4),c(4,2))
-#' sds <- cbind(rep(1,k), rep(20,k))
-#' Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2), nrow=2, ncol=2)
-#' Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2), nrow=2, ncol=2)
+#' Mu  <- rbind(M1,M2,M3,M4)
+#' Sigma.p1 <- diag(D)
+#' Sigma.p2 <- 20*diag(D)
 #' W <- c(0.2,0.8)
 #' sim <- piv_sim(N = N, k = k, Mu = Mu,
 #'                Sigma.p1 = Sigma.p1,

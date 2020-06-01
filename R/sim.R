@@ -1,7 +1,7 @@
 #' Generate Data from a Gaussian Nested Mixture
 #'
-#' Simulate N observations from a nested Gaussian mixture model
-#' with k pre-specified components under uniform group probabilities \eqn{1/k},
+#' Simulate \eqn{N} observations from a nested Gaussian mixture model
+#' with \eqn{k} pre-specified components under uniform group probabilities \eqn{1/k},
 #' where each group is in turn
 #' drawn from a further level consisting of two subgroups.
 #'
