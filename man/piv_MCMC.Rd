@@ -83,31 +83,31 @@ Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, pos
 \details{
 The function fits univariate and multivariate Bayesian Gaussian mixture models of the form
 (here for univariate only):
-\deqn{(Y_i|Z_i=j) \sim \mathcal{N}(\mu_j,\phi_j),}
+\deqn{(Y_i|Z_i=j) \sim \mathcal{N}(\mu_j,\sigma_j),}
 where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k},
-\eqn{\phi_j} is the group variance,  \eqn{Z_i \in {1,\ldots,k }} are the
+\eqn{\sigma_j} is the group variance,  \eqn{Z_i \in {1,\ldots,k }} are the
 latent group allocation, and
-\deqn{P(Z_i=j)=\pi_j.}
+\deqn{P(Z_i=j)=\eta_j.}
 The likelihood of the model is then
-\deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^N \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j,\phi_j),}
-where \eqn{(\mu, \phi)=(\mu_{1},\dots,\mu_{k},\phi_{1},\ldots,\phi_{k})}
-are the component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})}
+\deqn{L(y;\mu,\eta,\sigma) = \prod_{i=1}^N \sum_{j=1}^k \eta_j \mathcal{N}(\mu_j,\sigma_j),}
+where \eqn{(\mu, \sigma)=(\mu_{1},\dots,\mu_{k},\sigma_{1},\ldots,\sigma_{k})}
+are the component-specific parameters and \eqn{\eta=(\eta_{1},\dots,\eta_{k})}
 the mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }},
 and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})},
-\eqn{\nu(\phi)= (\phi_{\nu(1)},\ldots,} \eqn{ \phi_{\nu(k)})},
-\eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the
-corresponding permutations of \eqn{\mu}, \eqn{\phi} and \eqn{\pi}.
+\eqn{\nu(\sigma)= (\sigma_{\nu(1)},\ldots,} \eqn{ \sigma_{\nu(k)})},
+\eqn{ \nu(\eta)=(\eta_{\nu(1)},\ldots,\eta_{\nu(k)})} be the
+corresponding permutations of \eqn{\mu}, \eqn{\sigma} and \eqn{\eta}.
  Denote by \eqn{V} the set of all the permutations of the indexes
  \eqn{{1,\ldots,k }}, the likelihood above is invariant under any
  permutation \eqn{\nu \in V}, that is
 \deqn{
-L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\nu(\phi)).}
+L(y;\mu,\eta,\sigma) = L(y;\nu(\mu),\nu(\eta),\nu(\sigma)).}
 As a consequence, the model is unidentified with respect to an
 arbitrary permutation of the labels.
 When Bayesian inference for the model is performed,
-if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\pi,\phi) = p_0(\nu(\mu),\nu(\pi),\phi)}, then
+if the prior distribution \eqn{p_0(\mu,\eta,\sigma)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\eta,\sigma) = p_0(\nu(\mu),\nu(\eta),\sigma)}, then
 \deqn{
-p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
+p(\mu,\eta,\sigma| y) \propto p_0(\mu,\eta,\sigma)L(y;\mu,\eta,\sigma)}
 is multimodal with (at least) \eqn{k!} modes.
 
 Depending on the selected software, the model parametrization
@@ -122,8 +122,8 @@ For univariate mixtures, when
 \code{bayesmix} package:
 
  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
- \deqn{\phi_j \sim \mbox{invGamma}(nu0Half, nu0S0Half)}
- \deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1)}
+ \deqn{\sigma_j \sim \mbox{invGamma}(nu0Half, nu0S0Half)}
+ \deqn{\eta \sim \mbox{Dirichlet}(1,\ldots,1)}
  \deqn{S0 \sim \mbox{Gamma}(g0Half, g0G0Half),}
 
  with default values: \eqn{\mu_0=0, B0inv=0.1, nu0Half =10, S0=2,
@@ -139,19 +139,19 @@ For univariate mixtures, when
  When \code{software="rstan"}, the prior specification is:
 
  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
- \deqn{\phi_j \sim \mbox{Lognormal}(\mu_{\phi}, \sigma_{\phi})}
- \deqn{\pi_j \sim \mbox{Uniform}(0,1),}
+ \deqn{\sigma_j \sim \mbox{Lognormal}(\mu_{\sigma}, \tau_{\sigma})}
+ \deqn{\eta_j \sim \mbox{Uniform}(0,1),}
 
- with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2}.
+ with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\sigma}=0, \tau_{\sigma}=2}.
 The users may specify new hyperparameter values with the argument:
 
-\code{priors=list(mu_0=1, B0inv=0.2, mu_phi=3, sigma_phi=5)}
+\code{priors=list(mu_0=1, B0inv=0.2, mu_sigma=3, tau_sigma=5)}
 
 For multivariate mixtures, when \code{software="rjags"} the prior specification is the following:
 
 \deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, S2)}
-\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, D+1)}
-\deqn{\pi \sim \mbox{Dirichlet}(\bm{\alpha}),}
+\deqn{ \Sigma^{-1} \sim \mbox{Wishart}(S3, D+1)}
+\deqn{\eta \sim \mbox{Dirichlet}(\bm{\alpha}),}
 
 where  \eqn{\bm{\alpha}} is a \eqn{k}-dimensional vector
 and \eqn{S_2} and \eqn{S_3}
@@ -170,21 +170,21 @@ and \eqn{\bm{\alpha}} a vector of dimension \eqn{k} with nonnegative elements.
 When \code{software="rstan"}, the prior specification is:
 
 \deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, LD*L^{T})}
-\deqn{L \sim \mbox{LKJ}(\eta)}
-\deqn{D_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
+\deqn{L \sim \mbox{LKJ}(\epsilon)}
+\deqn{D^*_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
 
 The covariance matrix is expressed in terms of the LDL decomposition as \eqn{LD*L^{T}},
 a variant of the classical Cholesky decomposition, where \eqn{L} is a \eqn{D \times D}
 lower unit triangular matrix and \eqn{D*} is a \eqn{D \times D} diagonal matrix.
-The Cholesky correlation factor \eqn{L} is assigned a LKJ prior with \eqn{\eta} degrees of freedom,  which,
+The Cholesky correlation factor \eqn{L} is assigned a LKJ prior with \eqn{\epsilon} degrees of freedom,  which,
 combined with priors on the standard deviations of each component, induces a prior on the covariance matrix;
-as \eqn{\eta \rightarrow \infty} the magnitude of correlations between components decreases,
-whereas \eqn{\eta=1} leads to a uniform prior distribution for \eqn{L}.
-By default, the hyperparameters are \eqn{\bm{\mu}_0=\bm{0}}, \eqn{\sigma_d=2.5, \eta=1}.
+as \eqn{\epsilon \rightarrow \infty} the magnitude of correlations between components decreases,
+whereas \eqn{\epsilon=1} leads to a uniform prior distribution for \eqn{L}.
+By default, the hyperparameters are \eqn{\bm{\mu}_0=\bm{0}}, \eqn{\sigma_d=2.5, \epsilon=1}.
 The user may propose some different values with the argument:
 
 
-\code{priors=list(mu_0=c(1,2), sigma_d = 4, eta =2)}
+\code{priors=list(mu_0=c(1,2), sigma_d = 4, epsilon =2)}
 
 
 If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
