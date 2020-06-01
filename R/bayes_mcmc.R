@@ -677,7 +677,7 @@ piv_MCMC <- function(y,
       for (s in 1:chains){
       init1.biv[[s]] <- dump.format(list(mu=mu_inits,
                                     tau= 15*diag(D),
-                                    theta=rep(1/k,k), clust=clust_inits))
+                                    eta=rep(1/k,k), clust=clust_inits))
       }
       moni.biv <- c("clust","mu","tau","eta")
 
