@@ -665,7 +665,7 @@ piv_MCMC <- function(y,
 
     for (g in 1:k) {
       mu[g,1:D] ~ dmnorm(mu_0[],S2[,])}
-      tau[1:D,1:D] ~ dwish(S3[,],D)
+      tau[1:D,1:D] ~ dwish(S3[,],D+1)
       Sigma[1:D,1:D] <- inverse(tau[,])
       theta[1:k] ~ ddirch(alpha)
   }"
