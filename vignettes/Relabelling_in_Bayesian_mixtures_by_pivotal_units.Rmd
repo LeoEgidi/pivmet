@@ -22,10 +22,11 @@ In this vignette we explore the fit of Gaussian mixture models and the relabelli
 ```{r load, warning =FALSE, message = FALSE}
 library(pivmet)
 library(bayesmix)
+library(bayesplot)
 ```
 
 
-The pivmet \code{R} package provides a simple framework to (i) fit univariate and bivariate mixture models according to a Bayesian flavour and detect the pivotal units, via the `piv_MCMC` function; (ii) perform the relabelling step via the `piv_rel` function.
+The `pivmet` \code{R} package provides a simple framework to (i) fit univariate and multivariate mixture models according to a Bayesian flavour and detect the pivotal units, via the `piv_MCMC` function; (ii) perform the relabelling step via the `piv_rel` function.
 
 There are two main functions used for this task.
 
@@ -33,7 +34,7 @@ The function `piv_MCMC`:
 
   +  **performs MCMC sampling** for Gaussian mixture models using the underlying `rjags` or `rstan` packages (chosen by the users through the optional function argument `software`, by default set to `rjags`). Precisely the package uses:  the `JAGSrun` function of the `bayesmix` package for univariate mixture models; the `run.jags` function of the `runjags` package for bivariate mixture models; the `stan` function of the `rstan` package for both univariate and bivariate mixture models.
   
-  + **Post-processes the chains** and randomly swithes their values.
+  + **Post-processes the chains** and randomly switches their values [@fruhwirth2001markov].
   
   + **Builds a co-association matrix for the $N$ units**.  After $H$ MCMC iterations, the function implements a clustering procedure with $k$ groups, the user may choose among agglomerative or divisive hierarchical clustering through the optional argument `clustering`. Using the latent formulation for mixture models, we denote with $[z_i]_h$ the group allocation of the $i$-th unit at the $h$-th iteration. In such a way, a co-association matrix $C$ for the $N$ statistical units is built, where the single cell $c_{ip}$ is the fraction of times the unit $i$ and the unit $p$ belong to the same group along the $H$ MCMC iterations:
   
@@ -78,18 +79,16 @@ We may generate Gaussian mixture data through the function `piv_sim`, specifying
 set.seed(50)
 N  <- 200
 k  <- 3
+D <- 2
 nMC <- 2000
 M1 <- c(-10,8)
 M2 <- c(10,.1)
 M3 <- c(30,8)
 # matrix of input means
-Mu <- matrix(rbind(M1,M2,M3),c(k,2)) 
-sds    <- cbind(rep(1,k), rep(15,k))
+Mu <- rbind(M1,M2,M3)
 # covariance matrices for the two subgroups
-Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2),
-nrow=2, ncol=2)
-Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2),
-nrow=2, ncol=2)
+Sigma.p1 <- diag(D)
+Sigma.p2 <- (15^2)*diag(D)
 # subgroups' weights
 W   <- c(0.2,0.8)
 # simulate data
@@ -102,7 +101,7 @@ The function ```piv_MCMC``` requires only three mandatory arguments: the data ob
 
 \begin{align}
 \boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, S_2)\\
- 1/\Sigma \sim & \mbox{Wishart}(S_3, 3)\\
+ \Sigma^{-1} \sim & \mbox{Wishart}(S_3, 3)\\
 \pi \sim & \mbox{Dirichlet}(\boldsymbol{\alpha}),
 \end{align}
 
@@ -115,14 +114,14 @@ with the constraint for $S2$ and $S3$ to be positive definite, and $\boldsymbol{
 If `software="rstan"`, the function performs Hamiltonian Monte Carlo (HMC) sampling. In this case the priors are specified as:
 
 \begin{align}
- \boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, LDL^{T})\\
+ \boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, LD^*L^{T})\\
  L \sim & \mbox{LKJ}(\eta)\\
 D_{1,2} \sim & \mbox{HalfCauchy}(0, \sigma_d).
  \end{align}
 
-The covariance matrix is expressed in terms of the LDL decomposition as $LDL^{T}$,
+The covariance matrix is expressed in terms of the LDL decomposition as $LD^*L^{T}$,
 a variant of the classical Cholesky decomposition, where $L$ is a $2 \times 2$
-lower unit triangular matrix and $D$ is a $2 \times 2$ diagonal matrix.
+lower unit triangular matrix and $D^*$ is a $2 \times 2$ diagonal matrix.
  The Cholesky correlation factor $L$ is assigned a LKJ prior with $\eta$ degrees of freedom,  which, combined with priors on the standard deviations of each component, induces a prior on the covariance matrix; as $\eta \rightarrow \infty$ the magnitude of correlations between components decreases, whereas $\eta=1$ leads to a uniform prior distribution for $L$.  By default, the hyperparameters are $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\sigma_d=2.5, \eta=1$.  Different values can be chosen with the argument: `priors=list(mu_0=c(1,2), sigma_d = 4, eta = 2)`.
  
 We fit the model using `rjags` with 2000 MCMC iterations and default priors:
@@ -199,8 +198,8 @@ We fit the model using the ```rjags``` method, and we set the burnin period to 7
 ```{r fish_data}
 k <- 5
 nMC <- 15000
-res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC,
-software = "rjags")
+res <- piv_MCMC(y = y, k = k, nMC = nMC, 
+                burn = 0.5*nMC, software = "rjags")
 ```
 
 First of all, we may access the true number of iterations by tiping:
@@ -218,7 +217,21 @@ piv_plot(y=y, res, rel, par = "mean", type="chains")
 piv_plot(y=y, res, rel, type="hist")
 ```
 
-The first plot displays the traceplots for the parameters $\boldsymbol{\mu}$. From the left plot showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean $\mu_j$ and the weights $\pi_j$, for $j=1,\ldots,k$. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting ```software="rstan"``` in the ```piv_MCMC``` function. 
+The first plot displays the traceplots for the parameters $\boldsymbol{\mu}$. From the left plot showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean $\mu_j$ and the weights $\pi_j$, for $j=1,\ldots,k$. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting ```software="rstan"``` in the ```piv_MCMC``` function.
+
+```{r stan}
+res2 <- piv_MCMC(y = y, k = k, nMC = 3000, 
+                burn = 0.5*nMC, software = "rstan")
+rel2 <- piv_rel(res2)
+piv_plot(y=y, res2, rel2, par = "mean", type="chains")
+```
+
+With the `rstan` option, we can use the `bayesplot` functions on the `stanfit` argument:
+
+```{r bayesplot}
+posterior <- as.array(res2$stanfit)
+mcmc_intervals(posterior, regex_pars = c("mu"))
+```
 
 Regardless of the software that we chose, we may extract the JAGS/Stan model by typing:
 
@@ -226,6 +239,7 @@ Regardless of the software that we chose, we may extract the JAGS/Stan model by 
 cat(res$model)
 ```
 
+ 
 
 <!-- The results are shown in Figure~\ref{fish_chains_stan}. As may be noted from the first plot in the top row, Hamiltonian Monte Carlo (HMC) behind Stan seems definitely more suited to explore the five high-density regions without switching the group labels. However, group probabilities (third plot) and group standard deviations (second plot) overlap each other. The perfect MCMC sampler does not exist. -->
 
