@@ -3,7 +3,7 @@
 * drop packages dependencies
 * multivariate mixtures allowed 
 * stan divergences
-* runjags arguments renamed (mu, tau, theta)
+* runjags arguments renamed (mu, tau, eta)
 * more checks in piv_rel function
 * stan fit available (e.g., for bayesplot package)
 * vignettes updated
