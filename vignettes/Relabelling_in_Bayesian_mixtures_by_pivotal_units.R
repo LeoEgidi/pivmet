@@ -60,16 +60,3 @@ rel <- piv_rel(mcmc=res)
 piv_plot(y=y, res, rel, par = "mean", type="chains")
 piv_plot(y=y, res, rel, type="hist")
 
-## ----stan----------------------------------------------------------------
-res2 <- piv_MCMC(y = y, k = k, nMC = 3000, 
-                 software = "rstan")
-rel2 <- piv_rel(res2)
-piv_plot(y=y, res2, rel2, par = "mean", type="chains")
-
-## ----bayesplot-----------------------------------------------------------
-posterior <- as.array(res2$stanfit)
-mcmc_intervals(posterior, regex_pars = c("mu"))
-
-## ----model_code----------------------------------------------------------
-cat(res$model)
-

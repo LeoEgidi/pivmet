@@ -514,7 +514,7 @@ piv_MCMC <- function(y,
       sims_univ <- rstan::extract(fit_univ)
 
       J <- 3
-      mcmc.pars <- array(data = NA, dim = c(dim(sims_univ$theta)[1], k, J))
+      mcmc.pars <- array(data = NA, dim = c(dim(sims_univ$eta)[1], k, J))
       mcmc.pars[ , , 1] <- sims_univ$mu
       mcmc.pars[ , , 2] <- sims_univ$sigma
       mcmc.pars[ , , 3] <- sims_univ$eta
@@ -843,7 +843,7 @@ piv_MCMC <- function(y,
       # Post- process of the chains----------------------
       group <- sims_biv$z
       tau <- sims_biv$L_sigma
-      prob.st <- sims_biv$theta
+      prob.st <- sims_biv$eta
       M <- nrow(group)
 
       mu_pre_switch_compl <- array(rep(0, M*D*k), dim=c(M,D,k))
@@ -871,7 +871,7 @@ piv_MCMC <- function(y,
       group <- sims_biv$z[numeffettivogruppi==k,]
       mu <- mu_pre_switch
       tau <- sims_biv$L_sigma[numeffettivogruppi==k, ]
-      prob.st <- sims_biv$theta[numeffettivogruppi==k,]
+      prob.st <- sims_biv$eta[numeffettivogruppi==k,]
       FreqGruppiJags <- table(group)
 
       model_code <- mix_biv
