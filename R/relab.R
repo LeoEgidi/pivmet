@@ -78,9 +78,9 @@
 #' as explained in Details.}
 #' \item{\code{final_it_p}}{The proportion of final valid MCMC iterations.}
 #' \item{\code{rel_mean}}{The relabelled chains of the means: a \code{final_it} \eqn{\times k} matrix for univariate data,
-#' or a \code{final_it} \eqn{\times 2 \times k} array for bivariate data.}
+#' or a \code{final_it} \eqn{\times D \times k} array for multivariate data.}
 #' \item{\code{rel_sd}}{The relabelled chains of the sd's: a \code{final_it} \eqn{\times k} matrix for univariate data,
-#' or a \code{final_it} \eqn{\times 2} matrix for bivariate data.}
+#' or a \code{final_it} \eqn{\times D} matrix for multivariate data.}
 #' \item{\code{rel_weight}}{The relabelled chains of the weights: a \code{final_it} \eqn{\times k} matrix.}
 #'
 #' @author Leonardo Egidi \email{legidi@units.it}
@@ -108,16 +108,14 @@
 #'\dontrun{
 #' N <- 200
 #' k <- 3
+#' D <- 2
 #' nMC <- 5000
 #' M1  <- c(-.5,8)
 #' M2  <- c(25.5,.1)
 #' M3  <- c(49.5,8)
 #' Mu  <- matrix(rbind(M1,M2,M3),c(k,2))
-#' sds <- cbind(rep(1,k), rep(20,k))
-#' Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2),
-#'                    nrow=2, ncol=2)
-#' Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2),
-#'                    nrow=2, ncol=2)
+#' Sigma.p1 <- diag(D)
+#' Sigma.p2 <- 20*diag(D)
 #' W <- c(0.2,0.8)
 #' sim <- piv_sim(N = N, k = k, Mu = Mu,
 #'                Sigma.p1 = Sigma.p1,
@@ -142,6 +140,7 @@ piv_rel<-function(mcmc){
   N <- dim(mcmc$groupPost)[2]
   if (length(dim(mcmc$mcmc_mean_raw))==3){
   k <- dim(mcmc$mcmc_mean)[3]
+  D <- dim(mcmc$mcmc_mean)[2]
   }else{
   k <- dim(mcmc$mcmc_mean_raw)[2]
   }
@@ -236,8 +235,8 @@ piv_rel<-function(mcmc){
 
   }else{
     k <- dim(mu_switch)[3]
-    mu_rel_median  <- array(NA,c(2,k))
-    mu_rel_mean    <- array(NA,c(2,k))
+    mu_rel_median  <- array(NA,c(D,k))
+    mu_rel_mean    <- array(NA,c(D,k))
     weights_rel_median <- c()
     weights_rel_mean <- c()
     groupD2        <- groupD[contD==0,]
@@ -245,7 +244,7 @@ piv_rel<-function(mcmc){
     prob.st_switchD     <- prob.st_switch[contD==0,]
     true.iterD2    <- sum(contD==0)
     Final_It       <- true.iterD2/nMC
-    mu_rel_complete  <- array(NA, dim=c(true.iterD2, 2,k))
+    mu_rel_complete  <- array(NA, dim=c(true.iterD2, D,k))
     weights_rel_complete <- array(NA, dim=c(true.iterD2,k))
 
       if (true.iterD2!=0){
@@ -264,27 +263,26 @@ piv_rel<-function(mcmc){
 
       }
 
-    ind <- array(NA, c( nrow(mu_rel_complete) ,2, k))
+    ind <- array(NA, c( nrow(mu_rel_complete) ,D, k))
       for (g in 1:nrow(mu_rel_complete)){
-        prel1 <- c()
-        prel2 <- c()
+        prel <- matrix(NA, D, k)
+        for (d in 1:D){
         for (h in 1:k){
-    prel1[h] <- which.min((mu_rel_complete[g,1,]-Mu[h,1])^2)
-    prel2[h] <- which.min((mu_rel_complete[g,2,]-Mu[h,2])^2)
+    prel[d,h] <- which.min((mu_rel_complete[g,d,]-Mu[h,d])^2)
+    #prel2[h] <- which.min((mu_rel_complete[g,2,]-Mu[h,2])^2)
          }
-        ind[g,1,] <- prel1
-        ind[g,2,] <- prel2
+        ind[g,d,] <- prel[d,]
+        }
       }
 
-    mu_rel_median_tr  <- array(NA, c(k,2))
-    mu_rel_mean_tr    <- array(NA, c(k,2))
+    mu_rel_median_tr  <- array(NA, c(k,D))
+    mu_rel_mean_tr    <- array(NA, c(k,D))
 
+for (d in 1:D){
  for (h in 1:nrow(mu_rel_complete)){
-  mu_rel_complete[h,1,] <- mu_rel_complete[h,1, ind[h,1,]]
-  mu_rel_complete[h,2,] <- mu_rel_complete[h,2, ind[h,2,]]
-  #weights_rel_complete[h,1] <- weights_rel_complete[h,ind[h,1,]]
-  #weights_rel_complete[h,2] <- weights_rel_complete[h,ind[h,2,]]
-  }
+  mu_rel_complete[h,d,] <- mu_rel_complete[h,d, ind[h,d,]]
+ }
+}
   mu_rel_median    <- apply(mu_rel_complete, c(2,3), median)
   mu_rel_mean      <- apply(mu_rel_complete, c(2,3), mean)
   mu_rel_median_tr <- t(mu_rel_median)

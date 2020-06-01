@@ -16,9 +16,9 @@ This function gives the relabelled posterior estimates--both mean and medians--o
 as explained in Details.}
 \item{\code{final_it_p}}{The proportion of final valid MCMC iterations.}
 \item{\code{rel_mean}}{The relabelled chains of the means: a \code{final_it} \eqn{\times k} matrix for univariate data,
-or a \code{final_it} \eqn{\times 2 \times k} array for bivariate data.}
+or a \code{final_it} \eqn{\times D \times k} array for multivariate data.}
 \item{\code{rel_sd}}{The relabelled chains of the sd's: a \code{final_it} \eqn{\times k} matrix for univariate data,
-or a \code{final_it} \eqn{\times 2} matrix for bivariate data.}
+or a \code{final_it} \eqn{\times D} matrix for multivariate data.}
 \item{\code{rel_weight}}{The relabelled chains of the weights: a \code{final_it} \eqn{\times k} matrix.}
 }
 \description{
@@ -112,16 +112,14 @@ rel   <- piv_rel(mcmc=res)
 \dontrun{
 N <- 200
 k <- 3
+D <- 2
 nMC <- 5000
 M1  <- c(-.5,8)
 M2  <- c(25.5,.1)
 M3  <- c(49.5,8)
 Mu  <- matrix(rbind(M1,M2,M3),c(k,2))
-sds <- cbind(rep(1,k), rep(20,k))
-Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2),
-                   nrow=2, ncol=2)
-Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2),
-                   nrow=2, ncol=2)
+Sigma.p1 <- diag(D)
+Sigma.p2 <- 20*diag(D)
 W <- c(0.2,0.8)
 sim <- piv_sim(N = N, k = k, Mu = Mu,
                Sigma.p1 = Sigma.p1,

@@ -168,7 +168,7 @@ and \eqn{\bm{\alpha}} a vector of dimension \eqn{k} with nonnegative elements.
 
 When \code{software="rstan"}, the prior specification is:
 
-\deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, LDL^{T})}
+\deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, LD*L^{T})}
 \deqn{L \sim \mbox{LKJ}(\eta)}
 \deqn{D_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
 
@@ -216,15 +216,15 @@ number of groups \code{k}.
 \dontrun{
 N   <- 200
 k   <- 4
+D   <- 2
 nMC <- 1000
-M1  <-c(-.5,8)
+M1  <- c(-.5,8)
 M2  <- c(25.5,.1)
 M3  <- c(49.5,8)
 M4  <- c(63.0,.1)
-Mu  <- matrix(rbind(M1,M2,M3,M4),c(4,2))
-sds <- cbind(rep(1,k), rep(20,k))
-Sigma.p1 <- matrix(c(sds[1,1]^2,0,0,sds[1,1]^2), nrow=2, ncol=2)
-Sigma.p2 <- matrix(c(sds[1,2]^2,0,0,sds[1,2]^2), nrow=2, ncol=2)
+Mu  <- rbind(M1,M2,M3,M4)
+Sigma.p1 <- diag(D)
+Sigma.p2 <- 20*diag(D)
 W <- c(0.2,0.8)
 sim <- piv_sim(N = N, k = k, Mu = Mu,
                Sigma.p1 = Sigma.p1,

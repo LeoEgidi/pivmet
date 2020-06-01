@@ -196,7 +196,7 @@
 #'\dontrun{
 #' N   <- 200
 #' k   <- 4
-#' D <- 2
+#' D   <- 2
 #' nMC <- 1000
 #' M1  <- c(-.5,8)
 #' M2  <- c(25.5,.1)
@@ -507,6 +507,7 @@ piv_MCMC <- function(y,
                         data=data,
                         chains =chains,
                         iter =nMC)
+      stanfit <- fit_univ
       printed <- cat(print(fit_univ, pars =c("mu", "theta", "sigma")))
       sims_univ <- rstan::extract(fit_univ)
 
@@ -830,6 +831,7 @@ piv_MCMC <- function(y,
                        data=data,
                        chains =chains,
                        iter =nMC)
+      stanfit <- fit_biv
       printed <- cat(print(fit_biv, pars=c("mu", "theta", "L_Sigma")))
       sims_biv <- rstan::extract(fit_biv)
 
@@ -987,6 +989,10 @@ piv_MCMC <- function(y,
     }
   }
 
+  if (software == "rjags"){
+    stanfit = NULL
+  }
+
 
 
   return(list( true.iter = true.iter,
@@ -1004,5 +1010,7 @@ piv_MCMC <- function(y,
                grr=grr,
                pivots = pivots,
                #print = printed,
-               model = model_code))
+               model = model_code,
+               k = k,
+               stanfit = stanfit))
 }
