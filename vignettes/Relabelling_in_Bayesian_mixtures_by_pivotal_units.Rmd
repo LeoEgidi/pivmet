@@ -70,8 +70,8 @@ The function `piv_rel`:
 
 Suppose now that $\boldsymbol{y}_i \in \mathbb{R}^2$ and assume that: 
 
-$$\boldsymbol{y}_i \sim \sum_{j=1}^{k}\pi_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})$$
-where $\boldsymbol{\mu}_j$ is the mean vector for group $j$, $\boldsymbol{\Sigma}$ is a positive-definite covariance matrix and the mixture weight $\pi_j= P(z_i=j)$ as for the one-dimensional case.
+$$\boldsymbol{y}_i \sim \sum_{j=1}^{k}\eta_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})$$
+where $\boldsymbol{\mu}_j$ is the mean vector for group $j$, $\boldsymbol{\Sigma}$ is a positive-definite covariance matrix and the mixture weight $\eta_j= P(z_i=j)$ as for the one-dimensional case.
 We may generate Gaussian mixture data through the function `piv_sim`, specifying the sample size $N$, the desired number of groups $k$ and the $k \times 2$ matrix for the $k$ mean vectors. The argument `W` handles the weights for a nested mixture, in which the $j$-th component is in turn modelled as a two-component mixture, with covariance matrices $\boldsymbol{\Sigma}_{p1}, \boldsymbol{\Sigma}_{p2}$, respectively.
 
 
@@ -102,7 +102,7 @@ The function ```piv_MCMC``` requires only three mandatory arguments: the data ob
 \begin{align}
 \boldsymbol{\mu}_j  \sim & \mathcal{N}_2(\boldsymbol{\mu}_0, S_2)\\
  \Sigma^{-1} \sim & \mbox{Wishart}(S_3, 3)\\
-\pi \sim & \mbox{Dirichlet}(\boldsymbol{\alpha}),
+\eta \sim & \mbox{Dirichlet}(\boldsymbol{\alpha}),
 \end{align}
 
 where  $\boldsymbol{\alpha}$ is a $k$-dimensional vector and $S_2$ and $S_3$ are positive definite matrices. By default, $\boldsymbol{\mu}_0=\boldsymbol{0}$, $\boldsymbol{\alpha}=(1,\ldots,1)$ and $S_2$ and $S_3$ are diagonal matrices,
@@ -164,20 +164,20 @@ hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
 We assume a mixture model with $k=5$ groups:
  
  \begin{equation}
-y_i \sim \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j, \phi^2_j), \ \ i=1,\ldots,n,
+y_i \sim \sum_{j=1}^k \eta_j \mathcal{N}(\mu_j, \sigma^2_j), \ \ i=1,\ldots,n,
 \label{eq:fishery} 
  \end{equation}
-where $\mu_j, \phi_j$ are the mean and the standard deviation of group $j$, respectively. Moreover, assume that $z_1,\ldots,z_n$ is an unobserved latent sequence of i.i.d. random variables following the multinomial distribution with weights  $\boldsymbol{\pi}=(\pi_{1},\dots,\pi_{k})$, such that:
+where $\mu_j, \sigma_j$ are the mean and the standard deviation of group $j$, respectively. Moreover, assume that $z_1,\ldots,z_n$ is an unobserved latent sequence of i.i.d. random variables following the multinomial distribution with weights  $\boldsymbol{\eta}=(\eta_{1},\dots,\eta_{k})$, such that:
 
-$$P(z_i=j)=\pi_j,$$
-where $\pi_j$ is the mixture weight assigned to the group $j$.
+$$P(z_i=j)=\eta_j,$$
+where $\eta_j$ is the mixture weight assigned to the group $j$.
 
-We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\phi}, \boldsymbol{\pi})$. In the univariate case, if the argument ```software="rjags"``` is selected (the default option),  Gibbs sampling is performed by the package ```bayesmix```, and  the priors are:
+We fit our model by simulating $H=15000$ samples from the posterior distribution of $(\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\sigma}, \boldsymbol{\eta})$. In the univariate case, if the argument ```software="rjags"``` is selected (the default option),  Gibbs sampling is performed by the package ```bayesmix```, and  the priors are:
 
 \begin{eqnarray}
 \mu_j \sim & \mathcal{N}(\mu_0, 1/B_0)\\
-  \phi_j \sim & \mbox{invGamma}(\nu_0/2, \nu_0S_0/2)\\
-  \pi \sim & \mbox{Dirichlet}(\boldsymbol{\alpha})\\
+  \sigma_j \sim & \mbox{invGamma}(\nu_0/2, \nu_0S_0/2)\\
+  \eta \sim & \mbox{Dirichlet}(\boldsymbol{\alpha})\\
   S_0 \sim & \mbox{Gamma}(g_0/2, g_0G_0/2),
 \end{eqnarray}
 
@@ -187,11 +187,11 @@ If ```software="rstan"``` is selected, the priors are:
 
 \begin{eqnarray}
   \mu_j & \sim \mathcal{N}(\mu_0, 1/B0inv)\\
-  \phi_j & \sim \mbox{Lognormal}(\mu_{\phi}, \sigma_{\phi})\\
-  \pi_j & \sim \mbox{Uniform}(0,1),
+  \sigma_j & \sim \mbox{Lognormal}(\mu_{\sigma}, \tau_{\sigma})\\
+  \eta_j & \sim \mbox{Uniform}(0,1),
   \end{eqnarray}
 
-where the vector of the weights $\boldsymbol{\pi}=(\pi_1,\ldots,\pi_k)$ is a $k$-simplex.  Default hyperparameters values are: $\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2$. Here also, the users may choose their own hyperparameters values in the following way: ```priors = list(mu_phi = 0, sigma_phi = 1,...)```.
+where the vector of the weights $\boldsymbol{\eta}=(\eta_1,\ldots,\eta_k)$ is a $k$-simplex.  Default hyperparameters values are: $\mu_0=0, B0inv=0.1, \mu_{\sigma}=0, \tau_{\sigma}=2$. Here also, the users may choose their own hyperparameters values in the following way: ```priors = list(mu_sigma = 0, tau_sigma = 1,...)```.
 
 We fit the model using the ```rjags``` method, and we set the burnin period to 7500. 
  
@@ -217,18 +217,18 @@ piv_plot(y=y, res, rel, par = "mean", type="chains")
 piv_plot(y=y, res, rel, type="hist")
 ```
 
-The first plot displays the traceplots for the parameters $\boldsymbol{\mu}$. From the left plot showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean $\mu_j$ and the weights $\pi_j$, for $j=1,\ldots,k$. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting ```software="rstan"``` in the ```piv_MCMC``` function.
+The first plot displays the traceplots for the parameters $\boldsymbol{\mu}$. From the left plot showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean $\mu_j$ and the weights $\eta_j$, for $j=1,\ldots,k$. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting ```software="rstan"``` in the ```piv_MCMC``` function.
 
-```{r stan}
+```{r stan, fig.align= 'center', fig.width=7}
 res2 <- piv_MCMC(y = y, k = k, nMC = 3000, 
                  software = "rstan")
 rel2 <- piv_rel(res2)
 piv_plot(y=y, res2, rel2, par = "mean", type="chains")
 ```
 
-With the `rstan` option, we can use the `bayesplot` functions on the `stanfit` argument:
+With the `rstan` option, we can use the `bayesplot` functions on the \code{stanfit} argument:
 
-```{r bayesplot}
+```{r bayesplot,fig.align= 'center', fig.width=5}
 posterior <- as.array(res2$stanfit)
 mcmc_intervals(posterior, regex_pars = c("mu"))
 ```
@@ -237,6 +237,7 @@ Regardless of the software that we chose, we may extract the JAGS/Stan model by 
 
 ```{r model_code}
 cat(res$model)
+cat(res2$model)
 ```
 
  

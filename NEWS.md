@@ -5,7 +5,7 @@
 * stan divergences
 * runjags arguments renamed (mu, tau, theta)
 * more checks in piv_rel function
-* stanfit available (e.g., for bayesplot package)
+* stan fit available (e.g., for bayesplot package)
 * vignettes updated
 
 # pivmet 0.2.0

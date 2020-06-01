@@ -24,31 +24,31 @@
 #' @details
 #' The function fits univariate and multivariate Bayesian Gaussian mixture models of the form
 #' (here for univariate only):
-#' \deqn{(Y_i|Z_i=j) \sim \mathcal{N}(\mu_j,\phi_j),}
+#' \deqn{(Y_i|Z_i=j) \sim \mathcal{N}(\mu_j,\sigma_j),}
 #' where the \eqn{Z_i}, \eqn{i=1,\ldots,N}, are i.i.d. random variables, \eqn{j=1,\dots,k},
-#' \eqn{\phi_j} is the group variance,  \eqn{Z_i \in {1,\ldots,k }} are the
+#' \eqn{\sigma_j} is the group variance,  \eqn{Z_i \in {1,\ldots,k }} are the
 #' latent group allocation, and
-#' \deqn{P(Z_i=j)=\pi_j.}
+#' \deqn{P(Z_i=j)=\eta_j.}
 #' The likelihood of the model is then
-#' \deqn{L(y;\mu,\pi,\phi) = \prod_{i=1}^N \sum_{j=1}^k \pi_j \mathcal{N}(\mu_j,\phi_j),}
-#' where \eqn{(\mu, \phi)=(\mu_{1},\dots,\mu_{k},\phi_{1},\ldots,\phi_{k})}
-#' are the component-specific parameters and \eqn{\pi=(\pi_{1},\dots,\pi_{k})}
+#' \deqn{L(y;\mu,\eta,\sigma) = \prod_{i=1}^N \sum_{j=1}^k \eta_j \mathcal{N}(\mu_j,\sigma_j),}
+#' where \eqn{(\mu, \sigma)=(\mu_{1},\dots,\mu_{k},\sigma_{1},\ldots,\sigma_{k})}
+#' are the component-specific parameters and \eqn{\eta=(\eta_{1},\dots,\eta_{k})}
 #' the mixture weights. Let \eqn{\nu} denote a permutation of \eqn{{ 1,\ldots,k }},
 #' and let \eqn{\nu(\mu)= (\mu_{\nu(1)},\ldots,} \eqn{ \mu_{\nu(k)})},
-#' \eqn{\nu(\phi)= (\phi_{\nu(1)},\ldots,} \eqn{ \phi_{\nu(k)})},
-#' \eqn{ \nu(\pi)=(\pi_{\nu(1)},\ldots,\pi_{\nu(k)})} be the
-#' corresponding permutations of \eqn{\mu}, \eqn{\phi} and \eqn{\pi}.
+#' \eqn{\nu(\sigma)= (\sigma_{\nu(1)},\ldots,} \eqn{ \sigma_{\nu(k)})},
+#' \eqn{ \nu(\eta)=(\eta_{\nu(1)},\ldots,\eta_{\nu(k)})} be the
+#' corresponding permutations of \eqn{\mu}, \eqn{\sigma} and \eqn{\eta}.
 #'  Denote by \eqn{V} the set of all the permutations of the indexes
 #'  \eqn{{1,\ldots,k }}, the likelihood above is invariant under any
 #'  permutation \eqn{\nu \in V}, that is
 #' \deqn{
-#' L(y;\mu,\pi,\phi) = L(y;\nu(\mu),\nu(\pi),\nu(\phi)).}
+#' L(y;\mu,\eta,\sigma) = L(y;\nu(\mu),\nu(\eta),\nu(\sigma)).}
 #' As a consequence, the model is unidentified with respect to an
 #' arbitrary permutation of the labels.
 #' When Bayesian inference for the model is performed,
-#' if the prior distribution \eqn{p_0(\mu,\pi,\phi)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\pi,\phi) = p_0(\nu(\mu),\nu(\pi),\phi)}, then
+#' if the prior distribution \eqn{p_0(\mu,\eta,\sigma)} is invariant under a permutation of the indices, then so is the posterior. That is, if \eqn{p_0(\mu,\eta,\sigma) = p_0(\nu(\mu),\nu(\eta),\sigma)}, then
 #'\deqn{
-#' p(\mu,\pi,\phi| y) \propto p_0(\mu,\pi,\phi)L(y;\mu,\pi,\phi)}
+#' p(\mu,\eta,\sigma| y) \propto p_0(\mu,\eta,\sigma)L(y;\mu,\eta,\sigma)}
 #' is multimodal with (at least) \eqn{k!} modes.
 #'
 #' Depending on the selected software, the model parametrization
@@ -63,8 +63,8 @@
 #' \code{bayesmix} package:
 #'
 #'  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
-#'  \deqn{\phi_j \sim \mbox{invGamma}(nu0Half, nu0S0Half)}
-#'  \deqn{\pi \sim \mbox{Dirichlet}(1,\ldots,1)}
+#'  \deqn{\sigma_j \sim \mbox{invGamma}(nu0Half, nu0S0Half)}
+#'  \deqn{\eta \sim \mbox{Dirichlet}(1,\ldots,1)}
 #'  \deqn{S0 \sim \mbox{Gamma}(g0Half, g0G0Half),}
 #'
 #'  with default values: \eqn{\mu_0=0, B0inv=0.1, nu0Half =10, S0=2,
@@ -80,19 +80,19 @@
 #'  When \code{software="rstan"}, the prior specification is:
 #'
 #'  \deqn{\mu_j \sim \mathcal{N}(\mu_0, 1/B0inv)}
-#'  \deqn{\phi_j \sim \mbox{Lognormal}(\mu_{\phi}, \sigma_{\phi})}
-#'  \deqn{\pi_j \sim \mbox{Uniform}(0,1),}
+#'  \deqn{\sigma_j \sim \mbox{Lognormal}(\mu_{\sigma}, \tau_{\sigma})}
+#'  \deqn{\eta_j \sim \mbox{Uniform}(0,1),}
 #'
-#'  with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\phi}=0, \sigma_{\phi}=2}.
+#'  with default values: \eqn{\mu_0=0, B0inv=0.1, \mu_{\sigma}=0, \tau_{\sigma}=2}.
 #' The users may specify new hyperparameter values with the argument:
 #'
-#' \code{priors=list(mu_0=1, B0inv=0.2, mu_phi=3, sigma_phi=5)}
+#' \code{priors=list(mu_0=1, B0inv=0.2, mu_sigma=3, tau_sigma=5)}
 #'
 #'For multivariate mixtures, when \code{software="rjags"} the prior specification is the following:
 #'
 #'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, S2)}
-#'\deqn{ 1/\Sigma \sim \mbox{Wishart}(S3, D+1)}
-#'\deqn{\pi \sim \mbox{Dirichlet}(\bm{\alpha}),}
+#'\deqn{ \Sigma^{-1} \sim \mbox{Wishart}(S3, D+1)}
+#'\deqn{\eta \sim \mbox{Dirichlet}(\bm{\alpha}),}
 #'
 #'where  \eqn{\bm{\alpha}} is a \eqn{k}-dimensional vector
 #'and \eqn{S_2} and \eqn{S_3}
@@ -111,21 +111,21 @@
 #'When \code{software="rstan"}, the prior specification is:
 #'
 #'\deqn{ \bm{\mu}_j  \sim \mathcal{N}_D(\bm{\mu}_0, LD*L^{T})}
-#'\deqn{L \sim \mbox{LKJ}(\eta)}
-#'\deqn{D_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
+#'\deqn{L \sim \mbox{LKJ}(\epsilon)}
+#'\deqn{D^*_j \sim \mbox{HalfCauchy}(0, \sigma_d).}
 #'
 #'The covariance matrix is expressed in terms of the LDL decomposition as \eqn{LD*L^{T}},
 #'a variant of the classical Cholesky decomposition, where \eqn{L} is a \eqn{D \times D}
 #'lower unit triangular matrix and \eqn{D*} is a \eqn{D \times D} diagonal matrix.
-#'The Cholesky correlation factor \eqn{L} is assigned a LKJ prior with \eqn{\eta} degrees of freedom,  which,
+#'The Cholesky correlation factor \eqn{L} is assigned a LKJ prior with \eqn{\epsilon} degrees of freedom,  which,
 #'combined with priors on the standard deviations of each component, induces a prior on the covariance matrix;
-#'as \eqn{\eta \rightarrow \infty} the magnitude of correlations between components decreases,
-#'whereas \eqn{\eta=1} leads to a uniform prior distribution for \eqn{L}.
-#'By default, the hyperparameters are \eqn{\bm{\mu}_0=\bm{0}}, \eqn{\sigma_d=2.5, \eta=1}.
+#'as \eqn{\epsilon \rightarrow \infty} the magnitude of correlations between components decreases,
+#'whereas \eqn{\epsilon=1} leads to a uniform prior distribution for \eqn{L}.
+#'By default, the hyperparameters are \eqn{\bm{\mu}_0=\bm{0}}, \eqn{\sigma_d=2.5, \epsilon=1}.
 #'The user may propose some different values with the argument:
 #'
 #'
-#' \code{priors=list(mu_0=c(1,2), sigma_d = 4, eta =2)}
+#' \code{priors=list(mu_0=c(1,2), sigma_d = 4, epsilon =2)}
 #'
 #'
 #' If \code{software="rjags"} the function performs JAGS sampling using the \code{bayesmix} package
@@ -431,8 +431,8 @@ piv_MCMC <- function(y,
       if(missing(priors)){
         mu_0 <- 0
         B0inv <- 0.1
-        mu_phi <- 0
-        sigma_phi <- 2
+        mu_sigma <- 0
+        tau_sigma <- 2
       }else{
         if (is.null(priors$mu_0)){
           mu_0 <- 0
@@ -444,21 +444,21 @@ piv_MCMC <- function(y,
         }else{
           B0inv <- priors$B0inv
         }
-        if (is.null(priors$mu_phi)){
-          mu_phi <- 0
+        if (is.null(priors$mu_sigma)){
+          mu_sigma <- 0
         }else{
-          mu_phi <- priors$mu_phi
+          mu_sigma <- priors$mu_sigma
         }
-        if (is.null(priors$sigma_phi)){
-          sigma_phi <- 2
+        if (is.null(priors$tau_sigma)){
+          tau_sigma <- 2
         }else{
-          sigma_phi <- priors$sigma_phi
+          tau_sigma <- priors$tau_sigma
         }
       }
 
       data = list(N=N, y=y, k=k,
                   mu_0=mu_0, B0inv=B0inv,
-                  mu_phi=mu_phi, sigma_phi=sigma_phi)
+                  mu_sigma=mu_sigma, tau_sigma=tau_sigma)
       mix_univ <-"
         data {
           int<lower=1> k;          // number of mixture components
@@ -466,31 +466,31 @@ piv_MCMC <- function(y,
           real y[N];               // observations
           real mu_0;               // mean hyperparameter
           real<lower=0> B0inv;     // mean hyperprecision
-          real mu_phi;             // sigma hypermean
-          real<lower=0> sigma_phi; // sigma hyper sd
+          real mu_sigma;           // sigma hypermean
+          real<lower=0> tau_sigma; // sigma hyper sd
           }
         parameters {
-          simplex[k] theta;        // mixing proportions
+          simplex[k] eta;             // mixing proportions
           ordered[k] mu;              // locations of mixture components
           vector<lower=0>[k] sigma;   // scales of mixture components
           }
       transformed parameters{
-          vector[k] log_theta = log(theta);  // cache log calculation
+          vector[k] log_eta = log(eta);  // cache log calculation
           vector[k] pz[N];
           simplex[k] exp_pz[N];
               for (n in 1:N){
                   pz[n] =   normal_lpdf(y[n]|mu, sigma)+
-                            log_theta-
+                            log_eta-
                             log_sum_exp(normal_lpdf(y[n]|mu, sigma)+
-                            log_theta);
+                            log_eta);
                   exp_pz[n] = exp(pz[n]);
                             }
           }
       model {
-        sigma ~ lognormal(mu_phi, sigma_phi);
+        sigma ~ lognormal(mu_sigma, tau_sigma);
         mu ~ normal(mu_0, 1/B0inv);
             for (n in 1:N) {
-              vector[k] lps = log_theta;
+              vector[k] lps = log_eta;
                 for (j in 1:k){
                     lps[j] += normal_lpdf(y[n] | mu[j], sigma[j]);
                     target+=pz[n,j];
@@ -510,14 +510,14 @@ piv_MCMC <- function(y,
                         chains =chains,
                         iter =nMC)
       stanfit <- fit_univ
-      printed <- cat(print(fit_univ, pars =c("mu", "theta", "sigma")))
+      printed <- cat(print(fit_univ, pars =c("mu", "eta", "sigma")))
       sims_univ <- rstan::extract(fit_univ)
 
       J <- 3
       mcmc.pars <- array(data = NA, dim = c(dim(sims_univ$theta)[1], k, J))
       mcmc.pars[ , , 1] <- sims_univ$mu
       mcmc.pars[ , , 2] <- sims_univ$sigma
-      mcmc.pars[ , , 3] <- sims_univ$theta
+      mcmc.pars[ , , 3] <- sims_univ$eta
 
       mu_pre_switch_compl <-  mcmc.pars[ , , 1]
       tau_pre_switch_compl <-  mcmc.pars[ , , 2]
@@ -661,7 +661,7 @@ piv_MCMC <- function(y,
     for (i in 1:N){
       yprev[i,1:D]<-y[i,1:D]
       y[i,1:D] ~ dmnorm(mu[clust[i],],tau)
-      clust[i] ~ dcat(theta[1:k] )
+      clust[i] ~ dcat(eta[1:k] )
     }
 
     # Prior:
@@ -670,7 +670,7 @@ piv_MCMC <- function(y,
       mu[g,1:D] ~ dmnorm(mu_0[],S2[,])}
       tau[1:D,1:D] ~ dwish(S3[,],D+1)
       Sigma[1:D,1:D] <- inverse(tau[,])
-      theta[1:k] ~ ddirch(alpha)
+      eta[1:k] ~ ddirch(alpha)
   }"
 
       init1.biv <- list()
@@ -679,7 +679,7 @@ piv_MCMC <- function(y,
                                     tau= 15*diag(D),
                                     theta=rep(1/k,k), clust=clust_inits))
       }
-      moni.biv <- c("clust","mu","tau","theta")
+      moni.biv <- c("clust","mu","tau","eta")
 
       mod   <- mod.mist.biv
       dati  <- dati.biv
@@ -692,7 +692,7 @@ piv_MCMC <- function(y,
                            sample=nMC, burnin=burn)
       printed <- print(add.summary(ogg.jags, vars= c("mu",
                       "tau",
-                      "theta")))
+                      "eta")))
       # Extraction
       ris <- ogg.jags$mcmc[[1]]
 
@@ -701,7 +701,7 @@ piv_MCMC <- function(y,
 
       # only the variances
       tau <- sqrt( (1/ris[-(1:burn),grep("tau[",colnames(ris),fixed=TRUE)])[,c(1,4)])
-      prob.st <- ris[-(1:burn),grep("theta[",colnames(ris),fixed=TRUE)]
+      prob.st <- ris[-(1:burn),grep("eta[",colnames(ris),fixed=TRUE)]
       M <- nrow(group)
       H <- list()
 
@@ -745,14 +745,14 @@ piv_MCMC <- function(y,
       mcmc_sd_raw = tau
 
       tau <- sqrt( (1/ris[,grep("tau[",colnames(ris),fixed=TRUE)])[,c(1,4)])
-      prob.st <- ris[,grep("theta[",colnames(ris),fixed=TRUE)]
+      prob.st <- ris[,grep("eta[",colnames(ris),fixed=TRUE)]
       mu <- mu_pre_switch
 
 
     }else if(software=="rstan"){
       if (missing(priors)){
         mu_0 <- rep(0, D)
-        eta <- 1
+        epsilon <- 1
         sigma_d <- 2.5
       }else{
         if (is.null(priors$mu_0)){
@@ -760,10 +760,10 @@ piv_MCMC <- function(y,
         }else{
           mu_0 <- priors$mu_0
         }
-        if (is.null(priors$eta)){
-          eta <- 1
+        if (is.null(priors$epsilon)){
+          epsilon <- 1
         }else{
-          eta  <- priors$eta
+          epsilon  <- priors$epsilon
         }
         if (is.null(priors$sigma_d)){
           sigma_d <- 2.5
@@ -772,7 +772,7 @@ piv_MCMC <- function(y,
         }
       }
       data =list(N=N, k=k, y=y, D=D, mu_0=mu_0,
-                 eta = eta, sigma_d = sigma_d)
+                 epsilon = epsilon, sigma_d = sigma_d)
       mix_biv <- "
         data {
           int<lower=1> k;          // number of mixture components
@@ -780,11 +780,11 @@ piv_MCMC <- function(y,
           int D;                   // data dimension
           matrix[N,D] y;           // observations matrix
           vector[D] mu_0;
-          real<lower=0> eta;
+          real<lower=0> epsilon;
           real<lower=0> sigma_d;
         }
         parameters {
-          simplex[k] theta;        // mixing proportions
+          simplex[k] eta;         // mixing proportions
           vector[D] mu[k];        // locations of mixture components
           cholesky_factor_corr[D] L_Omega;   // scales of mixture components
           vector<lower=0>[D] L_sigma;
@@ -792,7 +792,7 @@ piv_MCMC <- function(y,
           vector<lower=0>[D] L_tau;
           }
         transformed parameters{
-          vector[k] log_theta = log(theta);  // cache log calculation
+          vector[k] log_eta = log(eta);  // cache log calculation
           vector[k] pz[N];
           simplex[k] exp_pz[N];
           matrix[D,D] L_Sigma=diag_pre_multiply(L_sigma, L_Omega);
@@ -801,19 +801,19 @@ piv_MCMC <- function(y,
 
             for (n in 1:N){
                 pz[n]=   multi_normal_cholesky_lpdf(y[n]|mu, L_Sigma)+
-                         log_theta-
+                         log_eta-
                          log_sum_exp(multi_normal_cholesky_lpdf(y[n]|
                                                      mu, L_Sigma)+
-                         log_theta);
+                         log_eta);
                 exp_pz[n] = exp(pz[n]);
               }
           }
         model{
-          L_Omega ~ lkj_corr_cholesky(eta);
+          L_Omega ~ lkj_corr_cholesky(epsilon);
           L_sigma ~ cauchy(0, sigma_d);
           mu ~ multi_normal_cholesky(mu_0, L_Tau);
             for (n in 1:N) {
-              vector[k] lps = log_theta;
+              vector[k] lps = log_eta;
                 for (j in 1:k){
                     lps[j] += multi_normal_cholesky_lpdf(y[n] |
                                                    mu[j], L_Sigma);
@@ -834,7 +834,7 @@ piv_MCMC <- function(y,
                        chains =chains,
                        iter =nMC)
       stanfit <- fit_biv
-      printed <- cat(print(fit_biv, pars=c("mu", "theta", "L_Sigma")))
+      printed <- cat(print(fit_biv, pars=c("mu", "eta", "L_Sigma")))
       sims_biv <- rstan::extract(fit_biv)
 
       # Extraction
