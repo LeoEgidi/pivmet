@@ -1,11 +1,11 @@
 # pivmet 0.3.0
 
-* drop package dependencies
-* multivariate mixtures (piv_sim, piv_mcmc, piv_rel, piv_plot)
+* drop packages dependencies
+* multivariate mixtures allowed 
 * stan divergences
-* rename runjags arguments (mu, tau, theta)
-* checks in piv_rel function
-* bayesplot linked to stan fit
+* runjags arguments renamed (mu, tau, theta)
+* more checks in piv_rel function
+* stanfit available (e.g., for bayesplot package)
 
 # pivmet 0.2.0
 

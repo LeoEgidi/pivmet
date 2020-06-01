@@ -75,7 +75,7 @@ with the raw MCMC chains for the weights parameters as given by JAGS/Stan.}
 \code{"diana"} or \code{"hclust"}.}
 \item{\code{pivots}}{The vector of indices of pivotal units identified by the selected pivotal criterion.}
 \item{\code{model}}{The JAGS/Stan model code. Apply the \code{"cat"} function for a nice visualization of the code.}
-\item{\code{stanfit}}{An object of S4 class \code{\link[rstan]{stanfit}} for the fitted model (only if \code{software="rstan"}).}
+\item{\code{stanfit}}{An object of S4 class \code{\link[stanfit]{stanfit}} for the fitted model (only if \code{software="rstan"}).}
 }
 \description{
 Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
