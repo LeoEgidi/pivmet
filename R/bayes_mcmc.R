@@ -185,7 +185,7 @@
 #' \code{"diana"} or \code{"hclust"}.}
 #' \item{\code{pivots}}{The vector of indices of pivotal units identified by the selected pivotal criterion.}
 #' \item{\code{model}}{The JAGS/Stan model code. Apply the \code{"cat"} function for a nice visualization of the code.}
-#' \item{\code{stanfit}}{An object of S4 class \code{\link[stanfit-class]{stanfit}} for the fitted model (only if \code{software="rstan"}).}
+#' \item{\code{stanfit}}{An object of S4 class \code{\link[stanfit]{stanfit}} for the fitted model (only if \code{software="rstan"}).}
 #'
 #' @author Leonardo Egidi \email{legidi@units.it}
 #' @references Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018). Relabelling in Bayesian Mixture
