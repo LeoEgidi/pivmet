@@ -7,6 +7,7 @@ export(piv_sim)
 export(MUS)
 export(piv_KMeans)
 import(rjags)
+import(bayesplot)
 importFrom(bayesmix, BMMmodel, BMMpriors, priorsFish,
            JAGScontrol, JAGSrun)
 importFrom(mvtnorm, rmvnorm)
