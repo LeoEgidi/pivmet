@@ -980,7 +980,7 @@ piv_MCMC <- function(y,
     if (k <=4 & sum(C==0)!=0){
 
       mus_res    <- MUS(C, grr)
-      clust  <-  mus_res$pivots
+      pivots     <-  mus_res$pivots
 
     }else{
 
