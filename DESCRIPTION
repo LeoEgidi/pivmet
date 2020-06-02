@@ -27,5 +27,5 @@ Imports: cluster, mclust, MASS,
           rjags, mvtnorm, RcmdrMisc
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 BuildManual: yes

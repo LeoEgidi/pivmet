@@ -76,7 +76,7 @@ We may generate Gaussian mixture data through the function `piv_sim`, specifying
 
 
 ```{r nested, fig.align ='center'}
-set.seed(50)
+set.seed(500)
 N  <- 200
 k  <- 3
 D <- 2
