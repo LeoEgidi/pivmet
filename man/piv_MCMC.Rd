@@ -4,18 +4,10 @@
 \alias{piv_MCMC}
 \title{JAGS/Stan Sampling for Gaussian Mixture Models and Clustering via Co-Association Matrix.}
 \usage{
-piv_MCMC(
-  y,
-  k,
-  nMC,
-  priors,
-  piv.criterion = c("MUS", "maxsumint", "minsumnoint", "maxsumdiff"),
-  clustering = c("diana", "hclust"),
-  software = c("rjags", "rstan"),
-  burn = 0.5 * nMC,
-  chains = 4,
-  cores = 1
-)
+piv_MCMC(y, k, nMC, priors, piv.criterion = c("MUS", "maxsumint",
+  "minsumnoint", "maxsumdiff"), clustering = c("diana", "hclust"),
+  software = c("rjags", "rstan"), burn = 0.5 * nMC, chains = 4,
+  cores = 1)
 }
 \arguments{
 \item{y}{\eqn{N}-dimensional vector for univariate data or
