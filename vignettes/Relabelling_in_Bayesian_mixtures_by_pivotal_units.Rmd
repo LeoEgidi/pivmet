@@ -88,7 +88,7 @@ M3 <- c(30,8)
 Mu <- rbind(M1,M2,M3)
 # covariance matrices for the two subgroups
 Sigma.p1 <- diag(D)
-Sigma.p2 <- 15*diag(D)
+Sigma.p2 <- (10^2)*diag(D)
 # subgroups' weights
 W   <- c(0.2,0.8)
 # simulate data
@@ -129,7 +129,7 @@ We fit the model using `rjags` with 2000 MCMC iterations and default priors:
 
 ```{r mcmc, message =  FALSE, warning = FALSE}
 res <- piv_MCMC(y = sim$y, k= k, nMC =nMC, 
-                piv.criterion = "MUS")
+                piv.criterion = "maxsumdiff")
 ```
 
 Once we obtain posterior estimates, label switching is likely to occurr. For such a reason, we need to relabel our chains as explained above. In order to relabel the chains, the function `piv_rel` can be used, which only needs the `mcmc = res` argument.  Relabelled outputs can be displayed through the function `piv_plot`, with different options for the argument `type`:
@@ -219,7 +219,8 @@ piv_plot(y=y, res, rel, type="hist")
 
 The first plot displays the traceplots for the parameters $\boldsymbol{\mu}$. From the left plot showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean $\mu_j$ and the weights $\eta_j$, for $j=1,\ldots,k$. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting ```software="rstan"``` in the ```piv_MCMC``` function.
 
-```{r stan, fig.align= 'center', fig.width=7}
+```{r stan, eval = FALSE, fig.align= 'center', fig.width=7}
+# stan code not evaluated here
 res2 <- piv_MCMC(y = y, k = k, nMC = 3000, 
                  software = "rstan")
 rel2 <- piv_rel(res2)
@@ -228,7 +229,8 @@ piv_plot(y=y, res2, rel2, par = "mean", type="chains")
 
 With the `rstan` option, we can use the `bayesplot` functions on the \code{stanfit} argument:
 
-```{r bayesplot,fig.align= 'center', fig.width=5}
+```{r bayesplot, eval = FALSE, fig.align= 'center', fig.width=5}
+# stan code not evaluated here
 posterior <- as.array(res2$stanfit)
 mcmc_intervals(posterior, regex_pars = c("mu"))
 ```
@@ -237,7 +239,6 @@ Regardless of the software that we chose, we may extract the JAGS/Stan model by 
 
 ```{r model_code}
 cat(res$model)
-cat(res2$model)
 ```
 
  
