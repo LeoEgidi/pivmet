@@ -11,7 +11,7 @@ piv_MCMC(y, k, nMC, priors, piv.criterion = c("MUS", "maxsumint",
 }
 \arguments{
 \item{y}{\eqn{N}-dimensional vector for univariate data or
-\eqn{N \times D} matrix for bivariate data.}
+\eqn{N \times D} matrix for multivariate data.}
 
 \item{k}{Number of mixture components.}
 
