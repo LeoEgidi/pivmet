@@ -2,7 +2,7 @@
 #'
 #' Perform MCMC JAGS sampling or HMC Stan sampling for Gaussian mixture models, post-process the chains and apply a clustering technique to the MCMC sample. Pivotal units for each group are selected among four alternative criteria.
 #' @param y \eqn{N}-dimensional vector for univariate data or
-#' \eqn{N \times D} matrix for bivariate data.
+#' \eqn{N \times D} matrix for multivariate data.
 #' @param k Number of mixture components.
 #' @param nMC Number of MCMC iterations for the JAGS/Stan function execution.
 #' @param priors Input prior hyperparameters (see Details for default options).
