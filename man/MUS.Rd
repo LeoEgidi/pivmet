@@ -83,7 +83,7 @@ for (h in 1:H){
    a[h,] <- kmeans(x,centers)$cluster
 }
 
-sim_matr <- matrix(1, N,N)
+sim_matr <- matrix(NA, N,N)
 for (i in 1:(N-1)){
   for (j in (i+1):N){
      sim_matr[i,j] <- sum(a[,i]==a[,j])/H

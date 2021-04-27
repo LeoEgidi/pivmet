@@ -71,7 +71,7 @@ for (h in 1:H){
 }
 # Build the co-association matrix
 
-C <- matrix(1, N,N)
+C <- matrix(NA, N,N)
 for (i in 1:(N-1)){
  for (j in (i+1):N){
    C[i,j] <- sum(a[,i]==a[,j])/H

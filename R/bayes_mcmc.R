@@ -9,7 +9,7 @@
 #' @param piv.criterion The pivotal criterion used for identifying one pivot
 #' for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 #' "maxsumdiff"}.
-#' The default method is \code{"maxsumdiff"} (see the Details and
+#' The default method is \code{"maxsumint"} (see the Details and
 #' the vignette).
 #' @param clustering The algorithm adopted for partitioning the
 #' \eqn{N} observations into \code{k} groups. Possible choices are \code{"diana"} (default) or
@@ -266,7 +266,7 @@ piv_MCMC <- function(y,
 
   # piv.criterion
   if (missing(piv.criterion)){
-    piv.criterion <- "maxsumdiff"
+    piv.criterion <- "maxsumint"
   }
   list_crit <- c("MUS", "maxsumint", "minsumnoint", "maxsumdiff")
   piv.criterion <- match.arg(piv.criterion, list_crit)
@@ -963,7 +963,7 @@ piv_MCMC <- function(y,
                              "maxsumdiff")
 
   if (missing(piv.criterion)){
-    piv.criterion <- "maxsumdiff"
+    piv.criterion <- "maxsumint"
   }
 
   if (piv.criterion=="maxsumint"||
@@ -984,7 +984,7 @@ piv_MCMC <- function(y,
 
     }else{
 
-      print("maxsumdiff criterion instead of MUS has been adopted due to
+      print("maxsumint criterion instead of MUS has been adopted due to
           computational efficiency")
       clust  <-  piv_sel(C=C,  clusters=as.vector(grr))
       pivots <- clust$pivots[,3]
