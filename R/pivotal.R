@@ -125,34 +125,19 @@ Cg  <- matrix(NA, ncol=3, nrow=k)
       ind.gi  <- rbind(ind.gi,c(j,sort(C[j,com.gi],
         decreasing=TRUE)))
       ind.gi1 <- rbind(ind.gi1,c(j,
-        # criteria involving maximization
-        #max(C[j,com.gi],na.rm=TRUE),          #dropped
         sum(C[j,com.gi],na.rm=TRUE),           #maxsumint
-        # criteria involving minimization
-        #min(C[j,com.gi],na.rm=TRUE),          #dropped
-        #min(C[j,com.ngi]),                    #dropped
         sum(C[j,com.ngi]),                     #minsumnoint
-        # another criterion involving maximization
         sum(C[j,com.gi],na.rm=TRUE)-sum(C[j,com.ngi])))
   }                                            #maxsumdiff
 
 # Methods: from 1 to 4
-    # if (!is.null(ind.gi))
-    #   Cg[g.i, 1] <- com.gi[which.max(ind.gi1[,2])]
+
     if (!is.null(ind.gi))
       Cg[g.i, 1] <- com.gi[which.max(ind.gi1[,2])]
     if (!is.null(ind.gi))
       Cg[g.i, 2] <- com.gi[which.min(ind.gi1[,3])]
     if (!is.null(ind.gi))
-      Cg[g.i, 3] <- com.gi[which.min(ind.gi1[,4])]
-    # if (!is.null(ind.gi))
-    #   Cg[g.i, 5] <- com.gi[which.min(ind.gi1[,6])]
-    # if (!is.null(ind.gi))
-    #   Cg[g.i, 6] <- com.gi[which.max(ind.gi1[,7])]
-    # if (available_met==4){
-    # if (!is.null(ind.gi))
-    #   Cg[, 4]    <-  t(maxima)
-    # }
+      Cg[g.i, 3] <- com.gi[which.max(ind.gi1[,4])]
     if (!is.null(ind.gi)){
       Cg1[g.i] <- ind.gi[do.call(order,
         as.data.frame(-ind.gi[,-1]))[1],1]
