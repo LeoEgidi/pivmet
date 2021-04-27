@@ -184,7 +184,7 @@ piv_KMeans <- function (x, centers,
   for (h in 1:H) {
     a[h, ] <- kmeans(x, centers)$cluster
   }
-  sim_matr <- matrix(1, n, n)
+  sim_matr <- matrix(NA, n, n)
   for (i in 1:(n - 1)) {
     for (j in (i + 1):n) {
       sim_matr[i, j] <- sum(a[, i] == a[, j])/H

@@ -70,7 +70,7 @@
 #'}
 #' # Build the co-association matrix
 #'
-#'C <- matrix(1, N,N)
+#'C <- matrix(NA, N,N)
 #'for (i in 1:(N-1)){
 #'  for (j in (i+1):N){
 #'    C[i,j] <- sum(a[,i]==a[,j])/H
@@ -171,12 +171,7 @@ colnames(Cg) <- c("maxsumint", "minsumnoint", "maxsumdiff")
 # submatrix <- round(C[Cg,Cg],5)
 # T <- max(submatrix[upper.tri(submatrix)])
 
-  return(list(
-    #pr=pr,
-     pivots=Cg
-    #Submatrix=submatrix,
-    #Max=T
-    ))
+  return(list(pivots=Cg))
 }
 
 

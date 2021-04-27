@@ -931,7 +931,7 @@ piv_MCMC <- function(y,
   # Similarity matrix based on MCMC sampling------------------------
   nz <- dim(z)[1]
   M <- dim(z)[3]
-  C <- matrix(1,nz,nz)
+  C <- matrix(NA,nz,nz)
   zm <- apply(z,c(1,3),FUN=function(x) sum(x*(1:length(x))))
 
   for (i in 1:(nz-1)){
