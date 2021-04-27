@@ -300,7 +300,7 @@ piv_MCMC <- function(y,
     N <- length(y)
     # Initial values
     mu_inits<- c()
-    clust_inits <- kmeans(y, k)$cluster
+    clust_inits <- kmeans(y, k, nstart = 10)$cluster
     for (j in 1:k){
       mu_inits[j]<-mean(y[clust_inits==j])
     }
@@ -605,7 +605,7 @@ piv_MCMC <- function(y,
     N <- dim(y)[1]
     D <- dim(y)[2]
     # Parameters' initialization
-    clust_inits <- KMeans(y, k)$cluster
+    clust_inits <- kmeans(y, k, nstart = 10)$cluster
     #cutree(hclust(dist(y), "average"),k)
     mu_inits <- matrix(0,k,D)
     for (j in 1:k){
