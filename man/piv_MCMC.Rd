@@ -22,7 +22,7 @@ piv_MCMC(y, k, nMC, priors, piv.criterion = c("MUS", "maxsumint",
 \item{piv.criterion}{The pivotal criterion used for identifying one pivot
 for each group. Possible choices are: \code{"MUS", "maxsumint", "minsumnoint",
 "maxsumdiff"}.
-The default method is \code{"maxsumdiff"} (see the Details and
+The default method is \code{"maxsumint"} (see the Details and
 the vignette).}
 
 \item{clustering}{The algorithm adopted for partitioning the
