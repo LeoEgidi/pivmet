@@ -4,10 +4,10 @@
 \alias{piv_KMeans}
 \title{k-means Clustering Using Pivotal Algorithms For Seeding}
 \usage{
-piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
+piv_KMeans(x, centers, alg.type = c("kmeans", "hclust"),
   method = "average", piv.criterion = c("MUS", "maxsumint",
-  "minsumnoint", "maxsumdiff"), H = 1000, iter.max = 10,
-  num.seeds = 10, prec_par = 10)
+  "minsumnoint", "maxsumdiff"), H = 1000, iter.max = 10, nstart = 10,
+  prec_par = 10)
 }
 \arguments{
 \item{x}{A \eqn{N \times D} data matrix, or an object that can be coerced to such a matrix (such as a numeric vector or a dataframe with all numeric columns).}
@@ -16,7 +16,7 @@ piv_KMeans(x, centers, alg.type = c("KMeans", "hclust"),
 
 \item{alg.type}{The clustering algorithm for the initial partition of the
 \eqn{N} units into the desired number of clusters.
-Possible choices are \code{"KMeans"} (default) and \code{"hclust"}.}
+Possible choices are \code{"kmeans"} (default) and \code{"hclust"}.}
 
 \item{method}{If \code{alg.type} is \code{"hclust"}, the character string
 defining the clustering method. The methods implemented are  \code{"single"},
@@ -32,9 +32,9 @@ the vignette).}
 
 \item{H}{The number of distinct \eqn{k}-means runs used for building the \eqn{N \times N} co-association matrix. Default is 10^3.}
 
-\item{iter.max}{If \code{alg.type} is \code{"KMeans"}, the maximum number of iterations to be passed to \code{KMeans()}. Default is 10.}
+\item{iter.max}{If \code{alg.type} is \code{"kmeans"}, the maximum number of iterations to be passed to \code{kmeans()}. Default is 10.}
 
-\item{num.seeds}{If \code{alg.type} is \code{"KMeans"}, the number of different starting random seeds to be passed to \code{KMeans()}. Default is 10.}
+\item{nstart}{If \code{alg.type} is \code{"kmeans"}, the number of different starting random seeds to be passed to \code{kmeans()}. Default is 10.}
 
 \item{prec_par}{If \code{piv.criterion} is \code{"MUS"}, the maximum number of competing pivots in each group. If groups' sizes are less than the default value, which is 10,
 then it is set equal to the cardinality of the smallest group in the initial partition.}
@@ -64,8 +64,8 @@ improving the clustering solution starting from a careful seeding.
 In particular, it performs a pivot-based initialization step
 using pivotal methods to find the initial centers
 for the clustering procedure. The starting point consists of multiple
-runs of the classical k-means (which uses random seeds via \code{Kmeans}
-function of the \code{RcmdrMisc} package)
+runs of the classical k-means by selecting \code{nstart>1} in the
+\code{kmeans} function,
 with a fixed number of clusters
 in order to build the co-association matrix of data units.
 }

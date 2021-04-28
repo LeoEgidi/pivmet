@@ -532,12 +532,10 @@ piv_MCMC <- function(y,
 
       if (sum(numeffettivogruppi==k)==0){
         return(print("HMC has not never been able to identify the required number of groups and the process has been interrupted"))
-        #return(1)
       }
 
       ##saved in the output
       ris_prel <- as.matrix(fit_univ)
-      #[-(1:burn),]
       ris <- ris_prel[numeffettivogruppi==k,]
       group <- group[numeffettivogruppi==k,]
       mu <- mu[numeffettivogruppi==k,]
@@ -561,9 +559,10 @@ piv_MCMC <- function(y,
     cont <- 0
     for (verogruppo in verigruppi){
       cont <- cont+1
-      group.orig[group==verogruppo] <- cont          #aggiorna contatore pivot
+      # update pivot counter
+      group.orig[group==verogruppo] <- cont
     }
-    cont                                           #qualche dubbio su sta parte
+    cont
 
     k.orig <- k
     if (cont>1){
@@ -606,7 +605,6 @@ piv_MCMC <- function(y,
     D <- dim(y)[2]
     # Parameters' initialization
     clust_inits <- kmeans(y, k, nstart = 10)$cluster
-    #cutree(hclust(dist(y), "average"),k)
     mu_inits <- matrix(0,k,D)
     for (j in 1:k){
       for (d in 1:D){
@@ -722,14 +720,12 @@ piv_MCMC <- function(y,
 
       if (sum(numeffettivogruppi==k)==0){
         return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
-        #return(1)
       }else{
         L<-list()
         mu_pre_switch <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
         for (i in 1:k){
           L[[i]] <- ris[,grep(paste("mu[", i, sep=""),
                                     colnames(ris),fixed=TRUE)]
-          #[,c(i,i+k)]
         }
         for (i in 1:k){
           mu_pre_switch[,,i] <- as.matrix(L[[i]])
@@ -856,7 +852,6 @@ piv_MCMC <- function(y,
 
       if (sum(numeffettivogruppi==k)==0){
         return(print("HMC has not never been able to identify the required number of groups and the process has been interrupted"))
-        #return(1)
       }else{
 
         mu_pre_switch <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
@@ -875,15 +870,12 @@ piv_MCMC <- function(y,
       FreqGruppiJags <- table(group)
 
       model_code <- mix_biv
-
-
     }
 
     group.orig <- group
     verigruppi <- as.double(names(table(group)))
     prob.st <- prob.st[,verigruppi]
     mu <- mu[,,verigruppi]
-    #tau <- tau[,verigruppi]
 
     # Switching Post
     cont <- 0
@@ -946,7 +938,6 @@ piv_MCMC <- function(y,
   # Clustering on dissimilarity matrix-------------
 
   if (missing(clustering)){
-    #clustering <- "diana"
     gr  <- diana(matdissim,diss=TRUE)
     grr <- cutree(gr, k)
   }else if(clustering =="diana"){
@@ -998,9 +989,7 @@ piv_MCMC <- function(y,
 
 
   return(list( true.iter = true.iter,
-               #z=z,
                Mu = mu_inits,
-               #ris=ris,
                groupPost=group,
                mcmc_mean = mcmc_mean,
                mcmc_sd = mcmc_sd,
@@ -1011,7 +1000,6 @@ piv_MCMC <- function(y,
                C=C,
                grr=grr,
                pivots = pivots,
-               #print = printed,
                model = model_code,
                k = k,
                stanfit = stanfit))

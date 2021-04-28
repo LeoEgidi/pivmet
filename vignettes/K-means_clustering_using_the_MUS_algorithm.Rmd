@@ -84,7 +84,7 @@ a <- matrix(NA, H, n)
   }
 
 #build the similarity matrix
-sim_matr <- matrix(1, n,n)
+sim_matr <- matrix(NA, n,n)
  for (i in 1:(n-1)){
     for (j in (i+1):n){
       sim_matr[i,j] <- sum(a[,i]==a[,j])/H
@@ -92,10 +92,8 @@ sim_matr <- matrix(1, n,n)
     }
   }
 
-cl <- RcmdrMisc::KMeans(x, centers)$cluster
+cl <- kmeans(x, centers, nstart = 10)$cluster
 mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
-
-
 ```
 
 
@@ -105,7 +103,7 @@ mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 In some situations, classical K-means fails in recognizing the *true* groups:
 
 ```{r kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
- kmeans_res <- RcmdrMisc::KMeans(x, centers)
+ kmeans_res <- kmeans(x, centers, nstart = 10)
 ```
 
 
@@ -166,7 +164,7 @@ points(piv_res$centers, col = colors_centers[1:centers],
 
 The function `piv_KMeans` has optional arguments:
 
-- `alg.type`: The clustering algorithm for the initial partition of the $N$ units into the desired number of clusters. Possible choices are `"KMeans"` (default) and `"hclust"`.
+- `alg.type`: The clustering algorithm for the initial partition of the $N$ units into the desired number of clusters. Possible choices are `"kmeans"` (default) and `"hclust"`.
 
 - `method`: If `alg.type` is `"hclust"`, the character string defining the clustering method. The methods implemented are  `"single"`,`"complete"`, `"average"`, `"ward.D"`, `"ward.D2"`, `"mcquitty"`,`"median"`, `"centroid"`. The default is `"average"`.
 
@@ -176,7 +174,7 @@ The function `piv_KMeans` has optional arguments:
 
 - `iter.max`: if `alg.type` is `"KMeans"`, the maximum number of iterations to be passed to `KMeans()`. Default is 10.
 
-- `num.seeds`: If `alg.type` is `"KMeans"`, the number of different starting random seeds to be passed to `KMeans()`. Default is 10.
+- `nstart`: If `alg.type` is `"kmeans"`, the number of different starting random seeds to be passed to `kmeans()`. Default is 10.
 
 - `prec_par`: with this argument the user may increase the powerful of the underlying MUS algorithm (see @egidi2018mus for details). The usual choice is $\min\{ 10, \underset{j}{\min}n_j \}$, where $n_j$ is the number of units belonging to the group $j, \ j=1,\ldots,k$.
 

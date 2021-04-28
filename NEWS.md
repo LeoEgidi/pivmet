@@ -1,3 +1,11 @@
+# pivmet 0.4.0
+
+## Minor fix
+
+* error in 'maxsumdiff' method
+* 'maxsumint' pivotal default method
+
+
 # pivmet 0.3.0
 
 ## Major fix

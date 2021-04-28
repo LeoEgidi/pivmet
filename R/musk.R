@@ -222,7 +222,6 @@ piv_KMeans <- function (x, centers,
     }
   }
   else if (is.matrix(x)) {
-    #dim_x <- dim(x)[2]
     start <- matrix(NA, centers,  dim(x)[2])
     for (k in 1:centers) {
       start[k, ] <- as.double(x[pivots[k], ])

@@ -133,10 +133,6 @@ piv_rel<-function(mcmc){
 
   ### checks
 
-
-  ###
-
-
   N <- dim(mcmc$groupPost)[2]
   if (length(dim(mcmc$mcmc_mean_raw))==3){
   k <- dim(mcmc$mcmc_mean)[3]
@@ -160,7 +156,6 @@ piv_rel<-function(mcmc){
       # cycle on number of groups
     for (j in 1:k){
      groupD[i, group[i,]==group[i, pivots[j]]] <- j
-        #group[i, clustering[[u]]$Cg[j]]
      }
     }
   # Finding final number of iterations : H_{G}-H^{*}_G, as explained     in the paper
@@ -171,8 +166,7 @@ piv_rel<-function(mcmc){
 
 # Final_It contains the final valid number of iterations
 
-
- if (length(dim(mu_switch))==2){
+  if (length(dim(mu_switch))==2){
     k <- dim(mu_switch)[2]
     mu_rel_median     <- c()  #vector of length k
     mu_rel_mean       <- c()
@@ -216,8 +210,6 @@ piv_rel<-function(mcmc){
         }
       }else{
         stop("The number of MCMC iterations is too low, try increasing the argument nMC when you use the piv_MCMC function.")
-        #mu_rel_median <- rep(NA,k)
-        #mu_rel_mean   <- rep(NA,k)
       }
 
       mu_rel_median  <- apply(mu_rel_complete, 2, median)
@@ -258,10 +250,7 @@ piv_rel<-function(mcmc){
         }
       }else{
         stop("The number of MCMC iterations is too low, try increasing the argument nMC when you use the piv_MCMC function.")
-        #mu_rel_median <- matrix(NA,c(2,k))
-        #mu_rel_mean   <- matrix(NA,c(2,k))
-
-      }
+    }
 
     ind <- array(NA, c( nrow(mu_rel_complete) ,D, k))
       for (g in 1:nrow(mu_rel_complete)){
@@ -269,7 +258,6 @@ piv_rel<-function(mcmc){
         for (d in 1:D){
         for (h in 1:k){
     prel[d,h] <- which.min((mu_rel_complete[g,d,]-Mu[h,d])^2)
-    #prel2[h] <- which.min((mu_rel_complete[g,2,]-Mu[h,2])^2)
          }
         ind[g,d,] <- prel[d,]
         }

@@ -126,8 +126,6 @@ piv_sim <- function(N,
     if (missing(stdev)==FALSE){
       warning("'stdev' not required for bivariate data")
     }
-
-
   }
 
   # W

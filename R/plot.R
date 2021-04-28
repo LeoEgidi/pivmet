@@ -161,19 +161,6 @@ piv_plot <- function(y,
         k <- dim(raw)[3]
          mains = c("mean 1st coord", "mean 2nd coord", "weight")
          ylabs = c(expression(mu[,1]), expression(mu[,2]), expression(pi))
-        #
-        # for (j in 1:3){
-        #   #plot
-        #   matplot(raw[j,,], type="l", xlab="",
-        #           ylab=ylabs[j], main= paste("Raw ", mains[j], sep=""),
-        #           cex.main=1.8, cex.lab =1.8)
-        # }
-        # for (j in 1:3){
-        #   #plot the relabeled
-        #   matplot(rel[j,,], type="l", xlab="Iterations",
-        #           ylab=ylabs[j], main= paste("Rel ", mains[j], sep=""),
-        #           cex.lab =1.8, cex.main=1.8)
-        # }
 
         h=1
         graphics::plot(raw[1,,h], raw[2, ,h], col=h, pch =1, bg =h,
@@ -214,23 +201,6 @@ piv_plot <- function(y,
 
           k <- dim(raw)[3]
           par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4.6,2,1))
-          # matplot(raw[,1,], type="l", xlab="",
-          #         ylab=expression(mu[1]), main= paste("Raw ", par,"s", sep=""),
-          #         cex.lab =1.8, cex.main=1.8 )
-          # #plot the second component
-          # matplot(raw[,2,], type="l", xlab="",
-          #         ylab=expression(mu[2]), main= paste("Raw ", par,"s", sep=""),
-          #         cex.lab =1.8, cex.main=1.8)
-          #
-          # #plot the first relabelled component
-          # matplot(rel[,1,],type="l", xlab="Iterations",
-          #         ylab=expression(mu[1]),
-          #         main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
-          #
-          # #plot the second relabelled component
-          # matplot(rel[,2,],type="l", xlab="Iterations",
-          #         ylab=expression(mu[2]),
-          #         main= paste("Rel ", par,"s", sep=""),cex.lab =1.8, cex.main=1.8)
 
           h=1
           graphics::plot(raw[,1,h], raw[, 2,h], col=h, pch =1, bg =h,
@@ -252,9 +222,7 @@ piv_plot <- function(y,
             points(rel[,1,h], rel[,2 ,h], col=h, pch =1, bg=h)
           }
 
-
-
-          cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
+        cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
 
 
 
@@ -315,7 +283,7 @@ piv_plot <- function(y,
       freq[,2] <- as.numeric(freq[,2])
       freq2D <- diag(nbins)*0
       freq2D[cbind(freq[,1], freq[,2])] <- freq[,3]
-      #cols <- (freq2D[-1,-1] + freq2D[-1,-(nbins-1)] + freq2D[-(nbins-1),-(nbins-1)] + freq2D[-(nbins-1),-1])/4
+
       res <- persp(x.bin, y.bin,
                    freq2D,   xlab="\n\n\nx",
                    ylab="\n\n\ny", zlab="\n\n\nf(x,y)",
@@ -332,95 +300,12 @@ piv_plot <- function(y,
                       est[,2], -2,
                       pmat = res), col = "red", pch = 17,
               cex=1.5)
-       # points(trans3d(est[,1],
-       #                est[,2], max(freq[,3])+1,
-       #                pmat = res), col = "red", pch = 16,
-       #        cex=1.5)
-       #lines(trans3d(est[,1], est[,2],
-        #             max(freq[,3])+1, pmat =res), col="red")
 
       cat("Description: 3d histogram of the data along with the posterior estimates of the relabelled means (triangle points)")
 
     }
 
   }
-  # else if (type=="iter"){
-  #   par(mfrow=c(1,1))
-  #   barplot(n.iter, main="Proportion of valid iterations", ylim=c(0,1),
-  #           xlab="Pivotal criterion", ylab="Prop.", names.arg=c(1:7))
-  # }
 
 }
 
-
-
-
-
-
-
-
-
-
-#else if (type=="estimates"){
-#   if (length(dim(raw))==2){
-#     switch.means <- colMeans(raw)
-#     par(mfrow=c(1,2), oma=c(0,0,0,0),
-#         mar=c(5,4,2,1), las=1, yaxt="n")
-#     # raw estimates
-#     plot( true.means, rep(0.3,length(true.means)),
-#       axes = FALSE , ylab="",ylim=c(0,1),
-#       xlim=c( min(true.means,
-#         est)-2,
-#         max(true.means,
-#           est)+2  ),
-#       main=paste("Raw MCMC estimates" ), cex.main =0.8)
-#     points(switch.means,
-#       rep(0, length(true.means)), col="red")
-#     axis(1)
-#     axis(1, col = "black", tcl = 0)
-#     par(yaxt="n")
-#     axis(2)
-#     par(yaxt="s")
-#     axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
-#
-#     #relabelled estimates
-#     plot( true.means, rep(0.3,length(true.means)),
-#       axes = FALSE , ylab="",ylim=c(0,1),
-#       xlim=c( min(true.means,
-#         est)-2,
-#         max(true.means,
-#           est)+2  ),
-#       main=paste("Rel. estimates"), cex.main =0.8)
-#     points(est, rep(0, length(true.means)),
-#       col="red")
-#     axis(1)
-#     axis(1, col = "black", tcl = 0)
-#     par(yaxt="n")
-#     axis(2)
-#     par(yaxt="s")
-#     axis(2, c(0,0.3), c("Est.", "True"), col = "white", tcl = 0)
-#   }else{
-#     par(mfrow=c(1,2), oma =c(0,0,0,0),  mar=c(5,4,2,0.7))
-#     colori<-c("red", "green", "violet", "blue")
-#
-#     l1<-(3/2)*min(true.means[,1])-max(true.means[,1])/2+5
-#     l2<-(3/2)*max(true.means[,1])-min(true.means[,1])/2-5
-#     u1<-(3/2)*min(true.means[,2])-max(true.means[,2])/2
-#     u2<-(3/2)*max(true.means[,2])-min(true.means[,2])/2
-#
-#     #plot the raw MCMC estimates
-#     plot(true.means, xlim=c( min(true.means, est)-2,
-#       max(true.means,est)+2  ),
-#       ylim=c(u1,u2), main="Raw MCMC",
-#       xlab=expression(mu[1]), ylab=expression(mu[2]), pch =3,
-#       cex.main = 0.7)
-#     points(t(apply(raw, c(2,3), mean)), col="red")
-#     #plot relabelled estimates
-#     plot(true.means, xlim=c( min(true.means, est)-1,
-#       max(true.means, est)+1  ), ylim=c(u1,u2),
-#       xlab=expression(mu[1]), ylab=expression(mu[2]),
-#       main="Relabelled",  pch=3, bg=2,
-#       cex.main = 0.7)
-#     points(est, col="red")
-#   }
-# }

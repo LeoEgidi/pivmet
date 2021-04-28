@@ -92,7 +92,7 @@ a <- matrix(NA, H, n)
   }
 
 #build the similarity matrix
-sim_matr <- matrix(1, n,n)
+sim_matr <- matrix(NA, n,n)
  for (i in 1:(n-1)){
     for (j in (i+1):n){
       sim_matr[i,j] <- sum(a[,i]==a[,j])/H
@@ -100,7 +100,7 @@ sim_matr <- matrix(1, n,n)
     }
   }
 
-cl <- KMeans(x, centers)$cluster
+cl <- kmeans(x, centers, nstart=10)$cluster
 mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 ```
 
@@ -110,8 +110,8 @@ Quite often, classical K-means fails in recognizing the *true* groups:
 
 
 ```{r kmeans_plots, echo =TRUE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
-# launch classical KMeans
-kmeans_res <- KMeans(x, centers)
+# launch classical kmeans
+kmeans_res <- kmeans(x, centers, nstart = 10)
 # plots
 par(mfrow=c(1,2))
 colors_cluster <- c("grey", "darkolivegreen3", "coral")

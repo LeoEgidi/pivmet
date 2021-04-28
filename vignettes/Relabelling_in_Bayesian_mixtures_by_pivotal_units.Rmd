@@ -46,9 +46,9 @@ $$c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[z_i]_h=[z_p]_h|,$$
 are (pairwise) separated  units with (posterior) probability one (that
 is, the posterior probability of any two of them being in the same group is approximately zero). We denote them by $i_1,\ldots,i_k$. The user may choose among four procedures for extracting the pivotal units with the optional argument `piv.criterion`. For group $j$ containing $J_j$ units, one can choose:
 
--  $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}$ (`"maxsumint"`);
+-  $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}$ (`"maxsumint"`, default method);
 
-- $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`"maxsumdiff"`, default method);
+- $i^{*}$ that maximizes $\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}$ (`"maxsumdiff"`);
 
 - $i^{*}$ that minimizes $\sum_{p \not\in J_j}c_{ip}$ (`"minsumnoint"`). 
 
