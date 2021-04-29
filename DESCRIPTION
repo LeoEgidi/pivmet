@@ -25,5 +25,5 @@ Imports: cluster, mclust, MASS,
           rjags, mvtnorm, bayesplot
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 BuildManual: yes
