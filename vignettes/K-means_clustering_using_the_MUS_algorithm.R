@@ -1,14 +1,14 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----load, warning =FALSE, message=FALSE---------------------------------
+## ----load, warning =FALSE, message=FALSE--------------------------------------
 library(pivmet)
 library(mvtnorm)
 
-## ----mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE------
+## ----mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE-----------
 #generate some data
 
 set.seed(123)
@@ -33,7 +33,7 @@ a <- matrix(NA, H, n)
   }
 
 #build the similarity matrix
-sim_matr <- matrix(1, n,n)
+sim_matr <- matrix(NA, n,n)
  for (i in 1:(n-1)){
     for (j in (i+1):n){
       sim_matr[i,j] <- sum(a[,i]==a[,j])/H
@@ -41,13 +41,11 @@ sim_matr <- matrix(1, n,n)
     }
   }
 
-cl <- RcmdrMisc::KMeans(x, centers)$cluster
+cl <- kmeans(x, centers, nstart = 10)$cluster
 mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 
-
-
 ## ----kmeans, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE----
- kmeans_res <- RcmdrMisc::KMeans(x, centers)
+ kmeans_res <- kmeans(x, centers, nstart = 10)
 
 ## ----kmeans_plots, echo =FALSE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE----
 
@@ -67,10 +65,10 @@ graphics::plot(x, col = colors_cluster[kmeans_res$cluster],
    pch = 8, cex = 2)
 
 
-## ----musk, fig.show='hold'-----------------------------------------------
+## ----musk, fig.show='hold'----------------------------------------------------
 piv_res <- piv_KMeans(x, centers)
 
-## ----musk_plots, echo=FALSE, fig.show='hold'-----------------------------
+## ----musk_plots, echo=FALSE, fig.show='hold'----------------------------------
 #par(mfrow=c(1,2), pty="s")
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
 colors_centers <- c("black", "darkgreen", "firebrick")

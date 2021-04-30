@@ -4,8 +4,15 @@
 \alias{piv_sim}
 \title{Generate Data from a Gaussian Nested Mixture}
 \usage{
-piv_sim(N, k, Mu, stdev, Sigma.p1 = diag(2), Sigma.p2 = 100 * diag(2),
-  W = c(0.5, 0.5))
+piv_sim(
+  N,
+  k,
+  Mu,
+  stdev,
+  Sigma.p1 = diag(2),
+  Sigma.p2 = 100 * diag(2),
+  W = c(0.5, 0.5)
+)
 }
 \arguments{
 \item{N}{The desired sample size.}

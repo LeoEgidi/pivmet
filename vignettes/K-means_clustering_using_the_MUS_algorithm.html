@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Leonardo Egidi" />
 
-<meta name="date" content="2020-05-29" />
+<meta name="date" content="2021-04-30" />
 
 <title>K-means clustering using MUS and other pivotal algorithms</title>
 
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
-<style type="text/css">code{white-space: pre;}</style>
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
@@ -108,6 +123,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <style type="text/css">body {
 background-color: #fff;
 margin: 1em auto;
@@ -118,9 +134,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -289,7 +302,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -304,7 +318,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">K-means clustering using MUS and other pivotal algorithms</h1>
 <h4 class="author">Leonardo Egidi</h4>
-<h4 class="date">2020-05-29</h4>
+<h4 class="date">2021-04-30</h4>
 
 
 
@@ -353,7 +367,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-22" title="22">  }</a>
 <a class="sourceLine" id="cb2-23" title="23"></a>
 <a class="sourceLine" id="cb2-24" title="24"><span class="co">#build the similarity matrix</span></a>
-<a class="sourceLine" id="cb2-25" title="25">sim_matr &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>, n,n)</a>
+<a class="sourceLine" id="cb2-25" title="25">sim_matr &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, n,n)</a>
 <a class="sourceLine" id="cb2-26" title="26"> <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>(n<span class="dv">-1</span>)){</a>
 <a class="sourceLine" id="cb2-27" title="27">    <span class="cf">for</span> (j <span class="cf">in</span> (i<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>n){</a>
 <a class="sourceLine" id="cb2-28" title="28">      sim_matr[i,j] &lt;-<span class="st"> </span><span class="kw">sum</span>(a[,i]<span class="op">==</span>a[,j])<span class="op">/</span>H</a>
@@ -361,7 +375,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-30" title="30">    }</a>
 <a class="sourceLine" id="cb2-31" title="31">  }</a>
 <a class="sourceLine" id="cb2-32" title="32"></a>
-<a class="sourceLine" id="cb2-33" title="33">cl &lt;-<span class="st"> </span>RcmdrMisc<span class="op">::</span><span class="kw">KMeans</span>(x, centers)<span class="op">$</span>cluster</a>
+<a class="sourceLine" id="cb2-33" title="33">cl &lt;-<span class="st"> </span><span class="kw">kmeans</span>(x, centers, <span class="dt">nstart =</span> <span class="dv">10</span>)<span class="op">$</span>cluster</a>
 <a class="sourceLine" id="cb2-34" title="34">mus_alg &lt;-<span class="st"> </span><span class="kw">MUS</span>(<span class="dt">C =</span> sim_matr, <span class="dt">clusters =</span> cl, <span class="dt">prec_par =</span> <span class="dv">5</span>)</a></code></pre></div>
 </div>
 <div id="piv_kmeans-k-means-clustering-via-pivotal-units" class="section level2">
@@ -373,12 +387,12 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p><img src="data:image/png;base64,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" /><img src="data:image/png;base64,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" /></p>
 <p>The function <code>piv_KMeans</code> has optional arguments:</p>
 <ul>
-<li><p><code>alg.type</code>: The clustering algorithm for the initial partition of the <span class="math inline">\(N\)</span> units into the desired number of clusters. Possible choices are <code>&quot;KMeans&quot;</code> (default) and <code>&quot;hclust&quot;</code>.</p></li>
+<li><p><code>alg.type</code>: The clustering algorithm for the initial partition of the <span class="math inline">\(N\)</span> units into the desired number of clusters. Possible choices are <code>&quot;kmeans&quot;</code> (default) and <code>&quot;hclust&quot;</code>.</p></li>
 <li><p><code>method</code>: If <code>alg.type</code> is <code>&quot;hclust&quot;</code>, the character string defining the clustering method. The methods implemented are <code>&quot;single&quot;</code>,<code>&quot;complete&quot;</code>, <code>&quot;average&quot;</code>, <code>&quot;ward.D&quot;</code>, <code>&quot;ward.D2&quot;</code>, <code>&quot;mcquitty&quot;</code>,<code>&quot;median&quot;</code>, <code>&quot;centroid&quot;</code>. The default is <code>&quot;average&quot;</code>.</p></li>
 <li><p><code>piv.criterion</code>: one among the four different pivotal criteria described above and listed in <span class="citation">Egidi et al. (2018c)</span>: <code>MUS</code>, <code>maxsumint</code>, <code>minsumnoint</code>, <code>maxsumdiff</code>. <code>MUS</code> is the default criterion when <code>centers</code> <span class="math inline">\(\le\)</span> 4, whereas <code>maxsumint</code> is the default method when <code>centers</code> &gt; 4.</p></li>
 <li><p><code>H</code>: the number of distinct <span class="math inline">\(k\)</span>-means runs used for building the <span class="math inline">\(N \times N\)</span> co-association matrix. Default is <span class="math inline">\(10^3\)</span>.</p></li>
 <li><p><code>iter.max</code>: if <code>alg.type</code> is <code>&quot;KMeans&quot;</code>, the maximum number of iterations to be passed to <code>KMeans()</code>. Default is 10.</p></li>
-<li><p><code>num.seeds</code>: If <code>alg.type</code> is <code>&quot;KMeans&quot;</code>, the number of different starting random seeds to be passed to <code>KMeans()</code>. Default is 10.</p></li>
+<li><p><code>nstart</code>: If <code>alg.type</code> is <code>&quot;kmeans&quot;</code>, the number of different starting random seeds to be passed to <code>kmeans()</code>. Default is 10.</p></li>
 <li><p><code>prec_par</code>: with this argument the user may increase the powerful of the underlying MUS algorithm (see <span class="citation">Egidi et al. (2018b)</span> for details). The usual choice is <span class="math inline">\(\min\{ 10, \underset{j}{\min}n_j \}\)</span>, where <span class="math inline">\(n_j\)</span> is the number of units belonging to the group <span class="math inline">\(j, \ j=1,\ldots,k\)</span>.</p></li>
 </ul>
 </div>

@@ -4,8 +4,13 @@
 \alias{piv_plot}
 \title{Plotting outputs from pivotal relabelling}
 \usage{
-piv_plot(y, mcmc, rel_est, par = c("mean", "sd", "weight", "all"),
-  type = c("chains", "hist"))
+piv_plot(
+  y,
+  mcmc,
+  rel_est,
+  par = c("mean", "sd", "weight", "all"),
+  type = c("chains", "hist")
+)
 }
 \arguments{
 \item{y}{Data vector or matrix.}
