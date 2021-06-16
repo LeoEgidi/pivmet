@@ -164,14 +164,14 @@ piv_plot <- function(y,
 
         h=1
         graphics::plot(raw[1,,h], raw[2, ,h], col=alpha(colori[h],0.4),
-                       pch =1, bg =colori[h],
-             cex.main =1.8, main ="Raw means", cex.lab=1.8, xlab=
+                       pch =19, bg =colori[h],
+             cex.main =1.8, main ="", cex.lab=1.8, xlab=
                expression(mu[j,1]), ylab =expression(mu[j,2]),
              xlim= c(min(raw[1,,]-10), max(raw[1,,])+10),
              ylim= c(min(raw[2,,]-10), max(raw[2,,])+10))
         for (h in 2:k){
           points(raw[1,,h], raw[2, ,h],
-                 col=alpha(colori[h],0.4), pch =1,
+                 col=alpha(colori[h],0.4), pch =19,
                  bg=colori[h])
         }
 
@@ -180,14 +180,14 @@ piv_plot <- function(y,
                            cex.main=1.8, cex.lab =1.8, xlab ="Iterations")
 
         h=1
-        graphics::plot(rel[1,,h], rel[2, ,h], col=alpha(colori[h],0.4), pch =1, bg =colori[h],
-             cex.main =1.8, main ="Rel means", cex.lab=1.8, xlab=
+        graphics::plot(rel[1,,h], rel[2, ,h], col=alpha(colori[h],0.4), pch =19, bg =colori[h],
+             cex.main =1.8, main ="", cex.lab=1.8, xlab=
                expression(mu[j,1]), ylab =expression(mu[j,2]),
              xlim= c(min(rel[1,,]-10), max(rel[1,,])+10),
              ylim= c(min(rel[2,,]-10), max(rel[2,,])+10))
         for (h in 2:k){
           points(rel[1,,h], rel[2, ,h], col=alpha(colori[h],0.4),
-                 pch =1, bg=colori[h])
+                 pch =19, bg=colori[h])
         }
 
         matplot(rel[3,,], type="l",
@@ -208,25 +208,25 @@ piv_plot <- function(y,
 
           h=1
           graphics::plot(raw[,1,h], raw[, 2,h], col=alpha(colori[h],0.4),
-                         pch =1, bg =colori[h],
-               cex.main =1.8, main ="Raw means", cex.lab=1.8, xlab=
+                         pch =19, bg =colori[h],
+               cex.main =1.8, main ="", cex.lab=1.8, xlab=
                  expression(mu[j,1]), ylab =expression(mu[j,2]),
                xlim= c(min(raw[,1,]-10), max(raw[,1,])+10),
                ylim= c(min(raw[,2,]-10), max(raw[,2,])+10))
           for (h in 2:k){
-            points(raw[,1,h], raw[,2 ,h], col=colori[h], pch =1, bg=h)
+            points(raw[,1,h], raw[,2 ,h], col=colori[h], pch =19, bg=h)
           }
 
           h=1
           graphics::plot(rel[,1,h], rel[,2,h], col=alpha(colori[h],0.4),
-                         pch =1, bg =colori[h],
-               cex.main =1.8, main ="Rel means", cex.lab=1.8, xlab=
+                         pch =19, bg =colori[h],
+               cex.main =1.8, main ="", cex.lab=1.8, xlab=
                  expression(mu[j,1]), ylab =expression(mu[j,2]),
                xlim= c(min(rel[,1,]-10), max(rel[,1,])+10),
                ylim= c(min(rel[,2,]-10), max(rel[,2,])+10))
           for (h in 2:k){
             points(rel[,1,h], rel[,2 ,h], col=alpha(colori[h],0.4),
-                   pch =1, bg=h)
+                   pch =19, bg=colori[h])
           }
 
         cat(paste("Description: traceplot of the raw MCMC chains and the relabelled chains for the "), par,"s parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.", sep="")
