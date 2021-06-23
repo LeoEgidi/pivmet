@@ -163,15 +163,15 @@ piv_plot <- function(y,
          ylabs = c(expression(mu[,1]), expression(mu[,2]), expression(pi))
 
         h=1
-        graphics::plot(raw[1,,h], raw[2, ,h], col=alpha(colori[h],0.4),
+        graphics::plot(raw[1,,h], raw[2, ,h], col=alpha(colori[h],0.1),
                        pch =19, bg =colori[h],
              cex.main =1.8, main ="", cex.lab=1.8, xlab=
-               expression(mu[j,1]), ylab =expression(mu[j,2]),
+               expression(mu[j1]), ylab =expression(mu[j2]),
              xlim= c(min(raw[1,,]-10), max(raw[1,,])+10),
              ylim= c(min(raw[2,,]-10), max(raw[2,,])+10))
         for (h in 2:k){
           points(raw[1,,h], raw[2, ,h],
-                 col=alpha(colori[h],0.4), pch =19,
+                 col=alpha(colori[h],0.1), pch =19,
                  bg=colori[h])
         }
 
@@ -180,13 +180,13 @@ piv_plot <- function(y,
                            cex.main=1.8, cex.lab =1.8, xlab ="Iterations")
 
         h=1
-        graphics::plot(rel[1,,h], rel[2, ,h], col=alpha(colori[h],0.4), pch =19, bg =colori[h],
+        graphics::plot(rel[1,,h], rel[2, ,h], col=alpha(colori[h],0.1), pch =19, bg =colori[h],
              cex.main =1.8, main ="", cex.lab=1.8, xlab=
-               expression(mu[j,1]), ylab =expression(mu[j,2]),
+               expression(mu[j1]), ylab =expression(mu[j2]),
              xlim= c(min(rel[1,,]-10), max(rel[1,,])+10),
              ylim= c(min(rel[2,,]-10), max(rel[2,,])+10))
         for (h in 2:k){
-          points(rel[1,,h], rel[2, ,h], col=alpha(colori[h],0.4),
+          points(rel[1,,h], rel[2, ,h], col=alpha(colori[h],0.1),
                  pch =19, bg=colori[h])
         }
 
@@ -207,10 +207,10 @@ piv_plot <- function(y,
           par(mfrow=c(1,2), oma=c(0,0,0,0), mar =c(5,4.6,2,1))
 
           h=1
-          graphics::plot(raw[,1,h], raw[, 2,h], col=alpha(colori[h],0.4),
+          graphics::plot(raw[,1,h], raw[, 2,h], col=alpha(colori[h],0.1),
                          pch =19, bg =colori[h],
                cex.main =1.8, main ="", cex.lab=1.8, xlab=
-                 expression(mu[j,1]), ylab =expression(mu[j,2]),
+                 expression(mu[j1]), ylab =expression(mu[j2]),
                xlim= c(min(raw[,1,]-10), max(raw[,1,])+10),
                ylim= c(min(raw[,2,]-10), max(raw[,2,])+10))
           for (h in 2:k){
@@ -218,14 +218,14 @@ piv_plot <- function(y,
           }
 
           h=1
-          graphics::plot(rel[,1,h], rel[,2,h], col=alpha(colori[h],0.4),
+          graphics::plot(rel[,1,h], rel[,2,h], col=alpha(colori[h],0.1),
                          pch =19, bg =colori[h],
                cex.main =1.8, main ="", cex.lab=1.8, xlab=
-                 expression(mu[j,1]), ylab =expression(mu[j,2]),
+                 expression(mu[j1]), ylab =expression(mu[j2]),
                xlim= c(min(rel[,1,]-10), max(rel[,1,])+10),
                ylim= c(min(rel[,2,]-10), max(rel[,2,])+10))
           for (h in 2:k){
-            points(rel[,1,h], rel[,2 ,h], col=alpha(colori[h],0.4),
+            points(rel[,1,h], rel[,2 ,h], col=alpha(colori[h],0.1),
                    pch =19, bg=colori[h])
           }
 
