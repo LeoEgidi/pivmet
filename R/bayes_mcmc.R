@@ -20,6 +20,7 @@
 #' @param chains A positive integer specifying the number of Markov chains. The default is 4.
 #' @param cores The number of cores to use when executing the Markov chains in parallel (only if
 #' \code{software="rstan"}). Default is 1.
+#' @param sparsity Allows for sparse finite mixtures, default is \code{TRUE}.
 #'
 #' @details
 #' The function fits univariate and multivariate Bayesian Gaussian mixture models of the form
