@@ -702,6 +702,8 @@ piv_MCMC <- function(y,
         S2 <- diag(D)/100000
         S3 <- diag(D)/100000
         alpha <- rep(1,k)
+        a_sp <-1
+        b_sp <- 200
       }else{
         if (is.null(priors$mu_0)){
           mu_0 <- rep(0, D)
@@ -723,14 +725,25 @@ piv_MCMC <- function(y,
         }else{
           alpha <- priors$alpha
         }
+        if (is.null(priors$a_sp)){
+          a_sp <- 1
+        }else{
+          a_sp <- priors$a_sp
+        }
+        if (is.null(priors$b_sp)){
+          b_sp <- 200
+        }else{
+          b_sp <- priors$b_sp
+        }
       }
 
-      # Data
-      dati.biv <- list(y = y, N = N, k = k, D = D,
-                       S2= S2, S3= S3, mu_0=mu_0,
-                       alpha = alpha)
-
       # Model
+      if (sparsity ==FALSE){
+
+        # Data
+        dati.biv <- list(y = y, N = N, k = k, D = D,
+                         S2= S2, S3= S3, mu_0=mu_0,
+                         alpha = alpha)
       mod.mist.biv<-"model{
     # Likelihood:
 
@@ -748,6 +761,33 @@ piv_MCMC <- function(y,
       Sigma[1:D,1:D] <- inverse(tau[,])
       eta[1:k] ~ ddirch(alpha)
   }"
+      }else{
+
+        # Data
+        dati.biv <- list(y = y, N = N, k = k, D = D,
+                         S2= S2, S3= S3, mu_0=mu_0,
+                         a = a_sp, b=b_sp)
+        mod.mist.biv<-"model{
+      # Likelihood:
+
+      for (i in 1:N){
+        yprev[i,1:D]<-y[i,1:D]
+        y[i,1:D] ~ dmnorm(mu[clust[i],],tau)
+        clust[i] ~ dcat(eta[1:k] )
+      }
+
+      # Prior:
+
+      for (g in 1:k) {
+        mu[g,1:D] ~ dmnorm(mu_0[],S2[,])
+        alpha[g] <- e0}
+        tau[1:D,1:D] ~ dwish(S3[,],D+1)
+        Sigma[1:D,1:D] <- inverse(tau[,])
+        eta[1:k] ~ ddirch(alpha)
+        e0 ~ dgamma(a, b)
+    }"
+
+      }
 
       init1.biv <- list()
       for (s in 1:chains){
@@ -755,7 +795,7 @@ piv_MCMC <- function(y,
                                     tau= 15*diag(D),
                                     eta=rep(1/k,k), clust=clust_inits))
       }
-      moni.biv <- c("clust","mu","tau","eta")
+      moni.biv <- c("clust","mu","tau","eta", "e0")
 
       mod   <- mod.mist.biv
       dati  <- dati.biv
