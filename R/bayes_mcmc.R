@@ -435,8 +435,8 @@ piv_MCMC <- function(y,
         B0inv <- 0.1
         mu_sigma <- 0
         tau_sigma <- 2
-        a <- 1
-        b <- 200
+        a_sp <- 1
+        b_sp <- 200
       }else{
         if (is.null(priors$mu_0)){
           mu_0 <- 0
