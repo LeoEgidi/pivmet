@@ -675,7 +675,7 @@ piv_MCMC <- function(y,
     mcmc_mean <- mu_switch
     mcmc_sd <- tau_switch
     mcmc_weight <- prob.st_switch
-    nclusters <- apply(group,1,FUN = function(x) length(unique(x)))
+
 
 
   }else if (is.matrix(y)){
@@ -1074,7 +1074,7 @@ piv_MCMC <- function(y,
     mcmc_mean <- mu_switch
     mcmc_sd <- tau
     mcmc_weight <- prob.st_switch
-    nclusters <- apply(group,1,FUN = function(x) length(unique(x)))
+
 
   }
 
@@ -1167,5 +1167,5 @@ piv_MCMC <- function(y,
                model = model_code,
                k = k,
                stanfit = stanfit,
-               nclusters = nclusters))
+               nclusters = numeffettivogruppi))
 }
