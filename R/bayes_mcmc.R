@@ -260,7 +260,8 @@ piv_MCMC <- function(y,
                      software = c("rjags", "rstan"),
                      burn =0.5*nMC,
                      chains = 4,
-                     cores = 1){
+                     cores = 1,
+                     sparsity = TRUE){
 
   #### checks
 
@@ -433,6 +434,8 @@ piv_MCMC <- function(y,
         B0inv <- 0.1
         mu_sigma <- 0
         tau_sigma <- 2
+        a <- 1
+        b <- 200
       }else{
         if (is.null(priors$mu_0)){
           mu_0 <- 0
@@ -454,11 +457,25 @@ piv_MCMC <- function(y,
         }else{
           tau_sigma <- priors$tau_sigma
         }
+        if (is.null(priors$a_sp)){
+          a_sp <- 1
+        }else{
+          a_sp <- priors$a_sp
+        }
+        if (is.null(priors$b_sp)){
+          b_sp <- 200
+        }else{
+          b_sp <- priors$b_sp
+        }
       }
 
       data = list(N=N, y=y, k=k,
                   mu_0=mu_0, B0inv=B0inv,
-                  mu_sigma=mu_sigma, tau_sigma=tau_sigma)
+                  mu_sigma=mu_sigma, tau_sigma=tau_sigma,
+                  a=a_sp, b=b_sp)
+      # sparsity
+      if (sparsity == FALSE){
+
       mix_univ <-"
         data {
           int<lower=1> k;          // number of mixture components
@@ -505,12 +522,71 @@ piv_MCMC <- function(y,
             }
       }
       "
+      }else{
+      mix_univ <-"
+      data {
+        int<lower=1> k;          // number of mixture components
+        int<lower=1> N;          // number of data points
+        real y[N];               // observations
+        real mu_0;               // mean hyperparameter
+        real<lower=0> B0inv;     // mean hyperprecision
+        real mu_sigma;           // sigma hypermean
+        real<lower=0> tau_sigma; // sigma hyper sd
+        real<lower=0> a;         // hyper-shape gamma e0
+        real<lower=0> b;         // hyper-rate gamma e0
+      }
+      parameters {
+        simplex[k] eta;             // mixing proportions
+        ordered[k] mu;              // locations of mixture components
+        vector<lower=0>[k] sigma;   // scales of mixture components
+        real<lower=0> e0;
+      }
+      transformed parameters{
+        vector[k] log_eta = log(eta);  // cache log calculation
+        vector<lower=0>[k] alpha = rep_vector(e0, k);
+        vector[k] pz[N];
+        simplex[k] exp_pz[N];
+        for (n in 1:N){
+          pz[n] =   normal_lpdf(y[n]|mu, sigma)+
+            log_eta-
+            log_sum_exp(normal_lpdf(y[n]|mu, sigma)+
+                          log_eta);
+          exp_pz[n] = exp(pz[n]);
+        }
+      }
+      model {
+        sigma ~ lognormal(mu_sigma, tau_sigma);
+        mu ~ normal(mu_0, 1/B0inv);
+        eta ~ dirichlet(alpha);
+        e0 ~ gamma(a, b);
+        for (n in 1:N) {
+          vector[k] lps = log_eta;
+          for (j in 1:k){
+            lps[j] += normal_lpdf(y[n] | mu[j], sigma[j]);
+            target+=pz[n,j];
+          }
+          target += log_sum_exp(lps);
+        }
+      }
+      generated quantities{
+        int<lower=1, upper=k> z[N];
+        for (n in 1:N){
+          z[n] = categorical_rng(exp_pz[n]);
+        }
+      }
+      "
+      }
+
       fit_univ <-  stan(model_code = mix_univ,
                         data=data,
                         chains =chains,
                         iter =nMC)
       stanfit <- fit_univ
-      printed <- cat(print(fit_univ, pars =c("mu", "eta", "sigma")))
+      if (sparsity==FALSE){
+        printed <- cat(print(fit_univ, pars =c("mu", "eta", "sigma")))
+      }else{
+        printed <- cat(print(fit_univ, pars =c("mu", "eta", "sigma", "e0")))
+      }
       sims_univ <- rstan::extract(fit_univ)
 
       J <- 3
@@ -598,6 +674,7 @@ piv_MCMC <- function(y,
     mcmc_mean <- mu_switch
     mcmc_sd <- tau_switch
     mcmc_weight <- prob.st_switch
+    nclusters <- apply(group,1,FUN = function(x) length(unique(x)))
 
 
   }else if (is.matrix(y)){
@@ -750,6 +827,8 @@ piv_MCMC <- function(y,
         mu_0 <- rep(0, D)
         epsilon <- 1
         sigma_d <- 2.5
+        a_sp <- 1
+        b_sp <- 200
       }else{
         if (is.null(priors$mu_0)){
           mu_0 <- rep(0, D)
@@ -766,9 +845,22 @@ piv_MCMC <- function(y,
         }else{
           sigma_d <- priors$sigma_d
         }
+        if (is.null(priors$a_sp)){
+          a_sp <- 1
+        }else{
+          a_sp <- priors$a_sp
+        }
+        if (is.null(priors$b_sp)){
+          b_sp <- 200
+        }else{
+          b_sp <- priors$b_sp
+        }
       }
       data =list(N=N, k=k, y=y, D=D, mu_0=mu_0,
-                 epsilon = epsilon, sigma_d = sigma_d)
+                 epsilon = epsilon, sigma_d = sigma_d,
+                 a = a_sp, b=b_sp)
+      # sparsity
+      if (sparsity=="FALSE"){
       mix_biv <- "
         data {
           int<lower=1> k;          // number of mixture components
@@ -825,12 +917,82 @@ piv_MCMC <- function(y,
                 }
           }
           "
+      }else{
+        mix_biv <- "
+        data {
+          int<lower=1> k;          // number of mixture components
+          int<lower=1> N;          // number of data points
+          int D;                   // data dimension
+          matrix[N,D] y;           // observations matrix
+          vector[D] mu_0;
+          real<lower=0> epsilon;
+          real<lower=0> sigma_d;
+          real<lower=0> a;         // hyper-shape gamma e0
+          real<lower=0> b;         // hyper-rate gamma e0
+        }
+        parameters {
+          simplex[k] eta;         // mixing proportions
+          vector[D] mu[k];        // locations of mixture components
+          cholesky_factor_corr[D] L_Omega;   // scales of mixture components
+          vector<lower=0>[D] L_sigma;
+          cholesky_factor_corr[D] L_tau_Omega;   // scales of mixture components
+          vector<lower=0>[D] L_tau;
+          real<lower=0> e0;       // dirichlet concentration
+          }
+        transformed parameters{
+          vector[k] log_eta = log(eta);  // cache log calculation
+          vector<lower=0>[k] alpha = rep_vector(e0, k);
+          vector[k] pz[N];
+          simplex[k] exp_pz[N];
+          matrix[D,D] L_Sigma=diag_pre_multiply(L_sigma, L_Omega);
+          matrix[D,D] L_Tau=diag_pre_multiply(L_tau, L_tau_Omega);
+
+
+            for (n in 1:N){
+                pz[n]=   multi_normal_cholesky_lpdf(y[n]|mu, L_Sigma)+
+                         log_eta-
+                         log_sum_exp(multi_normal_cholesky_lpdf(y[n]|
+                                                     mu, L_Sigma)+
+                         log_eta);
+                exp_pz[n] = exp(pz[n]);
+              }
+          }
+        model{
+          L_Omega ~ lkj_corr_cholesky(epsilon);
+          L_sigma ~ cauchy(0, sigma_d);
+          mu ~ multi_normal_cholesky(mu_0, L_Tau);
+          eta ~ dirichlet(alpha);
+          e0 ~ gamma(a, b);
+            for (n in 1:N) {
+              vector[k] lps = log_eta;
+                for (j in 1:k){
+                    lps[j] += multi_normal_cholesky_lpdf(y[n] |
+                                                   mu[j], L_Sigma);
+                    target+=pz[n,j];
+                }
+              target += log_sum_exp(lps);
+          }
+          }
+        generated quantities{
+          int<lower=1, upper=k> z[N];
+              for (n in 1:N){
+                  z[n] = categorical_rng(exp_pz[n]);
+                }
+          }
+          "
+
+
+      }
       fit_biv <-  stan(model_code = mix_biv,
                        data=data,
                        chains =chains,
                        iter =nMC)
       stanfit <- fit_biv
-      printed <- cat(print(fit_biv, pars=c("mu", "eta", "L_Sigma")))
+      if (sparsity == FALSE){
+        printed <- cat(print(fit_biv, pars=c("mu", "eta", "L_Sigma")))
+      }else{
+        printed <- cat(print(fit_biv, pars=c("mu", "eta", "L_Sigma", "e0")))
+      }
       sims_biv <- rstan::extract(fit_biv)
 
       # Extraction
@@ -911,6 +1073,7 @@ piv_MCMC <- function(y,
     mcmc_mean <- mu_switch
     mcmc_sd <- tau
     mcmc_weight <- prob.st_switch
+    nclusters <- apply(group,1,FUN = function(x) length(unique(x)))
 
   }
 
@@ -1002,5 +1165,6 @@ piv_MCMC <- function(y,
                pivots = pivots,
                model = model_code,
                k = k,
-               stanfit = stanfit))
+               stanfit = stanfit,
+               nclusters = nclusters))
 }
