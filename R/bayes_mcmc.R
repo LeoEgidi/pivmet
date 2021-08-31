@@ -408,8 +408,9 @@ piv_MCMC <- function(y,
       numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
       if (sum(numeffettivogruppi==k)==0){
-        return(list(nclusters = numeffettivogruppi))
         print("MCMC has not never been able to identify the required number of groups and the process has been interrupted")
+        return(list(nclusters = numeffettivogruppi))
+
         #return(1)
       }
 
@@ -607,7 +608,9 @@ piv_MCMC <- function(y,
       numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
       if (sum(numeffettivogruppi==k)==0){
-        return(print("HMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        print("MCMC has not never been able to identify the required number of groups and the process has been interrupted")
+        return(list(nclusters = numeffettivogruppi))
+
       }
 
       ##saved in the output
@@ -836,7 +839,8 @@ piv_MCMC <- function(y,
       true.iter <- nrow(ris)
 
       if (sum(numeffettivogruppi==k)==0){
-        return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        print("MCMC has not never been able to identify the required number of groups and the process has been interrupted")
+        return(list(nclusters = numeffettivogruppi))
       }else{
         L<-list()
         mu_pre_switch <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
@@ -1054,7 +1058,8 @@ piv_MCMC <- function(y,
       true.iter <- dim(sm)[1]
 
       if (sum(numeffettivogruppi==k)==0){
-        return(print("HMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        print("MCMC has not never been able to identify the required number of groups and the process has been interrupted")
+        return(list(nclusters = numeffettivogruppi))
       }else{
 
         mu_pre_switch <- array(rep(0, true.iter*D*k), dim=c(true.iter,D,k))
