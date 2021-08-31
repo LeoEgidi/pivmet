@@ -307,15 +307,19 @@ piv_MCMC <- function(y,
       mu_inits[j]<-mean(y[clust_inits==j])
     }
     if (software=="rjags"){
+      priors_input <- list(kind = "independence",
+                           parameter = "priorsFish",
+                           hierarchical = "tau")
       if (missing(priors)){
         # b0 = 0; B0inv =0.1; nu0Half =5;
         # g0Half = 1e-17; g0G0Half = 1e16;
         # e = rep(1,k); S0 =2
         # priors =  list( "b0" , "B0inv" , "nu0Half",
         #                 "g0Half", "g0G0Half", "e", "S0")
-        priors=list(kind = "independence",
-                    parameter = "priorsFish",
-                    hierarchical = "tau")
+
+        mod.mist.univ <- BMMmodel(y, k = k,
+                                  initialValues = list(S0 = 2),
+                                  priors = priors_input)
       }else{
         if (is.null(priors$mu_0)){
           b0 <- median(as.matrix(y))
@@ -361,23 +365,16 @@ piv_MCMC <- function(y,
 
 
         nu0S0Half = nu0Half*S0
-
-        priors <-  BMMpriors(list(kind = "independence",
-                                  parameter= list(b0 = b0,
-                                                  B0inv = B0inv,
-                                                  nu0 = 2*nu0Half,
-                                                  g0Half = g0Half,
-                                                  g0G0Half = g0G0Half,
-                                                  e = e
-                                                  #,
-                                                  #nu0S0Half = nu0S0Half,
-                                                  #S0 = 2
-                                  ),
-                                  hierarchical = "tau"),
-                             y, 1-16)
-        priors$var$g0Half <- g0Half
-        priors$var$g0G0Half <- g0G0Half
-        #priors$var$nu0S0Half <- S0*nu0Half
+        mod.mist.univ <- BMMmodel(y, k = k,
+                                  initialValues = list(S0 = 2),
+                                  priors = priors_input)
+        #prior's values redefinition
+        mod.mist.univ$data$b0 <- b0
+        mod.mist.univ$data$B0inv <- B0inv
+        mod.mist.univ$data$nu0Half <- nu0Half
+        mod.mist.univ$data$g0Half <- g0Half
+        mod.mist.univ$data$g0G0Half <- g0G0Half
+        mod.mist.univ$data$e <- e
 
       }
 
@@ -385,9 +382,7 @@ piv_MCMC <- function(y,
 
       # Data
       # Model
-      mod.mist.univ <- BMMmodel(y, k = k,
-                                initialValues = list(S0 = 2),
-                                priors = priors)
+
       control <- JAGScontrol(variables = c("mu", "tau", "eta", "S"),
                              burn.in = burn, n.iter = nMC, seed = 10)
       ogg.jags <- JAGSrun(y, model = mod.mist.univ, control = control)
@@ -413,7 +408,8 @@ piv_MCMC <- function(y,
       numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
       if (sum(numeffettivogruppi==k)==0){
-        return(print("MCMC has not never been able to identify the required number of groups and the process has been interrupted"))
+        return(list(nclusters = numeffettivogruppi))
+        print("MCMC has not never been able to identify the required number of groups and the process has been interrupted")
         #return(1)
       }
 
