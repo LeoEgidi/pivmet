@@ -27,7 +27,7 @@ nMC <- 5000
 k <- 8
 
 
-
+## rjags
 res2 <- piv_MCMC(y, k, nMC, sparsity = TRUE,
                  priors = list(alpha = rep(0.01, k))) # sparse on eta
 pdf(file="sparse_001.pdf", height = 6, width = 8)
