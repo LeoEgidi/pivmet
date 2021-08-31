@@ -15,7 +15,7 @@ piv_MCMC(
   burn = 0.5 * nMC,
   chains = 4,
   cores = 1,
-  sparsity = TRUE
+  sparsity = FALSE
 )
 }
 \arguments{
@@ -48,7 +48,7 @@ Default is \code{"rjags"}.}
 \item{cores}{The number of cores to use when executing the Markov chains in parallel (only if
 \code{software="rstan"}). Default is 1.}
 
-\item{sparsity}{Allows for sparse finite mixtures, default is \code{TRUE}.}
+\item{sparsity}{Allows for sparse finite mixtures, default is \code{FALSE}.}
 }
 \value{
 The function gives the MCMC output, the clustering
