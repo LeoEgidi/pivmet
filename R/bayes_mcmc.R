@@ -407,6 +407,7 @@ piv_MCMC <- function(y,
       tau <- 1/mcmc.pars[,,2]
       prob.st <- mcmc.pars[,,3]
       group <-  ogg.jags$results[-(1:burn), 1:N] #gruppi
+      group_for_nclusters <- group
       FreqGruppiJags <- table(group)
       numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
@@ -1207,5 +1208,5 @@ piv_MCMC <- function(y,
                model = model_code,
                k = k,
                stanfit = stanfit,
-               nclusters = numeffettivogruppi))
+               nclusters = FreqGruppiJags))
 }
