@@ -348,7 +348,7 @@ piv_MCMC <- function(y,
         }
 
         if (is.null(priors$alpha)){
-          e <- rep(1,k)
+          e <- rep(0.001,k)
         }else{
           e <- priors$alpha
         }
@@ -367,7 +367,8 @@ piv_MCMC <- function(y,
                                                   B0inv = B0inv,
                                                   nu0 = 2*nu0Half,
                                                   g0Half = g0Half,
-                                                  g0G0Half = g0G0Half
+                                                  g0G0Half = g0G0Half,
+                                                  e = e
                                                   #,
                                                   #nu0S0Half = nu0S0Half,
                                                   #S0 = 2
@@ -605,6 +606,7 @@ piv_MCMC <- function(y,
       tau <- mcmc.pars[,,2]
       prob.st <- mcmc.pars[,,3]
       group <-  sims_univ$z[, 1:N] #gruppi
+      group_for_nclusters <- group
       FreqGruppiJags <- table(group)
       numeffettivogruppi <- apply(group,1,FUN = function(x) length(unique(x)))
 
@@ -815,7 +817,7 @@ piv_MCMC <- function(y,
 
       # Post- process of the chains----------------------
       group <- ris[-(1:burn),grep("clust[",colnames(ris),fixed=TRUE)]
-
+      group_for_nclusters <- group
       # only the variances
       tau <- sqrt( (1/ris[-(1:burn),grep("tau[",colnames(ris),fixed=TRUE)])[,c(1,4)])
       prob.st <- ris[-(1:burn),grep("eta[",colnames(ris),fixed=TRUE)]
@@ -1042,6 +1044,7 @@ piv_MCMC <- function(y,
 
       # Post- process of the chains----------------------
       group <- sims_biv$z
+      group_for_nclusters <- group
       tau <- sims_biv$L_sigma
       prob.st <- sims_biv$eta
       M <- nrow(group)
@@ -1208,5 +1211,5 @@ piv_MCMC <- function(y,
                model = model_code,
                k = k,
                stanfit = stanfit,
-               nclusters = FreqGruppiJags))
+               nclusters = numeffettivogruppi))
 }
