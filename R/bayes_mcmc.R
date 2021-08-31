@@ -20,7 +20,7 @@
 #' @param chains A positive integer specifying the number of Markov chains. The default is 4.
 #' @param cores The number of cores to use when executing the Markov chains in parallel (only if
 #' \code{software="rstan"}). Default is 1.
-#' @param sparsity Allows for sparse finite mixtures, default is \code{TRUE}.
+#' @param sparsity Allows for sparse finite mixtures, default is \code{FALSE}.
 #'
 #' @details
 #' The function fits univariate and multivariate Bayesian Gaussian mixture models of the form
@@ -262,7 +262,7 @@ piv_MCMC <- function(y,
                      burn =0.5*nMC,
                      chains = 4,
                      cores = 1,
-                     sparsity = TRUE){
+                     sparsity = FALSE){
 
   #### checks
 
