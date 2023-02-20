@@ -61,6 +61,21 @@ piv_plot(y = y, mcmc = res, rel_est = rel, type = "chains")
 piv_plot(y = y, mcmc = res, rel_est = rel, type = "hist")
 ```
 
+
+To allow sparse finite mixture fit, we could select the argument ```sparsity = TRUE```:
+
+
+```{r sparsity, message =FALSE, warning = FALSE}
+res2 <- piv_MCMC(y, k, nMC, sparsity = TRUE,
+                 priors = list(alpha = rep(0.001, k))) # sparse on eta
+barplot(table(res2$nclusters), xlab= expression(K["+"]),
+        col = "blue", border = "red", main = expression(paste("p(",K["+"], "|y)")),
+        cex.main=3, yaxt ="n", cex.axis=2.4, cex.names=2.4,
+        cex.lab=2)
+```
+
+
+
 ## Example 2. K-means clustering using MUS and other pivotal algorithms
 
 Sometimes K-means algorithm does not provide an optimal clustering solution. Suppose to generate some clustered data and to detect one pivotal unit for each group with the ```MUS``` (Maxima Units Search algorithm) function:
