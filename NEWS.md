@@ -1,3 +1,8 @@
+# pivmet 0.5.0
+
+* sparse finite mixture fit now available
+
+
 # pivmet 0.4.0
 
 ## Minor fix

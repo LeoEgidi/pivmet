@@ -1,8 +1,8 @@
 Package: pivmet
 Type: Package
 Title: Pivotal Methods for Bayesian Relabelling and k-Means Clustering
-Version: 0.4.0
-Date: 2021-04-28
+Version: 0.5.0
+Date: 2023-02-22
 Author: Leonardo Egidi[aut, cre], 
         Roberta Pappadà[aut], 
         Francesco Pauli[aut], 
@@ -12,7 +12,7 @@ License: GPL-2
 Description: Collection of pivotal algorithms 
              for: relabelling the MCMC chains in order to undo the label 
              switching problem in Bayesian mixture models,
-             as proposed in Egidi, Pappadà, Pauli and Torelli (2018a)<doi:10.1007/s11222-017-9774-2>;
+             as proposed in Egidi, Pappad�, Pauli and Torelli (2018a)<doi:10.1007/s11222-017-9774-2>;
              initializing the centers of the classical k-means algorithm 
              in order to obtain a better clustering solution. For further details see
              Egidi, Pappadà, Pauli and Torelli (2018b)<ISBN:9788891910233>.
