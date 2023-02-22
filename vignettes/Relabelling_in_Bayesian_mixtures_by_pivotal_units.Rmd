@@ -21,8 +21,6 @@ In this vignette we explore the fit of Gaussian mixture models and the relabelli
 
 
 ```{r load, warning =FALSE, message = FALSE}
-library(devtools)
-install_github("leoegidi/pivmet")
 library(pivmet)
 library(bayesmix)
 library(bayesplot)
