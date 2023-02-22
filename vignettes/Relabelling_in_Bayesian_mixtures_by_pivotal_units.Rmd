@@ -248,7 +248,7 @@ $$\boldsymbol{\eta} \sim \text{Dirichlet}(e_0),$$
 
 where the smaller $e_0$ and the the smaller the number of clusters a-posteriori. The function allows for a Gamma prior on $e_0$ with hyperparameters $a_e, b_e$ that may be chosen by the users.
 
-```{r sparsity, message =FALSE, warning = FALSE}
+```{r sparsity, eval = FALSE,  message =FALSE, warning = FALSE}
 res3 <- piv_MCMC(y = y, k = k, nMC = nMC, sparsity = TRUE,
                  priors = list(alpha = rep(0.001, k))) # sparse on eta
 barplot(table(res3$nclusters), xlab= expression(K["+"]),
