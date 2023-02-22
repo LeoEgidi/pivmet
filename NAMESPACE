@@ -11,6 +11,7 @@ import(bayesplot)
 importFrom(bayesmix, BMMmodel, BMMpriors, priorsFish,
            JAGScontrol, JAGSrun)
 importFrom(mvtnorm, rmvnorm)
+importFrom(scales, alpha)
 importFrom(rstan,
            As.mcmc.list,
            check_hmc_diagnostics ,
