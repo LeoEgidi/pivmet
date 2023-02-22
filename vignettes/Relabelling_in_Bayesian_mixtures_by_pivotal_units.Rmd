@@ -19,7 +19,10 @@ knitr::opts_chunk$set(
 
 In this vignette we explore the fit of Gaussian mixture models and the relabelling pivotal method proposed in @egidi2018relabelling through the `pivmet` package. First of all, we load the package:
 
+
 ```{r load, warning =FALSE, message = FALSE}
+library(devtools)
+install_github("leoegidi/pivmet")
 library(pivmet)
 library(bayesmix)
 library(bayesplot)
@@ -248,7 +251,7 @@ $$\boldsymbol{\eta} \sim \text{Dirichlet}(e_0),$$
 where the smaller $e_0$ and the the smaller the number of clusters a-posteriori. The function allows for a Gamma prior on $e_0$ with hyperparameters $a_e, b_e$ that may be chosen by the users.
 
 ```{r sparsity, message =FALSE, warning = FALSE}
-res3 <- piv_MCMC(y = y, k = k, nMC = 3000, sparsity = TRUE,
+res3 <- piv_MCMC(y = y, k = k, nMC = nMC, sparsity = TRUE,
                  priors = list(alpha = rep(0.001, k))) # sparse on eta
 barplot(table(res3$nclusters), xlab= expression(K["+"]),
         col = "blue", border = "red", main = expression(paste("p(",K["+"], "|y)")),
