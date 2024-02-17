@@ -11,7 +11,7 @@ authors:
     corresponding: yes
     equal-contrib: yes
     affiliation: 1
-  - name: Roberta Pappadà
+  - name: Roberta Pappada
     equal-contrib: yes
     affiliation: 1
   - name: Francesco Pauli
