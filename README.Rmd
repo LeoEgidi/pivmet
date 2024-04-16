@@ -37,6 +37,7 @@ devtools::install_github("leoegidi/pivmet")
 First of all, we load the package and we import the ```fish``` dataset belonging to the ```bayesmix``` package:
 
 ```{r example}
+library(bayesmix)
 library(pivmet)
 data(fish)
 y <- fish[,1]
@@ -81,6 +82,8 @@ barplot(table(res2$nclusters), xlab= expression(K["+"]),
 Sometimes K-means algorithm does not provide an optimal clustering solution. Suppose to generate some clustered data and to detect one pivotal unit for each group with the ```MUS``` (Maxima Units Search algorithm) function:
 
 ```{r mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+library(mvtnorm)
+
 #generate some data
 
 set.seed(123)
