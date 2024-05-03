@@ -67,6 +67,12 @@ the Stan [@rstan] software performing Hamiltonian Monte Carlo (HMC)---to tackle 
 (ii) consensus clustering, where  a variant of the $k$-means algorithm is available; (iii) Dirichlet Process Mixture Models (DPPM). 
 
 
+The `pivmet` package exhibits some deep connections with some existing packages. Among them, it extends the `bayesmix` package, which allows to 
+fit univariate Gaussian mixtures; moreover, it is close to the `label.switching` package that offers many methods to fix label switching in Bayesian mixture models. In terms of 
+computational methods, our package depends on the `rstan` package to perform Hamiltonian Monte Carlo sampling.
+In brief, the `pivmet`  package offers a unique way to efficiently estimate univariate and multivariate Gaussian mixtures and perform consensus clustering. 
+ 
+
 
 # Overview and main functions
 
