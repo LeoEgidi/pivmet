@@ -70,7 +70,7 @@ the Stan [@rstan] software performing Hamiltonian Monte Carlo (HMC)---to tackle 
 
 # Overview and main functions
 
-The package architecture strongly relies on three main functons:
+The package architecture strongly relies on three main functions:
 
 - The function `piv_MCMC()` is used to fit a Bayesian Gaussian mixture model with underlying Gibbs sampling  or Hamiltonian Monte Carlo algorithm. 
 The user can specify distinct prior distributions with the argument `priors` and the selected pivotal criterion via the argument `piv.criterion`.
@@ -84,10 +84,10 @@ such as the number of consensus partitions.
 # Example 1: relabelling for label switching 
 
 The Fishery dataset in the `bayesmix` [@bayesmix] package has been previously used by @titterington1985statistical and @papastamoulis2016label. 
-It consists of 256 snapper length measurements---see left plot of Figure \autoref{fig:example1} for the data histogram, along with an estimated 
+It consists of 256 snapper length measurements---see left plot of \autoref{fig:example1} for the data histogram, along with an estimated 
 kernel density. Analogously to some previous works, we assume a Gaussian mixture model  with $k=5$ groups, where $\mu_j$, $\sigma_j$ and $\eta_j$ 
-are the mean, the standard deviation and the weight of group $j$, respectively. We fit our model by simulating $15000$ samples from the 
-posterior distribution of $(\mathbf{z}, \mathbf{\mu}, \mathbf{\sigma}, \mathbf{\eta})$, by selecting the default argument `software="rjags"`; 
+are respectively the mean, the standard deviation and the weight of group $j = 1, \dots, k$. We fit our model by simulating $15000$ samples from the 
+posterior distribution of $(\mathbf{z}, \boldsymbol{\mu}, \boldsymbol{\sigma}, \boldsymbol{\eta})$, by selecting the default argument `software="rjags"`; 
 for univariate mixtures, the MCMC Gibbs sampling is returned by the function `JAGSrun` in the package `bayesmix`. Alternatively, one could fit 
 the model according to HMC sampling and with underlying Stan ecosystem by typing `software="rstan"`. By default, the burn-in period is set equal to 
 half of the total number of MCMC iterations.  
@@ -101,7 +101,7 @@ half of the total number of MCMC iterations.
 Bottom row: relabelled MCMC samples. \label{fig:example2}](fish_chains.pdf){width=60%}
 
 
-Figure \autoref{fig:example2} displays the traceplots for the parameters $(\mathbf{\mu}, \mathbf{\sigma}, \mathbf{\eta})$. From the first row 
+\autoref{fig:example2} displays the traceplots for the parameters $(\mathbf{\mu}, \mathbf{\sigma}, \mathbf{\eta})$. From the first row 
 showing the raw MCMC outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm is able to fix label-switching 
 and reorder the means $\mu_j$ and the weights $\eta_j$, for $j=1,\ldots,k$, as emerged from the second row of the plot. 
 
@@ -109,11 +109,11 @@ and reorder the means $\mu_j$ and the weights $\eta_j$, for $j=1,\ldots,k$, as e
 # Example 2: consensus clustering
 
 As widely known, one of the drawbacks of the $k$-means algorithm is represented by its inefficiency in distinguishing between groups of unbalanced sizes. 
-For thesere reasos, the clustering scientific literature claims that a better robust clustering solution is usually obtained if more partitions are obtained, 
-in such a way the final partition works as a sort of *consensus*. We perform here a consensus clustering technique based on single $k$-means consifurations, 
+For these reasons, the clustering scientific literature claims that a better robust clustering solution is usually obtained if more partitions are obtained, 
+in such a way the final partition works as a sort of *consensus*. We perform here a consensus clustering technique based on single $k$-means configurations, 
 where each of these has been obtained through a careful initial pivotal seeding.
 
-For illustration purposes, we simulate three bivariate Gaussian distributions with 20, 100 and 500 observations, respectively---see Figure \autoref{fig:example3}.
+For illustration purposes, we simulate three bivariate Gaussian distributions with 20, 100 and 500 observations, respectively---see \autoref{fig:example3}.
 The plots with titles 'piv KMeans' refer to the pivotal criteria `MUS`, (i) or `maxsumint`, (ii) or `maxsumdiff`, where the labels 1, 2, and 4 follow the 
 order used in the `R` function; moreover, we consider Partitioning Around Medoids (PAM) method via the `pam` function of the `cluster` package and agglomerative hierarchical
 clustering (agnes), with average, single, and complete linkage. The partitions from the classical $k$-means are obtained using multiple random seeds. Group centers
@@ -130,7 +130,7 @@ and 500 observations, respectively. \label{fig:example3}](simul1_2019.pdf){width
 The `pivmet` package proposes various methods for identifying pivotal units in datasets with a grouping structure and using them for improving 
 inferential conclusions and clustering partitions. The package suits well for both supervised and unsupervised problems, by providing a valid alternative
  to existing functions for similar applications, and keeping low the computational effort. It is of future interest to include additional aspects in the software, 
-such as the estimation of the number of components in the data when this information is latent/unknown and provide more graphical tools to diagnose pivotal selection. 
+such as the estimation of the number of components in the data when this information is latent or unknown and provide more graphical tools to diagnose pivotal selection. 
 
 
 # Reproducibility
