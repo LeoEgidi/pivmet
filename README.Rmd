@@ -25,7 +25,14 @@ The goal of ```pivmet``` is to propose some pivotal methods in order to:
 - <span style="color:red">PAY ATTENTION! BEFORE INSTALLING</span>: make sure to download the JAGS program at
 [https://sourceforge.net/projects/mcmc-jags/](https://sourceforge.net/projects/mcmc-jags/).
 
-You can then install ```pivmet``` from github with:
+You can install the CRAN version of ```pivmet``` with:
+
+```{r, eval = FALSE}
+install.packages("pivmet")
+library(pivmet)
+```
+
+You can install the development version of ```pivmet```  from Github with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")

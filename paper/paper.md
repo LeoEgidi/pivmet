@@ -90,8 +90,30 @@ are respectively the mean, the standard deviation and the weight of group $j = 1
 posterior distribution of $(\mathbf{z}, \boldsymbol{\mu}, \boldsymbol{\sigma}, \boldsymbol{\eta})$, by selecting the default argument `software="rjags"`; 
 for univariate mixtures, the MCMC Gibbs sampling is returned by the function `JAGSrun` in the package `bayesmix`. Alternatively, one could fit 
 the model according to HMC sampling and with underlying Stan ecosystem by typing `software="rstan"`. By default, the burn-in period is set equal to 
-half of the total number of MCMC iterations.  
+half of the total number of MCMC iterations.  Here below we include the relevant `R` code.
 
+```{r, eval = FALSE}
+# required packages
+library(bayesmix)
+set.seed(100)
+
+# load data
+data(fish)
+y <- fish[,1]
+k <- 5
+nMC <- 15000
+
+# fit the mixture model for univariate data and find the pivots
+res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC, software = "rjags")
+
+# relabel the chains: figure 2
+rel <- piv_rel(mcmc=res)
+piv_plot(y = y, mcmc = res, rel_est = rel, type="chains")
+
+# use Stan
+res_stan <- piv_MCMC(y = y, k = k, nMC = nMC/3, burn = 0.5*nMC/3, software ="rstan")
+cat(res_stan$model)
+```
 
 
 ![Histograms of the Fishery data. The blue line represents the estimated kernel density. \label{fig:example1}](fish_hist.png){width = 60%}
@@ -118,8 +140,42 @@ The plots with titles 'piv KMeans' refer to the pivotal criteria `MUS`, (i) or `
 order used in the `R` function; moreover, we consider Partitioning Around Medoids (PAM) method via the `pam` function of the `cluster` package and agglomerative hierarchical
 clustering (agnes), with average, single, and complete linkage. The partitions from the classical $k$-means are obtained using multiple random seeds. Group centers
 and pivots are marked via asterisks and triangles symbols, respectively. As we may notice, pivotal $k$-means methods are able to  satisfactorily detect
-the true data partition.
+the true data partition. Here below we include the relevant `R` code.
 
+
+```{r, eval = FALSE}
+# required packages
+library(mclust)
+library(cluster)
+library(mvtnorm)
+
+# simulate data
+set.seed(123)
+n=620
+k=3
+n1=20
+n2=100
+n3=500
+x=matrix(NA, n,2)
+gruppovero=c( rep(1,n1), rep(2, n2), rep(3, n3))
+
+for (i in 1:n1){
+  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))
+}
+for (i in 1:n2){
+  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))
+}
+for (i in 1:n3){
+  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))
+}
+
+kmeans_res <- kmeans(x, centers=k)
+
+# consensus clustering step
+res1 <- piv_KMeans(x, k, alg.type = "hclust",
+                   piv.criterion ="maxsumdiff",
+                   prec_par=n1)
+```
 
 ![Consensus clustering via the `piv_KMeans` function assuming three bivariate Gaussian distributions and three groups with 20, 100 
 and 500 observations, respectively. \label{fig:example3}](simul1_2019.pdf){width=60%}
