@@ -15,6 +15,8 @@ The goal of ```pivmet``` is to propose some pivotal methods in order to:
 
 - undo the label switching problem which naturally arises during the MCMC sampling in Bayesian mixture models $\rightarrow$ **pivotal relabelling** (Egidi et al. 2018a)
 
+- fit sparse finite Gaussian mixtures
+
 - initialize the K-means algorithm aimed at obtaining a good clustering solution $\rightarrow$ **pivotal seeding** (Egidi et al. 2018b)
 
 ## Installation

@@ -46,3 +46,40 @@ hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
              col="navajowhite1", border="navajowhite1")
  lines(density(y), lty=1, lwd=3, col="blue")
 
+## ----fish_data----------------------------------------------------------------
+k <- 5
+nMC <- 15000
+res <- piv_MCMC(y = y, k = k, nMC = nMC, 
+                burn = 0.5*nMC, software = "rjags")
+
+## ----true_iter----------------------------------------------------------------
+res$true.iter
+
+## ----fish_rel, fig.align= 'center', fig.width=7-------------------------------
+rel <- piv_rel(mcmc=res)
+piv_plot(y=y, res, rel, par = "mean", type="chains")
+piv_plot(y=y, res, rel, type="hist")
+
+## ----stan, eval = FALSE, fig.align= 'center', fig.width=7---------------------
+#  # stan code not evaluated here
+#  res2 <- piv_MCMC(y = y, k = k, nMC = 3000,
+#                   software = "rstan")
+#  rel2 <- piv_rel(res2)
+#  piv_plot(y=y, res2, rel2, par = "mean", type="chains")
+
+## ----bayesplot, eval = FALSE, fig.align= 'center', fig.width=5----------------
+#  # stan code not evaluated here
+#  posterior <- as.array(res2$stanfit)
+#  mcmc_intervals(posterior, regex_pars = c("mu"))
+
+## ----model_code---------------------------------------------------------------
+cat(res$model)
+
+## ----sparsity,   message =FALSE, warning = FALSE------------------------------
+res3 <- piv_MCMC(y = y, k = k, nMC = nMC, sparsity = TRUE,
+                 priors = list(alpha = rep(0.001, k))) # sparse on eta
+barplot(table(res3$nclusters), xlab= expression(K["+"]),
+        col = "blue", border = "red", main = expression(paste("p(",K["+"], "|y)")),
+        cex.main=3, yaxt ="n", cex.axis=2.4, cex.names=2.4,
+        cex.lab=2)
+

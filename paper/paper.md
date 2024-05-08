@@ -49,6 +49,8 @@ install.packages("pivmet")
 library(pivmet)
 ```
 
+However, before installing the package, the user should  make sure to download the JAGS program at
+[https://sourceforge.net/projects/mcmc-jags/](https://sourceforge.net/projects/mcmc-jags/).
 
 # Statement of need
 

@@ -12,92 +12,107 @@
 
 <meta name="author" content="Leonardo Egidi" />
 
-<meta name="date" content="2021-04-30" />
+<meta name="date" content="2024-05-08" />
 
 <title>Dealing with label switching: relabelling in Bayesian mixture models by pivotal units</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {  }
+{ }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -106,13 +121,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -123,6 +145,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -316,295 +361,531 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Dealing with label switching: relabelling in Bayesian mixture models by pivotal units</h1>
+<h1 class="title toc-ignore">Dealing with label switching: relabelling
+in Bayesian mixture models by pivotal units</h1>
 <h4 class="author">Leonardo Egidi</h4>
-<h4 class="date">2021-04-30</h4>
+<h4 class="date">2024-05-08</h4>
 
 
 
-<p>In this vignette we explore the fit of Gaussian mixture models and the relabelling pivotal method proposed in <span class="citation">Egidi et al. (2018b)</span> through the <code>pivmet</code> package. First of all, we load the package:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(pivmet)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(bayesmix)</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(bayesplot)</a></code></pre></div>
-<p>The <code>pivmet</code>  package provides a simple framework to (i) fit univariate and multivariate mixture models according to a Bayesian flavour and detect the pivotal units, via the <code>piv_MCMC</code> function; (ii) perform the relabelling step via the <code>piv_rel</code> function.</p>
+<p>In this vignette we explore the fit of Gaussian mixture models and
+the relabelling pivotal method proposed in <span class="citation">Egidi
+et al. (2018b)</span> through the <code>pivmet</code> package. First of
+all, we load the package:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(pivmet)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(bayesmix)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span></code></pre></div>
+<p>The <code>pivmet</code> package provides a simple framework to (i)
+fit univariate and multivariate mixture models according to a Bayesian
+flavour and detect the pivotal units, via the <code>piv_MCMC</code>
+function; (ii) perform the relabelling step via the <code>piv_rel</code>
+function.</p>
 <p>There are two main functions used for this task.</p>
 <p>The function <code>piv_MCMC</code>:</p>
 <ul>
-<li><p><strong>performs MCMC sampling</strong> for Gaussian mixture models using the underlying <code>rjags</code> or <code>rstan</code> packages (chosen by the users through the optional function argument <code>software</code>, by default set to <code>rjags</code>). Precisely the package uses: the <code>JAGSrun</code> function of the <code>bayesmix</code> package for univariate mixture models; the <code>run.jags</code> function of the <code>runjags</code> package for bivariate mixture models; the <code>stan</code> function of the <code>rstan</code> package for both univariate and bivariate mixture models.</p></li>
-<li><p><strong>Post-processes the chains</strong> and randomly switches their values <span class="citation">(Frühwirth-Schnatter 2001)</span>.</p></li>
-<li><p><strong>Builds a co-association matrix for the <span class="math inline">\(N\)</span> units</strong>. After <span class="math inline">\(H\)</span> MCMC iterations, the function implements a clustering procedure with <span class="math inline">\(k\)</span> groups, the user may choose among agglomerative or divisive hierarchical clustering through the optional argument <code>clustering</code>. Using the latent formulation for mixture models, we denote with <span class="math inline">\([z_i]_h\)</span> the group allocation of the <span class="math inline">\(i\)</span>-th unit at the <span class="math inline">\(h\)</span>-th iteration. In such a way, a co-association matrix <span class="math inline">\(C\)</span> for the <span class="math inline">\(N\)</span> statistical units is built, where the single cell <span class="math inline">\(c_{ip}\)</span> is the fraction of times the unit <span class="math inline">\(i\)</span> and the unit <span class="math inline">\(p\)</span> belong to the same group along the <span class="math inline">\(H\)</span> MCMC iterations:</p></li>
+<li><p><strong>performs MCMC sampling</strong> for Gaussian mixture
+models using the underlying <code>rjags</code> or <code>rstan</code>
+packages (chosen by the users through the optional function argument
+<code>software</code>, by default set to <code>rjags</code>). Precisely
+the package uses: the <code>JAGSrun</code> function of the
+<code>bayesmix</code> package for univariate mixture models; the
+<code>run.jags</code> function of the <code>runjags</code> package for
+bivariate mixture models; the <code>stan</code> function of the
+<code>rstan</code> package for both univariate and bivariate mixture
+models.</p></li>
+<li><p><strong>Post-processes the chains</strong> and randomly switches
+their values <span class="citation">(Frühwirth-Schnatter
+2001)</span>.</p></li>
+<li><p><strong>Builds a co-association matrix for the <span class="math inline">\(N\)</span> units</strong>. After <span class="math inline">\(H\)</span> MCMC iterations, the function
+implements a clustering procedure with <span class="math inline">\(k\)</span> groups, the user may choose among
+agglomerative or divisive hierarchical clustering through the optional
+argument <code>clustering</code>. Using the latent formulation for
+mixture models, we denote with <span class="math inline">\([z_i]_h\)</span> the group allocation of the <span class="math inline">\(i\)</span>-th unit at the <span class="math inline">\(h\)</span>-th iteration. In such a way, a
+co-association matrix <span class="math inline">\(C\)</span> for the
+<span class="math inline">\(N\)</span> statistical units is built, where
+the single cell <span class="math inline">\(c_{ip}\)</span> is the
+fraction of times the unit <span class="math inline">\(i\)</span> and
+the unit <span class="math inline">\(p\)</span> belong to the same group
+along the <span class="math inline">\(H\)</span> MCMC
+iterations:</p></li>
 </ul>
-<p><span class="math display">\[c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H} \sum_{h=1}^{H}|[z_i]_h=[z_p]_h|,\]</span> where <span class="math inline">\(|\cdot|\)</span> denotes the event indicator and <span class="math inline">\(n_{ip}\)</span> is the number of times the units <span class="math inline">\(i, \ p\)</span> belong to the same group along the sampling.</p>
+<p><span class="math display">\[c_{ip} = \frac{n_{ip}}{H}=\frac{1}{H}
+\sum_{h=1}^{H}|[z_i]_h=[z_p]_h|,\]</span> where <span class="math inline">\(|\cdot|\)</span> denotes the event indicator and
+<span class="math inline">\(n_{ip}\)</span> is the number of times the
+units <span class="math inline">\(i, \ p\)</span> belong to the same
+group along the sampling.</p>
 <ul>
-<li><p><strong>Extracts the pivots</strong>, one for each group, which are (pairwise) separated units with (posterior) probability one (that is, the posterior probability of any two of them being in the same group is approximately zero). We denote them by <span class="math inline">\(i_1,\ldots,i_k\)</span>. The user may choose among four procedures for extracting the pivotal units with the optional argument <code>piv.criterion</code>. For group <span class="math inline">\(j\)</span> containing <span class="math inline">\(J_j\)</span> units, one can choose:</p></li>
-<li><p><span class="math inline">\(i^{*}\)</span> that maximizes <span class="math inline">\(\sum_{p \in J_j}c_{ip}\)</span> (<code>&quot;maxsumint&quot;</code>, default method);</p></li>
-<li><p><span class="math inline">\(i^{*}\)</span> that maximizes <span class="math inline">\(\sum_{p \in J_j}c_{ip}- \sum_{p \not\in J_j}c_{ip}\)</span> (<code>&quot;maxsumdiff&quot;</code>);</p></li>
-<li><p><span class="math inline">\(i^{*}\)</span> that minimizes <span class="math inline">\(\sum_{p \not\in J_j}c_{ip}\)</span> (<code>&quot;minsumnoint&quot;</code>).</p></li>
+<li><p><strong>Extracts the pivots</strong>, one for each group, which
+are (pairwise) separated units with (posterior) probability one (that
+is, the posterior probability of any two of them being in the same group
+is approximately zero). We denote them by <span class="math inline">\(i_1,\ldots,i_k\)</span>. The user may choose among
+four procedures for extracting the pivotal units with the optional
+argument <code>piv.criterion</code>. For group <span class="math inline">\(j\)</span> containing <span class="math inline">\(J_j\)</span> units, one can choose:</p></li>
+<li><p><span class="math inline">\(i^{*}\)</span> that maximizes <span class="math inline">\(\sum_{p \in J_j}c_{ip}\)</span>
+(<code>&quot;maxsumint&quot;</code>, default method);</p></li>
+<li><p><span class="math inline">\(i^{*}\)</span> that maximizes <span class="math inline">\(\sum_{p \in J_j}c_{ip}- \sum_{p \not\in
+J_j}c_{ip}\)</span> (<code>&quot;maxsumdiff&quot;</code>);</p></li>
+<li><p><span class="math inline">\(i^{*}\)</span> that minimizes <span class="math inline">\(\sum_{p \not\in J_j}c_{ip}\)</span>
+(<code>&quot;minsumnoint&quot;</code>).</p></li>
 </ul>
-<p>These three methods are applied by the internal function <code>piv_sel</code>. Alternatively, when <span class="math inline">\(k &lt;5\)</span>, the user can set <code>piv.criterion=&quot;MUS&quot;</code> <span class="citation">(Egidi et al. 2018a)</span> which performs a sequential search of identity submatrices within the matrix <span class="math inline">\(C\)</span> via the internal function <code>MUS</code>.</p>
+<p>These three methods are applied by the internal function
+<code>piv_sel</code>. Alternatively, when <span class="math inline">\(k
+&lt;5\)</span>, the user can set <code>piv.criterion=&quot;MUS&quot;</code> <span class="citation">(Egidi et al. 2018a)</span> which performs a sequential
+search of identity submatrices within the matrix <span class="math inline">\(C\)</span> via the internal function
+<code>MUS</code>.</p>
 <p>The function <code>piv_rel</code>:</p>
 <ul>
-<li><strong>performs the relabelling algorithm</strong> using the <span class="math inline">\(k\)</span> pivotal units as groups identifiers. The pivotal units previously detected play a central role, yielding to the following relabelling for the <span class="math inline">\(h\)</span>-th iteration:</li>
+<li><strong>performs the relabelling algorithm</strong> using the <span class="math inline">\(k\)</span> pivotal units as groups identifiers.
+The pivotal units previously detected play a central role, yielding to
+the following relabelling for the <span class="math inline">\(h\)</span>-th iteration:</li>
 </ul>
-<p><span class="math display">\[\begin{align*} 
+<p><span class="math display">\[\begin{align*}
 [\mu_{j}]_h=&amp;[\mu_{z_{i_{j}}}]_h \\
 [z_{i}]_h =j &amp; \mbox{ for } i : [z_i]_h=[z_{i_{j}}]_h,\\
-\end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\mu}=(\mu_1,\mu_2,\ldots,\mu_k)\)</span> is the vector of the means parameters and <span class="math inline">\(\boldsymbol{z}=(z_1,z_2,\ldots,z_N)\)</span> an i.i.d. vector of latent variables taking values in <span class="math inline">\(\{1,2,\ldots,k \}\)</span> and denoting the group membership of each statistical unit.</p>
-<p><code>piv_rel</code> takes as input the MCMC output from <code>piv_MCMC</code> and returns the relabelled chains and the corresponding posterior estimates.</p>
+\end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\mu}=(\mu_1,\mu_2,\ldots,\mu_k)\)</span>
+is the vector of the means parameters and <span class="math inline">\(\boldsymbol{z}=(z_1,z_2,\ldots,z_N)\)</span> an
+i.i.d. vector of latent variables taking values in <span class="math inline">\(\{1,2,\ldots,k \}\)</span> and denoting the group
+membership of each statistical unit.</p>
+<p><code>piv_rel</code> takes as input the MCMC output from
+<code>piv_MCMC</code> and returns the relabelled chains and the
+corresponding posterior estimates.</p>
 <div id="example-bivariate-gaussian-data" class="section level2">
 <h2>Example: bivariate Gaussian data</h2>
-<p>Suppose now that <span class="math inline">\(\boldsymbol{y}_i \in \mathbb{R}^2\)</span> and assume that:</p>
-<p><span class="math display">\[\boldsymbol{y}_i \sim \sum_{j=1}^{k}\eta_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j}, \boldsymbol{\Sigma})\]</span> where <span class="math inline">\(\boldsymbol{\mu}_j\)</span> is the mean vector for group <span class="math inline">\(j\)</span>, <span class="math inline">\(\boldsymbol{\Sigma}\)</span> is a positive-definite covariance matrix and the mixture weight <span class="math inline">\(\eta_j= P(z_i=j)\)</span> as for the one-dimensional case. We may generate Gaussian mixture data through the function <code>piv_sim</code>, specifying the sample size <span class="math inline">\(N\)</span>, the desired number of groups <span class="math inline">\(k\)</span> and the <span class="math inline">\(k \times 2\)</span> matrix for the <span class="math inline">\(k\)</span> mean vectors. The argument <code>W</code> handles the weights for a nested mixture, in which the <span class="math inline">\(j\)</span>-th component is in turn modelled as a two-component mixture, with covariance matrices <span class="math inline">\(\boldsymbol{\Sigma}_{p1}, \boldsymbol{\Sigma}_{p2}\)</span>, respectively.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">set.seed</span>(<span class="dv">500</span>)</a>
-<a class="sourceLine" id="cb2-2" title="2">N  &lt;-<span class="st"> </span><span class="dv">200</span></a>
-<a class="sourceLine" id="cb2-3" title="3">k  &lt;-<span class="st"> </span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb2-4" title="4">D &lt;-<span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb2-5" title="5">nMC &lt;-<span class="st"> </span><span class="dv">2000</span></a>
-<a class="sourceLine" id="cb2-6" title="6">M1 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">8</span>)</a>
-<a class="sourceLine" id="cb2-7" title="7">M2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>,.<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb2-8" title="8">M3 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">30</span>,<span class="dv">8</span>)</a>
-<a class="sourceLine" id="cb2-9" title="9"><span class="co"># matrix of input means</span></a>
-<a class="sourceLine" id="cb2-10" title="10">Mu &lt;-<span class="st"> </span><span class="kw">rbind</span>(M1,M2,M3)</a>
-<a class="sourceLine" id="cb2-11" title="11"><span class="co"># covariance matrices for the two subgroups</span></a>
-<a class="sourceLine" id="cb2-12" title="12">Sigma.p1 &lt;-<span class="st"> </span><span class="kw">diag</span>(D)</a>
-<a class="sourceLine" id="cb2-13" title="13">Sigma.p2 &lt;-<span class="st"> </span>(<span class="dv">10</span><span class="op">^</span><span class="dv">2</span>)<span class="op">*</span><span class="kw">diag</span>(D)</a>
-<a class="sourceLine" id="cb2-14" title="14"><span class="co"># subgroups&#39; weights</span></a>
-<a class="sourceLine" id="cb2-15" title="15">W   &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.2</span>,<span class="fl">0.8</span>)</a>
-<a class="sourceLine" id="cb2-16" title="16"><span class="co"># simulate data</span></a>
-<a class="sourceLine" id="cb2-17" title="17">sim &lt;-<span class="st"> </span><span class="kw">piv_sim</span>(<span class="dt">N =</span> N, <span class="dt">k =</span> k, <span class="dt">Mu =</span> Mu,</a>
-<a class="sourceLine" id="cb2-18" title="18"> <span class="dt">Sigma.p1 =</span> Sigma.p1, <span class="dt">Sigma.p2 =</span> Sigma.p2, <span class="dt">W =</span> W)</a></code></pre></div>
-<p>The function <code>piv_MCMC</code> requires only three mandatory arguments: the data object <code>y</code>, the number of components <code>k</code> and the number of MCMC iterations, <code>nMC</code>. By default, it performs Gibbs sampling using the <code>runjags</code> package. If <code>software=&quot;rjags&quot;</code>, for bivariate data the priors are specified as:</p>
+<p>Suppose now that <span class="math inline">\(\boldsymbol{y}_i \in
+\mathbb{R}^2\)</span> and assume that:</p>
+<p><span class="math display">\[\boldsymbol{y}_i \sim
+\sum_{j=1}^{k}\eta_{j}\mathcal{N}_{2}(\boldsymbol{\mu}_{j},
+\boldsymbol{\Sigma})\]</span> where <span class="math inline">\(\boldsymbol{\mu}_j\)</span> is the mean vector for
+group <span class="math inline">\(j\)</span>, <span class="math inline">\(\boldsymbol{\Sigma}\)</span> is a
+positive-definite covariance matrix and the mixture weight <span class="math inline">\(\eta_j= P(z_i=j)\)</span> as for the
+one-dimensional case. We may generate Gaussian mixture data through the
+function <code>piv_sim</code>, specifying the sample size <span class="math inline">\(N\)</span>, the desired number of groups <span class="math inline">\(k\)</span> and the <span class="math inline">\(k
+\times 2\)</span> matrix for the <span class="math inline">\(k\)</span>
+mean vectors. The argument <code>W</code> handles the weights for a
+nested mixture, in which the <span class="math inline">\(j\)</span>-th
+component is in turn modelled as a two-component mixture, with
+covariance matrices <span class="math inline">\(\boldsymbol{\Sigma}_{p1},
+\boldsymbol{\Sigma}_{p2}\)</span>, respectively.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">500</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>N  <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>k  <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>nMC <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>M1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">8</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>,.<span class="dv">1</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>M3 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">30</span>,<span class="dv">8</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># matrix of input means</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>Mu <span class="ot">&lt;-</span> <span class="fu">rbind</span>(M1,M2,M3)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># covariance matrices for the two subgroups</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>Sigma.p1 <span class="ot">&lt;-</span> <span class="fu">diag</span>(D)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>Sigma.p2 <span class="ot">&lt;-</span> (<span class="dv">10</span><span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">diag</span>(D)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># subgroups&#39; weights</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>W   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.2</span>,<span class="fl">0.8</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># simulate data</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">piv_sim</span>(<span class="at">N =</span> N, <span class="at">k =</span> k, <span class="at">Mu =</span> Mu,</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a> <span class="at">Sigma.p1 =</span> Sigma.p1, <span class="at">Sigma.p2 =</span> Sigma.p2, <span class="at">W =</span> W)</span></code></pre></div>
+<p>The function <code>piv_MCMC</code> requires only three mandatory
+arguments: the data object <code>y</code>, the number of components
+<code>k</code> and the number of MCMC iterations, <code>nMC</code>. By
+default, it performs Gibbs sampling using the <code>runjags</code>
+package. If <code>software=&quot;rjags&quot;</code>, for bivariate data the priors
+are specified as:</p>
 <p><span class="math display">\[\begin{align}
 \boldsymbol{\mu}_j  \sim &amp; \mathcal{N}_2(\boldsymbol{\mu}_0, S_2)\\
- \Sigma^{-1} \sim &amp; \mbox{Wishart}(S_3, 3)\\
+\Sigma^{-1} \sim &amp; \mbox{Wishart}(S_3, 3)\\
 \eta \sim &amp; \mbox{Dirichlet}(\boldsymbol{\alpha}),
 \end{align}\]</span></p>
-<p>where <span class="math inline">\(\boldsymbol{\alpha}\)</span> is a <span class="math inline">\(k\)</span>-dimensional vector and <span class="math inline">\(S_2\)</span> and <span class="math inline">\(S_3\)</span> are positive definite matrices. By default, <span class="math inline">\(\boldsymbol{\mu}_0=\boldsymbol{0}\)</span>, <span class="math inline">\(\boldsymbol{\alpha}=(1,\ldots,1)\)</span> and <span class="math inline">\(S_2\)</span> and <span class="math inline">\(S_3\)</span> are diagonal matrices, with diagonal elements equal to 1e+05. Different values can be specified for the hyperparameters <span class="math inline">\(\boldsymbol{\mu}_0, S_2, S_3\)</span> and <span class="math inline">\(\boldsymbol{\alpha}\)</span>: <code>priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}</code>, with the constraint for <span class="math inline">\(S2\)</span> and <span class="math inline">\(S3\)</span> to be positive definite, and <span class="math inline">\(\boldsymbol{\alpha}\)</span> a vector of dimension <span class="math inline">\(k\)</span> with nonnegative elements.</p>
-<p>If <code>software=&quot;rstan&quot;</code>, the function performs Hamiltonian Monte Carlo (HMC) sampling. In this case the priors are specified as:</p>
+<p>where <span class="math inline">\(\boldsymbol{\alpha}\)</span> is a
+<span class="math inline">\(k\)</span>-dimensional vector and <span class="math inline">\(S_2\)</span> and <span class="math inline">\(S_3\)</span> are positive definite matrices. By
+default, <span class="math inline">\(\boldsymbol{\mu}_0=\boldsymbol{0}\)</span>, <span class="math inline">\(\boldsymbol{\alpha}=(1,\ldots,1)\)</span> and
+<span class="math inline">\(S_2\)</span> and <span class="math inline">\(S_3\)</span> are diagonal matrices, with diagonal
+elements equal to 1e+05. Different values can be specified for the
+hyperparameters <span class="math inline">\(\boldsymbol{\mu}_0, S_2,
+S_3\)</span> and <span class="math inline">\(\boldsymbol{\alpha}\)</span>:
+<code>priors =list(mu_0 = c(1,1), S2 = ..., S3 = ..., alpha = ...)}</code>,
+with the constraint for <span class="math inline">\(S2\)</span> and
+<span class="math inline">\(S3\)</span> to be positive definite, and
+<span class="math inline">\(\boldsymbol{\alpha}\)</span> a vector of
+dimension <span class="math inline">\(k\)</span> with nonnegative
+elements.</p>
+<p>If <code>software=&quot;rstan&quot;</code>, the function performs Hamiltonian
+Monte Carlo (HMC) sampling. In this case the priors are specified
+as:</p>
 <p><span class="math display">\[\begin{align}
- \boldsymbol{\mu}_j  \sim &amp; \mathcal{N}_2(\boldsymbol{\mu}_0, LD^*L^{T})\\
- L \sim &amp; \mbox{LKJ}(\eta)\\
+\boldsymbol{\mu}_j  \sim &amp; \mathcal{N}_2(\boldsymbol{\mu}_0,
+LD^*L^{T})\\
+L \sim &amp; \mbox{LKJ}(\eta)\\
 D_{1,2} \sim &amp; \mbox{HalfCauchy}(0, \sigma_d).
- \end{align}\]</span></p>
-<p>The covariance matrix is expressed in terms of the LDL decomposition as <span class="math inline">\(LD^*L^{T}\)</span>, a variant of the classical Cholesky decomposition, where <span class="math inline">\(L\)</span> is a <span class="math inline">\(2 \times 2\)</span> lower unit triangular matrix and <span class="math inline">\(D^*\)</span> is a <span class="math inline">\(2 \times 2\)</span> diagonal matrix. The Cholesky correlation factor <span class="math inline">\(L\)</span> is assigned a LKJ prior with <span class="math inline">\(\epsilon\)</span> degrees of freedom, which, combined with priors on the standard deviations of each component, induces a prior on the covariance matrix; as <span class="math inline">\(\epsilon \rightarrow \infty\)</span> the magnitude of correlations between components decreases, whereas <span class="math inline">\(\epsilon=1\)</span> leads to a uniform prior distribution for <span class="math inline">\(L\)</span>. By default, the hyperparameters are <span class="math inline">\(\boldsymbol{\mu}_0=\boldsymbol{0}\)</span>, <span class="math inline">\(\sigma_d=2.5, \epsilon=1\)</span>. Different values can be chosen with the argument: <code>priors=list(mu_0=c(1,2), sigma_d = 4, epsilon = 2)</code>.</p>
-<p>We fit the model using <code>rjags</code> with 2000 MCMC iterations and default priors:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">res &lt;-<span class="st"> </span><span class="kw">piv_MCMC</span>(<span class="dt">y =</span> sim<span class="op">$</span>y, <span class="dt">k=</span> k, <span class="dt">nMC =</span>nMC, </a>
-<a class="sourceLine" id="cb3-2" title="2">                <span class="dt">piv.criterion =</span> <span class="st">&quot;maxsumdiff&quot;</span>)</a>
-<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt; Compiling rjags model...</span></a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; Calling the simulation using the rjags method...</span></a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; Note: the model did not require adaptation</span></a>
-<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; Burning in the model for 1000 iterations...</span></a>
-<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; Running the model for 2000 iterations...</span></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; Simulation complete</span></a>
-<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; Note: Summary statistics were not produced as there are &gt;50 monitored</span></a>
-<a class="sourceLine" id="cb3-10" title="10"><span class="co">#&gt; variables</span></a>
-<a class="sourceLine" id="cb3-11" title="11"><span class="co">#&gt; [To override this behaviour see ?add.summary and ?runjags.options]</span></a>
-<a class="sourceLine" id="cb3-12" title="12"><span class="co">#&gt; FALSEFinished running the simulation</span></a>
-<a class="sourceLine" id="cb3-13" title="13"><span class="co">#&gt; Calculating summary statistics...</span></a>
-<a class="sourceLine" id="cb3-14" title="14"><span class="co">#&gt; Calculating the Gelman-Rubin statistic for 13 variables....</span></a>
-<a class="sourceLine" id="cb3-15" title="15"><span class="co">#&gt; Note: Unable to calculate the multivariate psrf</span></a>
-<a class="sourceLine" id="cb3-16" title="16"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-17" title="17"><span class="co">#&gt; JAGS model summary statistics from 8000 samples (chains = 4; adapt+burnin = 2000):</span></a>
-<a class="sourceLine" id="cb3-18" title="18"><span class="co">#&gt;                                                                               </span></a>
-<a class="sourceLine" id="cb3-19" title="19"><span class="co">#&gt;             Lower95     Median   Upper95       Mean        SD Mode       MCerr</span></a>
-<a class="sourceLine" id="cb3-20" title="20"><span class="co">#&gt; mu[1,1]     -14.253     -11.64   -9.0761    -11.643    1.3283   --    0.032992</span></a>
-<a class="sourceLine" id="cb3-21" title="21"><span class="co">#&gt; mu[2,1]      6.3788     9.1466    11.827     9.1157    1.3914   --    0.038891</span></a>
-<a class="sourceLine" id="cb3-22" title="22"><span class="co">#&gt; mu[3,1]      28.365     31.414     34.23     31.364    1.5058   --    0.036155</span></a>
-<a class="sourceLine" id="cb3-23" title="23"><span class="co">#&gt; mu[1,2]      4.3939      7.015     9.748     6.9944    1.3575   --    0.020799</span></a>
-<a class="sourceLine" id="cb3-24" title="24"><span class="co">#&gt; mu[2,2]     -1.8152    0.76773    3.0011    0.73977    1.2285   --    0.021266</span></a>
-<a class="sourceLine" id="cb3-25" title="25"><span class="co">#&gt; mu[3,2]       2.303     5.4034    8.5597     5.4061    1.6073   --    0.030153</span></a>
-<a class="sourceLine" id="cb3-26" title="26"><span class="co">#&gt; tau[1,1]   0.012876   0.018528  0.024876    0.01856 0.0030557   -- 0.000084156</span></a>
-<a class="sourceLine" id="cb3-27" title="27"><span class="co">#&gt; tau[2,1] -0.0028586 0.00055585 0.0040478 0.00058665  0.001757   -- 0.000047531</span></a>
-<a class="sourceLine" id="cb3-28" title="28"><span class="co">#&gt; tau[1,2] -0.0028586 0.00055585 0.0040478 0.00058665  0.001757   -- 0.000047531</span></a>
-<a class="sourceLine" id="cb3-29" title="29"><span class="co">#&gt; tau[2,2]  0.0088545   0.010936  0.013306   0.010979  0.001153   -- 0.000015526</span></a>
-<a class="sourceLine" id="cb3-30" title="30"><span class="co">#&gt; eta[1]      0.24041    0.32704   0.41056    0.32786  0.043444   --   0.0010464</span></a>
-<a class="sourceLine" id="cb3-31" title="31"><span class="co">#&gt; eta[2]      0.33827    0.42431   0.51876    0.42363  0.045793   --  0.00095398</span></a>
-<a class="sourceLine" id="cb3-32" title="32"><span class="co">#&gt; eta[3]      0.17756    0.24704   0.32006     0.2485   0.03616   --  0.00070061</span></a>
-<a class="sourceLine" id="cb3-33" title="33"><span class="co">#&gt;                                         </span></a>
-<a class="sourceLine" id="cb3-34" title="34"><span class="co">#&gt;          MC%ofSD SSeff      AC.10   psrf</span></a>
-<a class="sourceLine" id="cb3-35" title="35"><span class="co">#&gt; mu[1,1]      2.5  1621   0.054979 1.0054</span></a>
-<a class="sourceLine" id="cb3-36" title="36"><span class="co">#&gt; mu[2,1]      2.8  1280   0.073291 1.0032</span></a>
-<a class="sourceLine" id="cb3-37" title="37"><span class="co">#&gt; mu[3,1]      2.4  1735   0.062587 1.0036</span></a>
-<a class="sourceLine" id="cb3-38" title="38"><span class="co">#&gt; mu[1,2]      1.5  4260 -0.0090409 1.0012</span></a>
-<a class="sourceLine" id="cb3-39" title="39"><span class="co">#&gt; mu[2,2]      1.7  3337  -0.011475 1.0012</span></a>
-<a class="sourceLine" id="cb3-40" title="40"><span class="co">#&gt; mu[3,2]      1.9  2841   0.021965 1.0026</span></a>
-<a class="sourceLine" id="cb3-41" title="41"><span class="co">#&gt; tau[1,1]     2.8  1318   0.076372 1.0051</span></a>
-<a class="sourceLine" id="cb3-42" title="42"><span class="co">#&gt; tau[2,1]     2.7  1366   0.048388 1.0017</span></a>
-<a class="sourceLine" id="cb3-43" title="43"><span class="co">#&gt; tau[1,2]     2.7  1366   0.048388 1.0017</span></a>
-<a class="sourceLine" id="cb3-44" title="44"><span class="co">#&gt; tau[2,2]     1.3  5515 0.00041112 1.0006</span></a>
-<a class="sourceLine" id="cb3-45" title="45"><span class="co">#&gt; eta[1]       2.4  1724   0.046277 1.0019</span></a>
-<a class="sourceLine" id="cb3-46" title="46"><span class="co">#&gt; eta[2]       2.1  2304   0.025067 1.0018</span></a>
-<a class="sourceLine" id="cb3-47" title="47"><span class="co">#&gt; eta[3]       1.9  2664     0.0313 1.0007</span></a>
-<a class="sourceLine" id="cb3-48" title="48"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-49" title="49"><span class="co">#&gt; Total time taken: 32.9 seconds</span></a></code></pre></div>
-<p>Once we obtain posterior estimates, label switching is likely to occurr. For such a reason, we need to relabel our chains as explained above. In order to relabel the chains, the function <code>piv_rel</code> can be used, which only needs the <code>mcmc = res</code> argument. Relabelled outputs can be displayed through the function <code>piv_plot</code>, with different options for the argument <code>type</code>:</p>
+\end{align}\]</span></p>
+<p>The covariance matrix is expressed in terms of the LDL decomposition
+as <span class="math inline">\(LD^*L^{T}\)</span>, a variant of the
+classical Cholesky decomposition, where <span class="math inline">\(L\)</span> is a <span class="math inline">\(2
+\times 2\)</span> lower unit triangular matrix and <span class="math inline">\(D^*\)</span> is a <span class="math inline">\(2
+\times 2\)</span> diagonal matrix. The Cholesky correlation factor <span class="math inline">\(L\)</span> is assigned a LKJ prior with <span class="math inline">\(\epsilon\)</span> degrees of freedom, which,
+combined with priors on the standard deviations of each component,
+induces a prior on the covariance matrix; as <span class="math inline">\(\epsilon \rightarrow \infty\)</span> the magnitude
+of correlations between components decreases, whereas <span class="math inline">\(\epsilon=1\)</span> leads to a uniform prior
+distribution for <span class="math inline">\(L\)</span>. By default, the
+hyperparameters are <span class="math inline">\(\boldsymbol{\mu}_0=\boldsymbol{0}\)</span>, <span class="math inline">\(\sigma_d=2.5, \epsilon=1\)</span>. Different
+values can be chosen with the argument:
+<code>priors=list(mu_0=c(1,2), sigma_d = 4, epsilon = 2)</code>.</p>
+<p>We fit the model using <code>rjags</code> with 2000 MCMC iterations
+and default priors:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">piv_MCMC</span>(<span class="at">y =</span> sim<span class="sc">$</span>y, <span class="at">k=</span> k, <span class="at">nMC =</span>nMC, </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                <span class="at">piv.criterion =</span> <span class="st">&quot;maxsumdiff&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; Compiling rjags model...</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Calling the simulation using the rjags method...</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; Note: the model did not require adaptation</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; Burning in the model for 1000 iterations...</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Running the model for 2000 iterations...</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; Simulation complete</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; Note: Summary statistics were not produced as there are &gt;50 monitored</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; variables</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; [To override this behaviour see ?add.summary and ?runjags.options]</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; FALSEFinished running the simulation</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; Calculating summary statistics...</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; Calculating the Gelman-Rubin statistic for 13 variables....</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; Note: Unable to calculate the multivariate psrf</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; JAGS model summary statistics from 8000 samples (chains = 4; adapt+burnin = 2000):</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;                                                                               </span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;             Lower95     Median   Upper95       Mean        SD Mode       MCerr</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; mu[1,1]     -14.705    -11.331   0.43214     -9.947    4.2418   --      0.1454</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; mu[2,1]     -275.82     9.1769    218.69     5.2448    111.28   --       2.057</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; mu[3,1]      23.542     31.101    34.685     30.401    3.0198   --    0.092882</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; mu[1,2]      2.1938     6.7218     9.535     6.4766    1.8405   --    0.032671</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; mu[2,2]     -295.06    0.63672     241.6    -2.4086     114.7   --      2.0256</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; mu[3,2]       1.986     5.5861    9.4189     5.4827    2.3773   --    0.056141</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; tau[1,1]  0.0059179   0.017746  0.024588   0.016635 0.0050943   --   0.0001792</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; tau[2,1]  -0.002673 0.00082392 0.0043957 0.00088079 0.0018818   -- 0.000057623</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; tau[1,2]  -0.002673 0.00082392 0.0043957 0.00088079 0.0018818   -- 0.000057623</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; tau[2,2]  0.0086647    0.01102  0.013803   0.011182 0.0015489   -- 0.000028201</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; eta[1]       0.2353    0.33777   0.71336    0.37816   0.12979   --   0.0038317</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; eta[2]   2.0086e-06    0.41259   0.49541    0.36221    0.1502   --   0.0044468</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; eta[3]      0.16441    0.25301   0.36284    0.25963  0.055469   --   0.0012522</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt;                                       </span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt;          MC%ofSD SSeff    AC.10   psrf</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; mu[1,1]      3.4   851  0.33167 1.8054</span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; mu[2,1]      1.8  2927 0.064706 1.2937</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; mu[3,1]      3.1  1057  0.26625 1.5327</span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; mu[1,2]      1.8  3173   0.1801 1.3527</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; mu[2,2]      1.8  3206 0.077971 1.2923</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; mu[3,2]      2.4  1793  0.20398 1.1058</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; tau[1,1]     3.5   808  0.30332 1.5828</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; tau[2,1]     3.1  1066  0.18017  1.082</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; tau[1,2]     3.1  1066  0.18017  1.082</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; tau[2,2]     1.8  3017  0.12661 1.0618</span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; eta[1]         3  1147  0.29484 1.7248</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; eta[2]         3  1141     0.32 1.8692</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt; eta[3]       2.3  1962  0.18062  1.186</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; Total time taken: 12.9 seconds</span></span></code></pre></div>
+<p>Once we obtain posterior estimates, label switching is likely to
+occurr. For such a reason, we need to relabel our chains as explained
+above. In order to relabel the chains, the function <code>piv_rel</code>
+can be used, which only needs the <code>mcmc = res</code> argument.
+Relabelled outputs can be displayed through the function
+<code>piv_plot</code>, with different options for the argument
+<code>type</code>:</p>
 <ul>
 <li><code>chains</code>: plot the relabelled chains;</li>
-<li><code>hist</code>: plot the point estimates against the histogram of the data.</li>
+<li><code>hist</code>: plot the point estimates against the histogram of
+the data.</li>
 </ul>
-<p>The optional argument <code>par</code> takes four possible alternative choices: <code>mean</code>, <code>sd</code>, <code>weight</code> and <code>all</code> for the means, standard deviations, weights or all the three mentioned parameters, respectively. By default, <code>par=&quot;all&quot;</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">rel &lt;-<span class="st"> </span><span class="kw">piv_rel</span>(<span class="dt">mcmc=</span>res)</a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="kw">piv_plot</span>(<span class="dt">y =</span> sim<span class="op">$</span>y, <span class="dt">mcmc =</span> res, <span class="dt">rel_est =</span> rel, <span class="dt">par =</span> <span class="st">&quot;mean&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;chains&quot;</span>)</a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; Description: traceplot of the raw MCMC chains and the relabelled chains for the means parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.</span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="kw">piv_plot</span>(<span class="dt">y =</span> sim<span class="op">$</span>y, <span class="dt">mcmc =</span> res, <span class="dt">rel_est =</span> rel, <span class="dt">type =</span> <span class="st">&quot;hist&quot;</span>)</a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt; Description: 3d histogram of the data along with the posterior estimates of the relabelled means (triangle points)</span></a></code></pre></div>
-<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>The optional argument <code>par</code> takes four possible
+alternative choices: <code>mean</code>, <code>sd</code>,
+<code>weight</code> and <code>all</code> for the means, standard
+deviations, weights or all the three mentioned parameters, respectively.
+By default, <code>par=&quot;all&quot;</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>rel <span class="ot">&lt;-</span> <span class="fu">piv_rel</span>(<span class="at">mcmc=</span>res)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">piv_plot</span>(<span class="at">y =</span> sim<span class="sc">$</span>y, <span class="at">mcmc =</span> res, <span class="at">rel_est =</span> rel, <span class="at">par =</span> <span class="st">&quot;mean&quot;</span>, <span class="at">type =</span> <span class="st">&quot;chains&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; Description: traceplot of the raw MCMC chains and the relabelled chains for the means parameters (coordinate 1 and 2). Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">piv_plot</span>(<span class="at">y =</span> sim<span class="sc">$</span>y, <span class="at">mcmc =</span> res, <span class="at">rel_est =</span> rel, <span class="at">type =</span> <span class="st">&quot;hist&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; Description: 3d histogram of the data along with the posterior estimates of the relabelled means (triangle points)</span></span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 </div>
 <div id="example-fishery-data" class="section level2">
 <h2>Example: fishery data</h2>
-<p>The Fishery dataset has been previously used by <span class="citation">Titterington, Smith, and Makov (1985)</span> and <span class="citation">Papastamoulis (2016)</span> and consists of 256 snapper length measurements. It is contained in the <code>bayesmix</code> package <span class="citation">(Grün 2011)</span>. We may display the histogram of the data, along with an estimated kernel density.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">data</span>(fish)</a>
-<a class="sourceLine" id="cb5-2" title="2">y &lt;-<span class="st"> </span>fish[,<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="kw">hist</span>(y, <span class="dt">breaks=</span><span class="dv">40</span>, <span class="dt">prob =</span> <span class="ot">TRUE</span>, <span class="dt">cex.lab=</span><span class="fl">1.6</span>,</a>
-<a class="sourceLine" id="cb5-4" title="4">             <span class="dt">main =</span><span class="st">&quot;Fishery data&quot;</span>, <span class="dt">cex.main =</span><span class="fl">1.7</span>,</a>
-<a class="sourceLine" id="cb5-5" title="5">             <span class="dt">col=</span><span class="st">&quot;navajowhite1&quot;</span>, <span class="dt">border=</span><span class="st">&quot;navajowhite1&quot;</span>)</a>
-<a class="sourceLine" id="cb5-6" title="6"> <span class="kw">lines</span>(<span class="kw">density</span>(y), <span class="dt">lty=</span><span class="dv">1</span>, <span class="dt">lwd=</span><span class="dv">3</span>, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a></code></pre></div>
+<p>The Fishery dataset has been previously used by <span class="citation">Titterington, Smith, and Makov (1985)</span> and <span class="citation">Papastamoulis (2016)</span> and consists of 256 snapper
+length measurements. It is contained in the <code>bayesmix</code>
+package <span class="citation">(Grün 2011)</span>. We may display the
+histogram of the data, along with an estimated kernel density.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">data</span>(fish)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> fish[,<span class="dv">1</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">hist</span>(y, <span class="at">breaks=</span><span class="dv">40</span>, <span class="at">prob =</span> <span class="cn">TRUE</span>, <span class="at">cex.lab=</span><span class="fl">1.6</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>             <span class="at">main =</span><span class="st">&quot;Fishery data&quot;</span>, <span class="at">cex.main =</span><span class="fl">1.7</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>             <span class="at">col=</span><span class="st">&quot;navajowhite1&quot;</span>, <span class="at">border=</span><span class="st">&quot;navajowhite1&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a> <span class="fu">lines</span>(<span class="fu">density</span>(y), <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">col=</span><span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <p>We assume a mixture model with <span class="math inline">\(k=5\)</span> groups:</p>
 <p><span class="math display">\[\begin{equation}
-y_i \sim \sum_{j=1}^k \eta_j \mathcal{N}(\mu_j, \sigma^2_j), \ \ i=1,\ldots,n,
-\label{eq:fishery} 
- \end{equation}\]</span> where <span class="math inline">\(\mu_j, \sigma_j\)</span> are the mean and the standard deviation of group <span class="math inline">\(j\)</span>, respectively. Moreover, assume that <span class="math inline">\(z_1,\ldots,z_n\)</span> is an unobserved latent sequence of i.i.d. random variables following the multinomial distribution with weights <span class="math inline">\(\boldsymbol{\eta}=(\eta_{1},\dots,\eta_{k})\)</span>, such that:</p>
-<p><span class="math display">\[P(z_i=j)=\eta_j,\]</span> where <span class="math inline">\(\eta_j\)</span> is the mixture weight assigned to the group <span class="math inline">\(j\)</span>.</p>
-<p>We fit our model by simulating <span class="math inline">\(H=15000\)</span> samples from the posterior distribution of <span class="math inline">\((\boldsymbol{z}, \boldsymbol{\mu}, \boldsymbol{\sigma}, \boldsymbol{\eta})\)</span>. In the univariate case, if the argument <code>software=&quot;rjags&quot;</code> is selected (the default option), Gibbs sampling is performed by the package <code>bayesmix</code>, and the priors are:</p>
+y_i \sim \sum_{j=1}^k \eta_j \mathcal{N}(\mu_j, \sigma^2_j), \ \
+i=1,\ldots,n,
+\label{eq:fishery}
+\end{equation}\]</span> where <span class="math inline">\(\mu_j,
+\sigma_j\)</span> are the mean and the standard deviation of group <span class="math inline">\(j\)</span>, respectively. Moreover, assume that
+<span class="math inline">\(z_1,\ldots,z_n\)</span> is an unobserved
+latent sequence of i.i.d. random variables following the multinomial
+distribution with weights <span class="math inline">\(\boldsymbol{\eta}=(\eta_{1},\dots,\eta_{k})\)</span>,
+such that:</p>
+<p><span class="math display">\[P(z_i=j)=\eta_j,\]</span> where <span class="math inline">\(\eta_j\)</span> is the mixture weight assigned to
+the group <span class="math inline">\(j\)</span>.</p>
+<p>We fit our model by simulating <span class="math inline">\(H=15000\)</span> samples from the posterior
+distribution of <span class="math inline">\((\boldsymbol{z},
+\boldsymbol{\mu}, \boldsymbol{\sigma}, \boldsymbol{\eta})\)</span>. In
+the univariate case, if the argument <code>software=&quot;rjags&quot;</code> is
+selected (the default option), Gibbs sampling is performed by the
+package <code>bayesmix</code>, and the priors are:</p>
 <p><span class="math display">\[\begin{eqnarray}
 \mu_j \sim &amp; \mathcal{N}(\mu_0, 1/B_0)\\
   \sigma_j \sim &amp; \mbox{invGamma}(\nu_0/2, \nu_0S_0/2)\\
   \eta \sim &amp; \mbox{Dirichlet}(\boldsymbol{\alpha})\\
   S_0 \sim &amp; \mbox{Gamma}(g_0/2, g_0G_0/2),
 \end{eqnarray}\]</span></p>
-<p>with default values: <span class="math inline">\(B_0=0.1\)</span>, <span class="math inline">\(\nu_0 =20\)</span>, <span class="math inline">\(g_0 = 10^{-16}\)</span>, <span class="math inline">\(G_0 = 10^{-16}\)</span>, <span class="math inline">\(\boldsymbol{\alpha}=(1,1,\ldots,1)\)</span>. The users may specify their own hyperparameters with the <code>priors</code> arguments, declaring a names list such as: <code>priors = list(mu_0=2, alpha = rep(2, k), ...)</code>.</p>
+<p>with default values: <span class="math inline">\(B_0=0.1\)</span>,
+<span class="math inline">\(\nu_0 =20\)</span>, <span class="math inline">\(g_0 = 10^{-16}\)</span>, <span class="math inline">\(G_0 = 10^{-16}\)</span>, <span class="math inline">\(\boldsymbol{\alpha}=(1,1,\ldots,1)\)</span>. The
+users may specify their own hyperparameters with the <code>priors</code>
+arguments, declaring a names list such as:
+<code>priors = list(mu_0=2, alpha = rep(2, k), ...)</code>.</p>
 <p>If <code>software=&quot;rstan&quot;</code> is selected, the priors are:</p>
 <p><span class="math display">\[\begin{eqnarray}
   \mu_j &amp; \sim \mathcal{N}(\mu_0, 1/B0inv)\\
   \sigma_j &amp; \sim \mbox{Lognormal}(\mu_{\sigma}, \tau_{\sigma})\\
   \eta_j &amp; \sim \mbox{Uniform}(0,1),
   \end{eqnarray}\]</span></p>
-<p>where the vector of the weights <span class="math inline">\(\boldsymbol{\eta}=(\eta_1,\ldots,\eta_k)\)</span> is a <span class="math inline">\(k\)</span>-simplex. Default hyperparameters values are: <span class="math inline">\(\mu_0=0, B0inv=0.1, \mu_{\sigma}=0, \tau_{\sigma}=2\)</span>. Here also, the users may choose their own hyperparameters values in the following way: <code>priors = list(mu_sigma = 0, tau_sigma = 1,...)</code>.</p>
-<p>We fit the model using the <code>rjags</code> method, and we set the burnin period to 7500.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">k &lt;-<span class="st"> </span><span class="dv">5</span></a>
-<a class="sourceLine" id="cb6-2" title="2">nMC &lt;-<span class="st"> </span><span class="dv">15000</span></a>
-<a class="sourceLine" id="cb6-3" title="3">res &lt;-<span class="st"> </span><span class="kw">piv_MCMC</span>(<span class="dt">y =</span> y, <span class="dt">k =</span> k, <span class="dt">nMC =</span> nMC, </a>
-<a class="sourceLine" id="cb6-4" title="4">                <span class="dt">burn =</span> <span class="fl">0.5</span><span class="op">*</span>nMC, <span class="dt">software =</span> <span class="st">&quot;rjags&quot;</span>)</a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="co">#&gt; Compiling model graph</span></a>
-<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt;    Declaring variables</span></a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt;    Resolving undeclared variables</span></a>
-<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt;    Allocating nodes</span></a>
-<a class="sourceLine" id="cb6-9" title="9"><span class="co">#&gt; Graph information:</span></a>
-<a class="sourceLine" id="cb6-10" title="10"><span class="co">#&gt;    Observed stochastic nodes: 256</span></a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt;    Unobserved stochastic nodes: 268</span></a>
-<a class="sourceLine" id="cb6-12" title="12"><span class="co">#&gt;    Total graph size: 1050</span></a>
-<a class="sourceLine" id="cb6-13" title="13"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-14" title="14"><span class="co">#&gt; Initializing model</span></a>
-<a class="sourceLine" id="cb6-15" title="15"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-16" title="16"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-17" title="17"><span class="co">#&gt; Call:</span></a>
-<a class="sourceLine" id="cb6-18" title="18"><span class="co">#&gt; JAGSrun(y = y, model = mod.mist.univ, control = control)</span></a>
-<a class="sourceLine" id="cb6-19" title="19"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-20" title="20"><span class="co">#&gt; Markov Chain Monte Carlo (MCMC) output:</span></a>
-<a class="sourceLine" id="cb6-21" title="21"><span class="co">#&gt; Start = 7501 </span></a>
-<a class="sourceLine" id="cb6-22" title="22"><span class="co">#&gt; End = 22500 </span></a>
-<a class="sourceLine" id="cb6-23" title="23"><span class="co">#&gt; Thinning interval = 1 </span></a>
-<a class="sourceLine" id="cb6-24" title="24"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-25" title="25"><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for eta </span></a>
-<a class="sourceLine" id="cb6-26" title="26"><span class="co">#&gt;          Mean      SD     2.5%  97.5%</span></a>
-<a class="sourceLine" id="cb6-27" title="27"><span class="co">#&gt; eta[1] 0.2030 0.20230 0.009156 0.5672</span></a>
-<a class="sourceLine" id="cb6-28" title="28"><span class="co">#&gt; eta[2] 0.2006 0.13765 0.009236 0.5198</span></a>
-<a class="sourceLine" id="cb6-29" title="29"><span class="co">#&gt; eta[3] 0.1674 0.12353 0.018239 0.5051</span></a>
-<a class="sourceLine" id="cb6-30" title="30"><span class="co">#&gt; eta[4] 0.1217 0.05231 0.071350 0.1988</span></a>
-<a class="sourceLine" id="cb6-31" title="31"><span class="co">#&gt; eta[5] 0.3073 0.22254 0.009916 0.5752</span></a>
-<a class="sourceLine" id="cb6-32" title="32"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-33" title="33"><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for mu </span></a>
-<a class="sourceLine" id="cb6-34" title="34"><span class="co">#&gt;        Mean     SD  2.5%  97.5%</span></a>
-<a class="sourceLine" id="cb6-35" title="35"><span class="co">#&gt; mu[1] 8.386 2.7806 3.377 12.341</span></a>
-<a class="sourceLine" id="cb6-36" title="36"><span class="co">#&gt; mu[2] 8.413 2.1134 5.178 12.347</span></a>
-<a class="sourceLine" id="cb6-37" title="37"><span class="co">#&gt; mu[3] 8.369 1.5851 5.201 10.862</span></a>
-<a class="sourceLine" id="cb6-38" title="38"><span class="co">#&gt; mu[4] 3.472 0.6172 3.126  5.368</span></a>
-<a class="sourceLine" id="cb6-39" title="39"><span class="co">#&gt; mu[5] 7.358 2.7863 5.069 12.292</span></a>
-<a class="sourceLine" id="cb6-40" title="40"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-41" title="41"><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for sigma2 </span></a>
-<a class="sourceLine" id="cb6-42" title="42"><span class="co">#&gt;             Mean     SD   2.5%  97.5%</span></a>
-<a class="sourceLine" id="cb6-43" title="43"><span class="co">#&gt; sigma2[1] 0.4473 0.2510 0.1932 1.1808</span></a>
-<a class="sourceLine" id="cb6-44" title="44"><span class="co">#&gt; sigma2[2] 0.4387 0.2108 0.2009 1.0234</span></a>
-<a class="sourceLine" id="cb6-45" title="45"><span class="co">#&gt; sigma2[3] 0.4526 0.2415 0.2021 1.1223</span></a>
-<a class="sourceLine" id="cb6-46" title="46"><span class="co">#&gt; sigma2[4] 0.2606 0.1128 0.1280 0.5479</span></a>
-<a class="sourceLine" id="cb6-47" title="47"><span class="co">#&gt; sigma2[5] 0.4132 0.2442 0.2035 1.1182</span></a></code></pre></div>
-<p>First of all, we may access the true number of iterations by tiping:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">res<span class="op">$</span>true.iter</a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="co">#&gt; [1] 7421</span></a></code></pre></div>
-<p>We may have a glimpse if label switching ocurred or not by looking at the traceplot for the mean parameters, <span class="math inline">\(\mu_j\)</span>. To do this, we apply the function <code>piv_rel</code> to relabel the chains and obtain useful inferences; the only argument for this function is the MCMC result just obtained with <code>piv_MCMC</code>. The function <code>piv_plot</code> displays some graphical tools, both traceplots (argument <code>type=&quot;chains&quot;</code>) and histograms along with the final relabelled means (argument <code>type=&quot;hist&quot;</code>). For both plot ttpes, the function returns a printed message explaining how to interpret the results.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">rel &lt;-<span class="st"> </span><span class="kw">piv_rel</span>(<span class="dt">mcmc=</span>res)</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="kw">piv_plot</span>(<span class="dt">y=</span>y, res, rel, <span class="dt">par =</span> <span class="st">&quot;mean&quot;</span>, <span class="dt">type=</span><span class="st">&quot;chains&quot;</span>)</a></code></pre></div>
+<p>where the vector of the weights <span class="math inline">\(\boldsymbol{\eta}=(\eta_1,\ldots,\eta_k)\)</span>
+is a <span class="math inline">\(k\)</span>-simplex. Default
+hyperparameters values are: <span class="math inline">\(\mu_0=0,
+B0inv=0.1, \mu_{\sigma}=0, \tau_{\sigma}=2\)</span>. Here also, the
+users may choose their own hyperparameters values in the following way:
+<code>priors = list(mu_sigma = 0, tau_sigma = 1,...)</code>.</p>
+<p>We fit the model using the <code>rjags</code> method, and we set the
+burnin period to 7500.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>nMC <span class="ot">&lt;-</span> <span class="dv">15000</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">piv_MCMC</span>(<span class="at">y =</span> y, <span class="at">k =</span> k, <span class="at">nMC =</span> nMC, </span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>                <span class="at">burn =</span> <span class="fl">0.5</span><span class="sc">*</span>nMC, <span class="at">software =</span> <span class="st">&quot;rjags&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; Compiling model graph</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;    Declaring variables</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;    Resolving undeclared variables</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;    Allocating nodes</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; Graph information:</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt;    Observed stochastic nodes: 256</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;    Unobserved stochastic nodes: 268</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;    Total graph size: 1050</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; Initializing model</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; JAGSrun(y = y, model = mod.mist.univ, control = control)</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; Markov Chain Monte Carlo (MCMC) output:</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; Start = 7501 </span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; End = 22500 </span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; Thinning interval = 1 </span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for eta </span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co">#&gt;          Mean      SD     2.5%  97.5%</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt; eta[1] 0.2030 0.20230 0.009156 0.5672</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="co">#&gt; eta[2] 0.2006 0.13765 0.009236 0.5198</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a><span class="co">#&gt; eta[3] 0.1674 0.12353 0.018239 0.5051</span></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co">#&gt; eta[4] 0.1217 0.05231 0.071350 0.1988</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co">#&gt; eta[5] 0.3073 0.22254 0.009916 0.5752</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for mu </span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co">#&gt;        Mean     SD  2.5%  97.5%</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="co">#&gt; mu[1] 8.386 2.7806 3.377 12.341</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="co">#&gt; mu[2] 8.413 2.1134 5.178 12.347</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a><span class="co">#&gt; mu[3] 8.369 1.5851 5.201 10.862</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a><span class="co">#&gt; mu[4] 3.472 0.6172 3.126  5.368</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a><span class="co">#&gt; mu[5] 7.358 2.7863 5.069 12.292</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for sigma2 </span></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a><span class="co">#&gt;             Mean     SD   2.5%  97.5%</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a><span class="co">#&gt; sigma2[1] 0.4473 0.2510 0.1932 1.1808</span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="co">#&gt; sigma2[2] 0.4387 0.2108 0.2009 1.0234</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a><span class="co">#&gt; sigma2[3] 0.4526 0.2415 0.2021 1.1223</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a><span class="co">#&gt; sigma2[4] 0.2606 0.1128 0.1280 0.5479</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a><span class="co">#&gt; sigma2[5] 0.4132 0.2442 0.2035 1.1182</span></span></code></pre></div>
+<p>First of all, we may access the true number of iterations by
+tiping:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>res<span class="sc">$</span>true.iter</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1] 7421</span></span></code></pre></div>
+<p>We may have a glimpse if label switching ocurred or not by looking at
+the traceplot for the mean parameters, <span class="math inline">\(\mu_j\)</span>. To do this, we apply the function
+<code>piv_rel</code> to relabel the chains and obtain useful inferences;
+the only argument for this function is the MCMC result just obtained
+with <code>piv_MCMC</code>. The function <code>piv_plot</code> displays
+some graphical tools, both traceplots (argument
+<code>type=&quot;chains&quot;</code>) and histograms along with the final
+relabelled means (argument <code>type=&quot;hist&quot;</code>). For both plot
+ttpes, the function returns a printed message explaining how to
+interpret the results.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>rel <span class="ot">&lt;-</span> <span class="fu">piv_rel</span>(<span class="at">mcmc=</span>res)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">piv_plot</span>(<span class="at">y=</span>y, res, rel, <span class="at">par =</span> <span class="st">&quot;mean&quot;</span>, <span class="at">type=</span><span class="st">&quot;chains&quot;</span>)</span></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <pre><code>#&gt; Description: traceplot of the raw MCMC chains and the relabelled chains for the means parameters. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sample is not able to distinguish between the components.
 piv_plot(y=y, res, rel, type=&quot;hist&quot;)</code></pre>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <pre><code>#&gt; Description: histograms of the data along with the estimated posterior means (red points) from raw MCMC and relabelling algorithm. The blue line is the estimated density curve.</code></pre>
-<p>The first plot displays the traceplots for the parameters <span class="math inline">\(\boldsymbol{\mu}\)</span>. From the left plot showing the raw outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm seems able to reorder the mean <span class="math inline">\(\mu_j\)</span> and the weights <span class="math inline">\(\eta_j\)</span>, for <span class="math inline">\(j=1,\ldots,k\)</span>. Of course, a MCMC sampler which does not switch the labels would ideal, but nearly impossible to program. However, we could assess how two diferent sampler perform, by repeating the analysis above by selecting <code>software=&quot;rstan&quot;</code> in the <code>piv_MCMC</code> function.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="co"># stan code not evaluated here</span></a>
-<a class="sourceLine" id="cb11-2" title="2">res2 &lt;-<span class="st"> </span><span class="kw">piv_MCMC</span>(<span class="dt">y =</span> y, <span class="dt">k =</span> k, <span class="dt">nMC =</span> <span class="dv">3000</span>, </a>
-<a class="sourceLine" id="cb11-3" title="3">                 <span class="dt">software =</span> <span class="st">&quot;rstan&quot;</span>)</a>
-<a class="sourceLine" id="cb11-4" title="4">rel2 &lt;-<span class="st"> </span><span class="kw">piv_rel</span>(res2)</a>
-<a class="sourceLine" id="cb11-5" title="5"><span class="kw">piv_plot</span>(<span class="dt">y=</span>y, res2, rel2, <span class="dt">par =</span> <span class="st">&quot;mean&quot;</span>, <span class="dt">type=</span><span class="st">&quot;chains&quot;</span>)</a></code></pre></div>
-<p>With the <code>rstan</code> option, we can use the <code>bayesplot</code> functions on the  argument:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="co"># stan code not evaluated here</span></a>
-<a class="sourceLine" id="cb12-2" title="2">posterior &lt;-<span class="st"> </span><span class="kw">as.array</span>(res2<span class="op">$</span>stanfit)</a>
-<a class="sourceLine" id="cb12-3" title="3"><span class="kw">mcmc_intervals</span>(posterior, <span class="dt">regex_pars =</span> <span class="kw">c</span>(<span class="st">&quot;mu&quot;</span>))</a></code></pre></div>
-<p>Regardless of the software that we chose, we may extract the JAGS/Stan model by typing:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">cat</span>(res<span class="op">$</span>model)</a>
-<a class="sourceLine" id="cb13-2" title="2"><span class="co">#&gt; var </span></a>
-<a class="sourceLine" id="cb13-3" title="3"><span class="co">#&gt;  b0,</span></a>
-<a class="sourceLine" id="cb13-4" title="4"><span class="co">#&gt;      B0inv,</span></a>
-<a class="sourceLine" id="cb13-5" title="5"><span class="co">#&gt;      nu0Half,</span></a>
-<a class="sourceLine" id="cb13-6" title="6"><span class="co">#&gt;      g0Half,</span></a>
-<a class="sourceLine" id="cb13-7" title="7"><span class="co">#&gt;      g0G0Half,</span></a>
-<a class="sourceLine" id="cb13-8" title="8"><span class="co">#&gt;      k,</span></a>
-<a class="sourceLine" id="cb13-9" title="9"><span class="co">#&gt;      N,</span></a>
-<a class="sourceLine" id="cb13-10" title="10"><span class="co">#&gt;      eta[5], </span></a>
-<a class="sourceLine" id="cb13-11" title="11"><span class="co">#&gt;  mu[5], </span></a>
-<a class="sourceLine" id="cb13-12" title="12"><span class="co">#&gt;  tau[5], </span></a>
-<a class="sourceLine" id="cb13-13" title="13"><span class="co">#&gt;  nu0S0Half,</span></a>
-<a class="sourceLine" id="cb13-14" title="14"><span class="co">#&gt;      S0,</span></a>
-<a class="sourceLine" id="cb13-15" title="15"><span class="co">#&gt;      e[5], </span></a>
-<a class="sourceLine" id="cb13-16" title="16"><span class="co">#&gt;  y[256], </span></a>
-<a class="sourceLine" id="cb13-17" title="17"><span class="co">#&gt;  S[256]; </span></a>
-<a class="sourceLine" id="cb13-18" title="18"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb13-19" title="19"><span class="co">#&gt; model    {</span></a>
-<a class="sourceLine" id="cb13-20" title="20"><span class="co">#&gt;  for (i in 1:N) {</span></a>
-<a class="sourceLine" id="cb13-21" title="21"><span class="co">#&gt;      y[i] ~ dnorm(mu[S[i]],tau[S[i]]);</span></a>
-<a class="sourceLine" id="cb13-22" title="22"><span class="co">#&gt;      S[i] ~ dcat(eta[]);</span></a>
-<a class="sourceLine" id="cb13-23" title="23"><span class="co">#&gt;  }</span></a>
-<a class="sourceLine" id="cb13-24" title="24"><span class="co">#&gt;  for (j in 1:k) {</span></a>
-<a class="sourceLine" id="cb13-25" title="25"><span class="co">#&gt;      mu[j] ~ dnorm(b0,B0inv);</span></a>
-<a class="sourceLine" id="cb13-26" title="26"><span class="co">#&gt;      tau[j] ~ dgamma(nu0Half,nu0S0Half);</span></a>
-<a class="sourceLine" id="cb13-27" title="27"><span class="co">#&gt;  }</span></a>
-<a class="sourceLine" id="cb13-28" title="28"><span class="co">#&gt;  S0 ~ dgamma(g0Half,g0G0Half);</span></a>
-<a class="sourceLine" id="cb13-29" title="29"><span class="co">#&gt;  nu0S0Half &lt;- nu0Half * S0;</span></a>
-<a class="sourceLine" id="cb13-30" title="30"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb13-31" title="31"><span class="co">#&gt;  eta[] ~ ddirch(e[]);</span></a>
-<a class="sourceLine" id="cb13-32" title="32"><span class="co">#&gt; }</span></a></code></pre></div>
+<p>The first plot displays the traceplots for the parameters <span class="math inline">\(\boldsymbol{\mu}\)</span>. From the left plot
+showing the raw outputs as given by the Gibbs sampling, we note that
+label switching clearly occurred. Our algorithm seems able to reorder
+the mean <span class="math inline">\(\mu_j\)</span> and the weights
+<span class="math inline">\(\eta_j\)</span>, for <span class="math inline">\(j=1,\ldots,k\)</span>. Of course, a MCMC sampler
+which does not switch the labels would ideal, but nearly impossible to
+program. However, we could assess how two diferent sampler perform, by
+repeating the analysis above by selecting <code>software=&quot;rstan&quot;</code>
+in the <code>piv_MCMC</code> function.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># stan code not evaluated here</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">piv_MCMC</span>(<span class="at">y =</span> y, <span class="at">k =</span> k, <span class="at">nMC =</span> <span class="dv">3000</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>                 <span class="at">software =</span> <span class="st">&quot;rstan&quot;</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>rel2 <span class="ot">&lt;-</span> <span class="fu">piv_rel</span>(res2)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">piv_plot</span>(<span class="at">y=</span>y, res2, rel2, <span class="at">par =</span> <span class="st">&quot;mean&quot;</span>, <span class="at">type=</span><span class="st">&quot;chains&quot;</span>)</span></code></pre></div>
+<p>With the <code>rstan</code> option, we can use the
+<code>bayesplot</code> functions on the argument:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># stan code not evaluated here</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="fu">as.array</span>(res2<span class="sc">$</span>stanfit)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">mcmc_intervals</span>(posterior, <span class="at">regex_pars =</span> <span class="fu">c</span>(<span class="st">&quot;mu&quot;</span>))</span></code></pre></div>
+<p>Regardless of the software that we chose, we may extract the
+JAGS/Stan model by typing:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">cat</span>(res<span class="sc">$</span>model)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; var </span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt;  b0,</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt;      B0inv,</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;      nu0Half,</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;      g0Half,</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;      g0G0Half,</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;      k,</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt;      N,</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;      eta[5], </span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;  mu[5], </span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;  tau[5], </span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;  nu0S0Half,</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt;      S0,</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt;      e[5], </span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt;  y[256], </span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt;  S[256]; </span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt; model    {</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt;  for (i in 1:N) {</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt;      y[i] ~ dnorm(mu[S[i]],tau[S[i]]);</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="co">#&gt;      S[i] ~ dcat(eta[]);</span></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="co">#&gt;  }</span></span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a><span class="co">#&gt;  for (j in 1:k) {</span></span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a><span class="co">#&gt;      mu[j] ~ dnorm(b0,B0inv);</span></span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a><span class="co">#&gt;      tau[j] ~ dgamma(nu0Half,nu0S0Half);</span></span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a><span class="co">#&gt;  }</span></span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a><span class="co">#&gt;  S0 ~ dgamma(g0Half,g0G0Half);</span></span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a><span class="co">#&gt;  nu0S0Half &lt;- nu0Half * S0;</span></span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a><span class="co">#&gt;  eta[] ~ ddirch(e[]);</span></span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+<p>In order to estimate the number of clusters in the data, we can now
+fit <strong>sparse finite mixtures</strong> as proposed by <span class="citation">Frühwirth-Schnatter and Malsiner-Walli (2019)</span> by
+assuming:</p>
+<p><span class="math display">\[\boldsymbol{\eta} \sim
+\text{Dirichlet}(e_0),\]</span></p>
+<p>where the smaller <span class="math inline">\(e_0\)</span> and the
+the smaller the number of clusters a-posteriori. The function allows for
+a Gamma prior on <span class="math inline">\(e_0\)</span> with
+hyperparameters <span class="math inline">\(a_e, b_e\)</span> that may
+be chosen by the users.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>res3 <span class="ot">&lt;-</span> <span class="fu">piv_MCMC</span>(<span class="at">y =</span> y, <span class="at">k =</span> k, <span class="at">nMC =</span> nMC, <span class="at">sparsity =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>                 <span class="at">priors =</span> <span class="fu">list</span>(<span class="at">alpha =</span> <span class="fu">rep</span>(<span class="fl">0.001</span>, k))) <span class="co"># sparse on eta</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; Compiling model graph</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt;    Declaring variables</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;    Resolving undeclared variables</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;    Allocating nodes</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; Graph information:</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt;    Observed stochastic nodes: 256</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt;    Unobserved stochastic nodes: 268</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt;    Total graph size: 1050</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; Initializing model</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt; JAGSrun(y = y, model = mod.mist.univ, control = control)</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt; Markov Chain Monte Carlo (MCMC) output:</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; Start = 7501 </span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt; End = 22500 </span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; Thinning interval = 1 </span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for eta </span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co">#&gt;             Mean        SD    2.5%     97.5%</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co">#&gt; eta[1] 3.674e-05 0.0008714 0.00000 1.086e-12</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="co">#&gt; eta[2] 7.515e-01 0.1190594 0.48700 9.288e-01</span></span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; eta[3] 3.925e-04 0.0058635 0.00000 3.997e-11</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co">#&gt; eta[4] 2.480e-01 0.1190932 0.07107 5.130e-01</span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co">#&gt; eta[5] 2.549e-05 0.0007312 0.00000 2.014e-14</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for mu </span></span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co">#&gt;        Mean     SD    2.5%  97.5%</span></span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a><span class="co">#&gt; mu[1] 5.677 3.1578 -0.4744 11.816</span></span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="co">#&gt; mu[2] 5.425 0.2327  4.9587  5.846</span></span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a><span class="co">#&gt; mu[3] 5.613 3.1466 -0.5620 11.721</span></span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a><span class="co">#&gt; mu[4] 8.394 0.8106  6.9791 10.047</span></span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a><span class="co">#&gt; mu[5] 5.633 3.1208 -0.4693 11.684</span></span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a><span class="co">#&gt;  Empirical mean, standard deviation and 95% CI for sigma2 </span></span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a><span class="co">#&gt;            Mean     SD   2.5% 97.5%</span></span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a><span class="co">#&gt; sigma2[1] 2.438 1.1416 0.9608 5.312</span></span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a><span class="co">#&gt; sigma2[2] 1.814 0.3876 1.1119 2.623</span></span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a><span class="co">#&gt; sigma2[3] 2.436 1.1367 0.9649 5.276</span></span>
+<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a><span class="co">#&gt; sigma2[4] 3.002 0.8899 1.5451 4.944</span></span>
+<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a><span class="co">#&gt; sigma2[5] 2.440 1.1286 0.9741 5.291</span></span>
+<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MCMC has not never been able to identify the required number of groups and the process has been interrupted&quot;</span></span>
+<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">table</span>(res3<span class="sc">$</span>nclusters), <span class="at">xlab=</span> <span class="fu">expression</span>(K[<span class="st">&quot;+&quot;</span>]),</span>
+<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a>        <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">border =</span> <span class="st">&quot;red&quot;</span>, <span class="at">main =</span> <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">&quot;p(&quot;</span>,K[<span class="st">&quot;+&quot;</span>], <span class="st">&quot;|y)&quot;</span>)),</span>
+<span id="cb14-49"><a href="#cb14-49" tabindex="-1"></a>        <span class="at">cex.main=</span><span class="dv">3</span>, <span class="at">yaxt =</span><span class="st">&quot;n&quot;</span>, <span class="at">cex.axis=</span><span class="fl">2.4</span>, <span class="at">cex.names=</span><span class="fl">2.4</span>,</span>
+<span id="cb14-50"><a href="#cb14-50" tabindex="-1"></a>        <span class="at">cex.lab=</span><span class="dv">2</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <!-- The results are shown in Figure~\ref{fish_chains_stan}. As may be noted from the first plot in the top row, Hamiltonian Monte Carlo (HMC) behind Stan seems definitely more suited to explore the five high-density regions without switching the group labels. However, group probabilities (third plot) and group standard deviations (second plot) overlap each other. The perfect MCMC sampler does not exist. -->
 </div>
 <div id="references" class="section level2 unnumbered">
-<h2>References</h2>
-<div id="refs" class="references">
-<div id="ref-egidi2018mus">
-<p>Egidi, Leonardo, Roberta Pappadà, Francesco Pauli, and Nicola Torelli. 2018a. “Maxima Units Search (Mus) Algorithm: Methodology and Applications.” In <em>Studies in Theoretical and Applied Statistics</em>, edited by C. Perna, M. Pratesi, and A. Ruiz-Gazen, 71–81. Springer.</p>
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-egidi2018mus" class="csl-entry">
+Egidi, Leonardo, Roberta Pappadà, Francesco Pauli, and Nicola Torelli.
+2018a. <span>“Maxima Units Search (MUS) Algorithm: Methodology and
+Applications.”</span> In <em>Studies in Theoretical and Applied
+Statistics</em>, edited by C. Perna, M. Pratesi, and A. Ruiz-Gazen,
+71–81. Springer.
 </div>
-<div id="ref-egidi2018relabelling">
-<p>———. 2018b. “Relabelling in Bayesian Mixture Models by Pivotal Units.” <em>Statistics and Computing</em> 28 (4): 957–69.</p>
+<div id="ref-egidi2018relabelling" class="csl-entry">
+———. 2018b. <span>“Relabelling in Bayesian Mixture Models by Pivotal
+Units.”</span> <em>Statistics and Computing</em> 28 (4): 957–69.
 </div>
-<div id="ref-fruhwirth2001markov">
-<p>Frühwirth-Schnatter, Sylvia. 2001. “Markov Chain Monte Carlo Estimation of Classical and Dynamic Switching and Mixture Models.” <em>Journal of the American Statistical Association</em> 96 (453): 194–209.</p>
+<div id="ref-fruhwirth2001markov" class="csl-entry">
+Frühwirth-Schnatter, Sylvia. 2001. <span>“Markov Chain Monte Carlo
+Estimation of Classical and Dynamic Switching and Mixture
+Models.”</span> <em>Journal of the American Statistical Association</em>
+96 (453): 194–209.
 </div>
-<div id="ref-grun2011bayesmix">
-<p>Grün, B. 2011. “bayesmix: Bayesian Mixture Models with JAGS. R Package Version 0.7-2.” <a href="https://CRAN.R-project.org/package=bayesmix">https://CRAN.R-project.org/package=bayesmix</a>.</p>
+<div id="ref-fruhwirth2019here" class="csl-entry">
+Frühwirth-Schnatter, Sylvia, and Gertraud Malsiner-Walli. 2019.
+<span>“From Here to Infinity: Sparse Finite Versus Dirichlet Process
+Mixtures in Model-Based Clustering.”</span> <em>Advances in Data
+Analysis and Classification</em> 13 (1): 33–64.
 </div>
-<div id="ref-papastamoulis2016label">
-<p>Papastamoulis, Panagiotis. 2016. “label.switching: An R Package for Dealing with the Label Switching Problem in MCMC Outputs.” <em>Journal of Statistical Software, Code Snippets</em> 69 (1): 1–24. <a href="https://doi.org/10.18637/jss.v069.c01">https://doi.org/10.18637/jss.v069.c01</a>.</p>
+<div id="ref-grun2011bayesmix" class="csl-entry">
+Grün, B. 2011. <span>“<span class="nocase">bayesmix</span>:
+<span>B</span>ayesian <span>M</span>ixture <span>M</span>odels with
+<span>JAGS</span>. <span>R</span> Package Version 0.7-2.”</span> <a href="https://CRAN.R-project.org/package=bayesmix">https://CRAN.R-project.org/package=bayesmix</a>.
 </div>
-<div id="ref-titterington1985statistical">
-<p>Titterington, D Michael, Adrian FM Smith, and Udi E Makov. 1985. <em>Statistical Analysis of Finite Mixture Distributions</em>. Wiley.</p>
+<div id="ref-papastamoulis2016label" class="csl-entry">
+Papastamoulis, Panagiotis. 2016. <span>“<span class="nocase">label.switching</span>: An <span>R</span>
+<span>P</span>ackage for <span>D</span>ealing with the
+<span>L</span>abel <span>S</span>witching <span>P</span>roblem in
+<span>MCMC</span> <span>O</span>utputs.”</span> <em>Journal of
+Statistical Software, Code Snippets</em> 69 (1): 1–24. <a href="https://doi.org/10.18637/jss.v069.c01">https://doi.org/10.18637/jss.v069.c01</a>.
+</div>
+<div id="ref-titterington1985statistical" class="csl-entry">
+Titterington, D Michael, Adrian FM Smith, and Udi E Makov. 1985.
+<em>Statistical Analysis of Finite Mixture Distributions</em>. Wiley.
 </div>
 </div>
 </div>
