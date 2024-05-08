@@ -33,3 +33,16 @@ sim <- piv_sim(N = N, k = k, Mu = Mu,
 res <- piv_MCMC(y = sim$y, k= k, nMC =nMC, 
                 piv.criterion = "maxsumdiff")
 
+## ----pivotal_rel, fig.show='hold', fig.align='center',fig.width=7-------------
+rel <- piv_rel(mcmc=res)
+piv_plot(y = sim$y, mcmc = res, rel_est = rel, par = "mean", type = "chains")
+piv_plot(y = sim$y, mcmc = res, rel_est = rel, type = "hist")
+
+## ----fish_hist, fig.align ='center', fig.width=5.5----------------------------
+data(fish)
+y <- fish[,1]
+hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
+             main ="Fishery data", cex.main =1.7,
+             col="navajowhite1", border="navajowhite1")
+ lines(density(y), lty=1, lwd=3, col="blue")
+
