@@ -1,8 +1,7 @@
 library(testthat)
-library(pivreb)
+library(pivmet)
 
-Sys.unsetenv("R_TESTS")
-#test_check("pivreb")
+test_check("pivmet")
 
 #devtools::test()
 

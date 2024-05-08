@@ -1,50 +1,48 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-"
+)
+```
+
 # pivmet
 
-The goal of `pivmet` is to propose some pivotal methods in order to:
+The goal of ```pivmet``` is to propose some pivotal methods in order to:
 
-  - undo the label switching problem which naturally arises during the
-    MCMC sampling in Bayesian mixture models \(\rightarrow\) **pivotal
-    relabelling** (Egidi et al. 2018a)
+- undo the label switching problem which naturally arises during the MCMC sampling in Bayesian mixture models $\rightarrow$ **pivotal relabelling** (Egidi et al. 2018a)
 
-  - initialize the K-means algorithm aimed at obtaining a good
-    clustering solution \(\rightarrow\) **pivotal seeding** (Egidi et
-    al. 2018b)
+- initialize the K-means algorithm aimed at obtaining a good clustering solution $\rightarrow$ **pivotal seeding** (Egidi et al. 2018b)
 
 ## Installation
 
-  - <span style="color:red">PAY ATTENTION\! BEFORE INSTALLING</span>:
-    make sure to download the JAGS program at
-    <https://sourceforge.net/projects/mcmc-jags/>.
+- <span style="color:red">PAY ATTENTION! BEFORE INSTALLING</span>: make sure to download the JAGS program at
+[https://sourceforge.net/projects/mcmc-jags/](https://sourceforge.net/projects/mcmc-jags/).
 
-You can then install `pivmet` from github with:
+You can install the CRAN version of ```pivmet``` with:
 
-``` r
+```{r, eval = FALSE}
+install.packages("pivmet")
+library(pivmet)
+```
+
+You can install the development version of ```pivmet```  from Github with:
+
+```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("leoegidi/pivmet")
 ```
 
 ## Example 1. Dealing with label switching: relabelling in Bayesian mixture models by pivotal units (fish data)
 
-First of all, we load the package and we import the `fish` dataset
-belonging to the `bayesmix` package:
+First of all, we load the package and we import the ```fish``` dataset belonging to the ```bayesmix``` package:
 
-``` r
+```{r example}
+library(bayesmix)
 library(pivmet)
-#> Loading required package: bayesmix
-#> Loading required package: rjags
-#> Loading required package: coda
-#> Linked to JAGS 4.3.0
-#> Loaded modules: basemod,bugs
-#> Loading required package: mvtnorm
-#> Loading required package: RcmdrMisc
-#> Loading required package: car
-#> Loading required package: carData
-#> Loading required package: sandwich
-#> Warning: replacing previous import 'rstan::plot' by 'graphics::plot' when
-#> loading 'pivmet'
 data(fish)
 y <- fish[,1]
 N <- length(y)  # sample size 
@@ -52,47 +50,44 @@ k <- 5          # fixed number of clusters
 nMC <- 12000    # MCMC iterations
 ```
 
-Then we fit a Bayesian Gaussian mixture using the `piv_MCMC` function:
+Then we fit a Bayesian Gaussian mixture using the ```piv_MCMC``` function:
 
-``` r
+
+```{r fit, message =FALSE, warning = FALSE}
 res <- piv_MCMC(y = y, k = k, nMC = nMC)
-#> Compiling model graph
-#>    Declaring variables
-#>    Resolving undeclared variables
-#>    Allocating nodes
-#> Graph information:
-#>    Observed stochastic nodes: 256
-#>    Unobserved stochastic nodes: 268
-#>    Total graph size: 1050
-#> 
-#> Initializing model
 ```
 
-Finally, we can apply pivotal relabelling and inspect the new posterior
-estimates with the functions `piv_rel` and `piv_plot`, respectively:
 
-``` r
+Finally, we can apply pivotal relabelling and inspect the new posterior estimates with the functions ```piv_rel``` and ```piv_plot```, respectively:
+
+```{r plot, message =FALSE, warning = FALSE}
 rel <- piv_rel(mcmc=res)
 piv_plot(y = y, mcmc = res, rel_est = rel, type = "chains")
+piv_plot(y = y, mcmc = res, rel_est = rel, type = "hist")
 ```
 
-![](man/figures/README-plot-1.png)<!-- -->
 
-    #> Description: traceplots of the raw MCMC chains and the relabelled chains for all the model parameters: means, sds and weights. Each colored chain corresponds to one of the k distinct parameters of the mixture model. Overlapping chains may reveal that the MCMC sampler is not able to distinguish between the components.
-    piv_plot(y = y, mcmc = res, rel_est = rel, type = "hist")
+To allow sparse finite mixture fit, we could select the argument ```sparsity = TRUE```:
 
-![](man/figures/README-plot-2.png)<!-- -->
 
-    #> Description: histograms of the data along with the estimated posterior means (red points) from raw MCMC and relabelling algorithm. The blue line is the estimated density curve.
+```{r sparsity, message =FALSE, warning = FALSE}
+res2 <- piv_MCMC(y, k, nMC, sparsity = TRUE,
+                 priors = list(alpha = rep(0.001, k))) # sparse on eta
+barplot(table(res2$nclusters), xlab= expression(K["+"]),
+        col = "blue", border = "red", main = expression(paste("p(",K["+"], "|y)")),
+        cex.main=3, yaxt ="n", cex.axis=2.4, cex.names=2.4,
+        cex.lab=2)
+```
+
+
 
 ## Example 2. K-means clustering using MUS and other pivotal algorithms
 
-Sometimes K-means algorithm does not provide an optimal clustering
-solution. Suppose to generate some clustered data and to detect one
-pivotal unit for each group with the `MUS` (Maxima Units Search
-algorithm) function:
+Sometimes K-means algorithm does not provide an optimal clustering solution. Suppose to generate some clustered data and to detect one pivotal unit for each group with the ```MUS``` (Maxima Units Search algorithm) function:
 
-``` r
+```{r mus, echo =TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+library(mvtnorm)
+
 #generate some data
 
 set.seed(123)
@@ -119,7 +114,7 @@ a <- matrix(NA, H, n)
   }
 
 #build the similarity matrix
-sim_matr <- matrix(1, n,n)
+sim_matr <- matrix(NA, n,n)
  for (i in 1:(n-1)){
     for (j in (i+1):n){
       sim_matr[i,j] <- sum(a[,i]==a[,j])/H
@@ -127,15 +122,18 @@ sim_matr <- matrix(1, n,n)
     }
   }
 
-cl <- KMeans(x, centers)$cluster
+cl <- kmeans(x, centers, nstart=10)$cluster
 mus_alg <- MUS(C = sim_matr, clusters = cl, prec_par = 5)
 ```
 
+
 Quite often, classical K-means fails in recognizing the *true* groups:
 
-``` r
-# launch classical KMeans
-kmeans_res <- KMeans(x, centers)
+
+
+```{r kmeans_plots, echo =TRUE, fig.show='hold', eval = TRUE, message = FALSE, warning = FALSE}
+# launch classical kmeans
+kmeans_res <- kmeans(x, centers, nstart = 10)
 # plots
 par(mfrow=c(1,2))
 colors_cluster <- c("grey", "darkolivegreen3", "coral")
@@ -154,15 +152,10 @@ points(kmeans_res$centers, col = colors_centers[1:centers],
       pch = 8, cex = 2)
 ```
 
-![](man/figures/README-kmeans_plots-1.png)<!-- -->
 
-In such situations, we may need a more robust version of the classical
-K-means. The pivots may be used as initial seeds for a classical K-means
-algorithm. The function `piv_KMeans` works as the classical `kmeans`
-function, with some optional arguments (in the figure below, the colored
-triangles represent the pivots).
+In such situations, we may need a more robust version of the classical K-means. The pivots may be used as initial seeds for a classical K-means algorithm. The function `piv_KMeans` works as the classical `kmeans` function, with some optional arguments (in the figure below, the colored triangles represent the pivots).
 
-``` r
+```{r musk, fig.show='hold'}
 # launch piv_KMeans
 piv_res <- piv_KMeans(x, centers)
 # plots
@@ -189,16 +182,11 @@ points(x[piv_res$pivots[3],1], x[piv_res$pivots[3],2],
    cex=1.5)
 points(piv_res$centers, col = colors_centers[1:centers],
    pch = 8, cex = 2)
-```
 
-![](man/figures/README-musk-1.png)<!-- -->
+```
 
 ## References
 
-Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018a). Relabelling
-in Bayesian Mixture Models by Pivotal Units. Statistics and Computing,
-28(4), 957-969.
+Egidi, L., Pappadà, R., Pauli, F. and Torelli, N. (2018a). Relabelling in Bayesian Mixture Models by Pivotal Units. Statistics and Computing, 28(4), 957-969.
 
-Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018b). K-means seeding
-via MUS algorithm. Conference Paper, Book of Short Papers, SIS2018,
-ISBN: 9788891910233.
+Egidi, L., Pappadà, R., Pauli, F., Torelli, N. (2018b). K-means seeding via MUS algorithm. Conference Paper, Book of Short Papers, SIS2018, ISBN: 9788891910233.
