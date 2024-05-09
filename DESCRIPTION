@@ -24,7 +24,7 @@ Depends: R (>= 3.1.0)
 Imports: cluster, mclust, MASS, 
           corpcor, runjags, rstan, bayesmix, 
           rjags, mvtnorm, bayesplot, scales
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
 BuildManual: yes

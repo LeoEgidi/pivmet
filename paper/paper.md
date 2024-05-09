@@ -72,16 +72,16 @@ the Stan [@rstan] software performing Hamiltonian Monte Carlo (HMC)---to tackle 
 (ii) consensus clustering, where  a variant of the $k$-means algorithm is available; (iii) Dirichlet Process Mixture Models (DPPM). 
 
 
-The `pivmet` package exhibits some deep connections with some existing packages. Among them:
+As far as we know from reviewing the scientific and informatic literature, the `pivmet` package is the only software designed to search pivotal units in a modern machine learning framework. However, since its large applicability, it  exhibits some deep connections with some existing `R` packages commonly used for Bayesian statistics and clustering. Among them, the `pivmet` package:
 
-- it extends the `bayesmix` package [@bayesmix], which allows to 
+-  extends the `bayesmix` package [@bayesmix], which allows to 
 fit univariate Gaussian mixtures, by allowing for sparse Gaussian univariate/multivariate mixtures;
 
-- it is naturally connected with the `label.switching` package [@papastamoulis2016label] that offers many methods to fix label switching in Bayesian mixture models;
+-  is naturally connected with the `label.switching` package [@papastamoulis2016label] that offers many methods to fix label switching in Bayesian mixture models;
 
-- in terms of computational MCMC methods, our package depends on the `rstan` package [@rstan] to perform Hamiltonian Monte Carlo sampling and on the `rjags` package [@rjags] to perform Gibbs sampling;
+- in terms of computational MCMC methods, depends on the `rstan` package [@rstan] to perform Hamiltonian Monte Carlo sampling and on the `rjags` package [@rjags] to perform Gibbs sampling;
 
-- it extend the classical `kmeans` function by allowing for a robust initial seeding.
+-  extends the classical `kmeans` function by allowing for a robust initial seeding.
 
 
 In brief, the `pivmet`  package offers a unique way to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models,  and performs consensus clustering with a robustified $k$-means algorithm. 
