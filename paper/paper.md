@@ -1,30 +1,33 @@
 ---
-title: 'pivmet: an `R` package proposing pivotal methods for consensus clustering and mixture modelling'
+title: 'pivmet: an `R` package proposing pivotal methods for consensus clustering
+  and mixture modelling'
 tags:
-  - R
-  - statistics
-  - consensus clustering
-  - mixture models
+- R
+- statistics
+- consensus clustering
+- mixture models
+date: "6 February 2024"
+output: pdf_document
 authors:
-  - name: Leonardo Egidi
-    orcid: 0000-0003-3211-905X
-    corresponding: yes
-    equal-contrib: yes
-    affiliation: 1
-  - name: Roberta Pappada
-    equal-contrib: yes
-    affiliation: 1
-  - name: Francesco Pauli
-    affiliation: 1
-  - name: Nicola Torelli
-    affiliation: 1
-affiliations:
-  - name: Department of  Economics, Business, Mathematics, and Statistics *Bruno de Finetti*, University of Trieste
-    index: 1
-date: 6 February 2024
+- name: Leonardo Egidi
+  orcid: "0000-0003-3211-905X"
+  corresponding: true
+  equal-contrib: true
+  affiliation: 1
+- name: Roberta Pappada
+  equal-contrib: true
+  affiliation: 1
+- name: Francesco Pauli
+  affiliation: 1
+- name: Nicola Torelli
+  affiliation: 1
 bibliography: paper.bib
 aas-doi: null
 aas-journal: null
+affiliations:
+- name: Department of  Economics, Business, Mathematics, and Statistics *Bruno de
+    Finetti*, University of Trieste
+  index: 1
 ---
   
 # Summary
@@ -69,10 +72,19 @@ the Stan [@rstan] software performing Hamiltonian Monte Carlo (HMC)---to tackle 
 (ii) consensus clustering, where  a variant of the $k$-means algorithm is available; (iii) Dirichlet Process Mixture Models (DPPM). 
 
 
-The `pivmet` package exhibits some deep connections with some existing packages. Among them, it extends the `bayesmix` package, which allows to 
-fit univariate Gaussian mixtures; moreover, it is close to the `label.switching` package that offers many methods to fix label switching in Bayesian mixture models. In terms of 
-computational methods, our package depends on the `rstan` package to perform Hamiltonian Monte Carlo sampling.
-In brief, the `pivmet`  package offers a unique way to efficiently estimate univariate and multivariate Gaussian mixtures and perform consensus clustering. 
+The `pivmet` package exhibits some deep connections with some existing packages. Among them:
+
+- it extends the `bayesmix` package [@bayesmix], which allows to 
+fit univariate Gaussian mixtures, by allowing for sparse Gaussian univariate/multivariate mixtures;
+
+- it is naturally connected with the `label.switching` package [@papastamoulis2016label] that offers many methods to fix label switching in Bayesian mixture models;
+
+- in terms of computational MCMC methods, our package depends on the `rstan` package [@rstan] to perform Hamiltonian Monte Carlo sampling and on the `rjags` package [@rjags] to perform Gibbs sampling;
+
+- it extend the classical `kmeans` function by allowing for a robust initial seeding.
+
+
+In brief, the `pivmet`  package offers a unique way to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models,  and performs consensus clustering with a robustified $k$-means algorithm. 
  
 
 
@@ -114,7 +126,7 @@ nMC <- 15000
 # fit the mixture model for univariate data and find the pivots
 res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC, software = "rjags")
 
-# relabel the chains: figure 2
+# relabel the chains: figure 
 rel <- piv_rel(mcmc=res)
 piv_plot(y = y, mcmc = res, rel_est = rel, type="chains")
 
