@@ -72,7 +72,7 @@ the Stan [@rstan] software performing Hamiltonian Monte Carlo (HMC)---to tackle 
 (ii) consensus clustering, where  a variant of the $k$-means algorithm is available; (iii) Dirichlet Process Mixture Models (DPPM). 
 
 
-As far as we know from reviewing the scientific and informatic literature, the `pivmet` package is the only software designed to search pivotal units in a modern machine learning framework. However, since its large applicability, it  exhibits some deep connections with some existing `R` packages commonly used for Bayesian statistics and clustering. Among them, the `pivmet` package:
+As far as we know from reviewing the scientific and statistical literature, the `pivmet` package is the only software designed to search pivotal units in a modern machine learning framework. However, since its large applicability, it  exhibits some deep connections with some existing `R` packages commonly used for Bayesian statistics and clustering. Among them, the `pivmet` package:
 
 -  extends the `bayesmix` package [@bayesmix], which allows to 
 fit univariate Gaussian mixtures, by allowing for sparse Gaussian univariate/multivariate mixtures;
@@ -84,7 +84,7 @@ fit univariate Gaussian mixtures, by allowing for sparse Gaussian univariate/mul
 -  extends the classical `kmeans` function by allowing for a robust initial seeding.
 
 
-In brief, the `pivmet` package offers a unique way to retrieve pivotal units. Consequently, it uses these units to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models, and to perform consensus clustering with a robustified $k$-means algorithm. 
+In brief, the `pivmet` package offers a unique way to retrieve pivotal units. Consequently, it uses these units to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models, and to perform consensus clustering through a robustified $k$-means algorithm. 
  
 
 
@@ -97,7 +97,7 @@ The user can specify distinct prior distributions with the argument `priors` and
 
 - The function `piv_rel()` takes in input the model fit returned by `piv_MCMC` and implements the relabelling step as outlined by [@egidi2018relabelling].
 
-- The function `piv_KMeans()` performs a robust consensus clstering based on distinct $k$-means partitions. The user can specify some options, 
+- The function `piv_KMeans()` performs a robust consensus clustering based on distinct $k$-means partitions. The user can specify some options, 
 such as the number of consensus partitions.
 
 
