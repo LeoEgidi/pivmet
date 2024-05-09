@@ -84,7 +84,7 @@ fit univariate Gaussian mixtures, by allowing for sparse Gaussian univariate/mul
 -  extends the classical `kmeans` function by allowing for a robust initial seeding.
 
 
-In brief, the `pivmet`  package offers a unique way to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models,  and performs consensus clustering with a robustified $k$-means algorithm. 
+In brief, the `pivmet` package offers a unique way to retrieve pivotal units. Consequently, it uses these units to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models, and to perform consensus clustering with a robustified $k$-means algorithm. 
  
 
 
