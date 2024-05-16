@@ -9,6 +9,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![R-CMD-check](https://github.com/LeoEgidi/pivmet/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/LeoEgidi/pivmet/actions/workflows/R-CMD-check.yaml)
+
 # pivmet
 
 The goal of ```pivmet``` is to propose some pivotal methods in order to:
