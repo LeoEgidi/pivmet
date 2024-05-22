@@ -15,11 +15,14 @@ authors:
   equal-contrib: true
   affiliation: 1
 - name: Roberta Pappada
+  orcid: "0000-0002-4852-0561"
   equal-contrib: true
   affiliation: 1
 - name: Francesco Pauli
+  orcid: "0000-0002-7982-3514"
   affiliation: 1
 - name: Nicola Torelli
+  orcid: "0000-0001-9523-5336"
   affiliation: 1
 bibliography: paper.bib
 aas-doi: null
