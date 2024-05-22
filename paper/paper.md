@@ -136,7 +136,7 @@ cat(res_stan$model)
 ```
 
 
-![Histograms of the Fishery data. The blue line represents the estimated kernel density. \label{fig:example1}](fish_hist.png){width = 60%}
+![Histograms of the Fishery data. The blue line represents the estimated kernel density. \label{fig:example1}](fish_hist.png)
 
 ![Fishery dataset: traceplots of the parameters $(\mathbf{\mu}, \mathbf{\sigma}, \mathbf{\eta})$ obtained via the `rjags` option for the
  `piv_MCMC` function (Gibbs sampling, 15000 MCMC iterations). Top row: Raw MCMC outputs. 
