@@ -163,7 +163,7 @@ and pivots are marked via asterisks and triangles symbols, respectively. As we m
 the true data partition. Here below we include the relevant `R` code.
 
 
-```{r, eval = FALSE}
+```
 # required packages
 library(mclust)
 library(cluster)
