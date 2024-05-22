@@ -47,7 +47,7 @@ and Dirichlet process mixture models (DPMM) [@ferguson1973bayesian; @escobar1995
 
 The stable version of the package can be installed from the [Comprehensive R Archive Network (CRAN)](http://CRAN.R-project.org/package=pivmet):
   
-  ```{r, eval = FALSE}
+```
 install.packages("pivmet")
 library(pivmet)
 ```
@@ -112,7 +112,7 @@ for univariate mixtures, the MCMC Gibbs sampling is returned by the function `JA
 the model according to HMC sampling and with underlying Stan ecosystem by typing `software="rstan"`. By default, the burn-in period is set equal to 
 half of the total number of MCMC iterations.  Here below we include the relevant `R` code.
 
-```{r, eval = FALSE}
+```
 # required packages
 library(bayesmix)
 set.seed(100)
