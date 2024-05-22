@@ -1,3 +1,9 @@
+# pivmet 0.6.0
+
+* new tests
+* readme file updated
+* code of conduct
+
 # pivmet 0.5.0
 
 * sparse finite mixture fit now available

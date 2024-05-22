@@ -1,8 +1,8 @@
 Package: pivmet
 Type: Package
 Title: Pivotal Methods for Bayesian Relabelling and k-Means Clustering
-Version: 0.5.0
-Date: 2023-02-22
+Version: 0.6.0
+Date: 2024-05-22
 Author: Leonardo Egidi[aut, cre], 
         Roberta Pappadà[aut], 
         Francesco Pauli[aut], 
