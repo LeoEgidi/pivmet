@@ -36,15 +36,15 @@ affiliations:
 # Summary
   
 We introduce the `R` package `pivmet`, a software that performs different pivotal methods for identifying, extracting, and using 
-the so-called pivotal units of a dataset that are chosen to represent the groups of data points to which they belong. 
-These algorithms turn out be very useful in many unsupervised and supervised learning frameworks such as clustering, 
+the so-called pivotal units  that are chosen from a partition of data points to represent the groups to which they belong. 
+Such units turn out be very useful in both unsupervised and supervised learning frameworks such as clustering, 
 classification and mixture modelling.  
-More specifically, applications of pivotal methods could cover, among the others: a Markov-Chain Monte Carlo (MCMC) 
-relabelling procedure to deal with the well-known label-switching problem [@stephens2000dealing; @richardson1997bayesian; 
-@fruhwirth2001markov; @egidi2018relabelling]  occurring during Bayesian estimation of mixture models; 
+More specifically, applications of pivotal methods include, among the others: a Markov-Chain Monte Carlo (MCMC) 
+relabelling procedure to deal with the well-known label-switching problem occurring during Bayesian estimation of mixture models [@stephens2000dealing; @richardson1997bayesian; 
+@fruhwirth2001markov; @egidi2018relabelling]; 
 model-based clustering through sparse finite mixture models (SFMM) [@malsiner2016model; @fruhwirth2019here]; consensus clustering [@JMLR02],
 which may allow to improve classical clustering techniques---e.g. the classical $k$-means---via a careful seeding; 
-and Dirichlet process mixture models (DPMM) [@ferguson1973bayesian; @escobar1995bayesian; @neal2000markov] in Bayesian nonparametrics. 
+and Dirichlet process mixture models (DPMM) in Bayesian nonparametrics [@ferguson1973bayesian; @escobar1995bayesian; @neal2000markov]. 
 
 ## Installation
 
@@ -60,22 +60,23 @@ However, before installing the package, the user should  make sure to download t
 
 # Statement of need
 
-In the modern *big-data* and *machine learning* age, summarizing some essential information from a data pattern is often relevant and can
+In the modern *big-data* and *machine learning* age, summarizing some essential information from a dataset is often relevant and can
 help simplifying the data pre-processing steps. The advantage of identifying representative units of a group---hereafter *pivotal units* 
-or *pivots*---somehow chosen to be  as far as possible from units in the other groups and as similar as possible to the units in the same 
-group is that they may convey relevant information about the group they belong to while saving wasteful operations.  
+or *pivots*---chosen in such a way that they are as far as possible from units in the other groups and/or as similar as possible to the units in the same 
+group, is that they may convey relevant information about the group they belong to while saving wasteful operations.  
 Despite the lack of a strict theoretical framework behind their characterization, the pivots may be beneficial in many machine learning frameworks,
-such as clustering, classification, and mixture modelling to derive reliable estimates and/or a better grouping partition.  
-A deep and theoretical detail around the package's supported pivotal methods is provided in [@egidi2018relabelling].
+such as clustering, classification, and mixture modelling when the interest is in deriving reliable estimates in mixture models and/or finding a partition of the data points.  
+The theoretical framework concerning the pivotal methods implemented in the `pivmet` package is provided in [@egidi2018relabelling].
 
-The `pivmet`  package [@pivmet] for `R` , available from the Comprehensive ` R`  Archive Network (CRAN) at
-[http://CRAN.R-project.org/package=pivmet](http://CRAN.R-project.org/package=pivmet), implements various pivotal selection criteria to 
+The `pivmet`  package  for `R`is available from the Comprehensive `R`  Archive Network (CRAN) at
+[http://CRAN.R-project.org/package=pivmet](http://CRAN.R-project.org/package=pivmet) [@pivmet] and implements various pivotal selection criteria to 
 deal with, but not limited to: (i) mixture model Bayesian estimation---either via the JAGS software [@rjags] using Gibbs sampling or 
 the Stan [@rstan] software performing Hamiltonian Monte Carlo (HMC)---to tackle the so-called *label switching* problem; 
 (ii) consensus clustering, where  a variant of the $k$-means algorithm is available; (iii) Dirichlet Process Mixture Models (DPPM). 
 
 
-As far as we know from reviewing the scientific and statistical literature, the `pivmet` package is the only software designed to search pivotal units in a modern machine learning framework. However, since its large applicability, it  exhibits some deep connections with some existing `R` packages commonly used for Bayesian statistics and clustering. Among them, the `pivmet` package:
+As far as we know from reviewing the scientific and statistical literature, the `pivmet` package is the only software designed to search pivotal units in a modern machine learning framework. However, since its large applicability, 
+it exhibits some deep connections with some existing `R` packages commonly used for Bayesian statistics and clustering. In particular, the `pivmet` package:
 
 -  extends the `bayesmix` package [@bayesmix], which allows to 
 fit univariate Gaussian mixtures, by allowing for sparse Gaussian univariate/multivariate mixtures;
@@ -87,7 +88,7 @@ fit univariate Gaussian mixtures, by allowing for sparse Gaussian univariate/mul
 -  extends the classical `kmeans` function by allowing for a robust initial seeding.
 
 
-In brief, the `pivmet` package offers a unique way to retrieve pivotal units. Consequently, it uses these units to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models, and to perform consensus clustering through a robustified $k$-means algorithm. 
+Compared to the aforementioned packages, the `pivmet` package offers a novel way to retrieve pivotal units. Moreover, it contains functions to exploit the pivotal units to efficiently estimate univariate and multivariate Gaussian mixtures, by relying on pre-compiled JAGS/Stan models, and to perform a robustified version of the $k$-means algorithm. 
  
 
 
@@ -104,7 +105,7 @@ The user can specify distinct prior distributions with the argument `priors` and
 such as the number of consensus partitions.
 
 
-# Example 1: relabelling for label switching 
+# Example 1: relabelling for dealing with label switching 
 
 The Fishery dataset in the `bayesmix` [@bayesmix] package has been previously used by @titterington1985statistical and @papastamoulis2016label. 
 It consists of 256 snapper length measurements---see left plot of \autoref{fig:example1} for the data histogram, along with an estimated 
@@ -154,22 +155,17 @@ and reorder the means $\mu_j$ and the weights $\eta_j$, for $j=1,\ldots,k$, as e
 # Example 2: consensus clustering
 
 As widely known, one of the drawbacks of the $k$-means algorithm is represented by its inefficiency in distinguishing between groups of unbalanced sizes. 
-For these reasons, the clustering scientific literature claims that a better robust clustering solution is usually obtained if more partitions are obtained, 
-in such a way the final partition works as a sort of *consensus*. We perform here a consensus clustering technique based on single $k$-means configurations, 
-where each of these has been obtained through a careful initial pivotal seeding.
+The recent literature on clustering methods has explored some approaches to combine several partitions via a consensus clustering, which may improve the solution obtained from a single run of a clustering algorithm.  
+Here, we consider a consensus clustering technique based on $k$-means and pivotal methods used for a careful initial pivotal seeding.
 
 For illustration purposes, we simulate three bivariate Gaussian distributions with 20, 100 and 500 observations, respectively---see \autoref{fig:example3}.
-The plots with titles 'piv KMeans' refer to the pivotal criteria `MUS`, (i) or `maxsumint`, (ii) or `maxsumdiff`, where the labels 1, 2, and 4 follow the 
-order used in the `R` function; moreover, we consider Partitioning Around Medoids (PAM) method via the `pam` function of the `cluster` package and agglomerative hierarchical
-clustering (agnes), with average, single, and complete linkage. The partitions from the classical $k$-means are obtained using multiple random seeds. Group centers
-and pivots are marked via asterisks and triangles symbols, respectively. As we may notice, pivotal $k$-means methods are able to  satisfactorily detect
-the true data partition. Here below we include the relevant `R` code.
+The plots with titles 'piv KMeans' refer to the pivotal criteria `MUS` (`piv_KMeans[1]`),  `maxsumint` (`piv_KMeans[2]`), and `maxsumdiff` (`piv_KMeans[4]`); moreover, we consider Partitioning Around Medoids (PAM) method via the `pam` function of the `cluster` package and agglomerative hierarchical
+clustering (agnes), with average, single, and complete linkage.  Group centers and pivots are marked via asterisks and triangles symbols, respectively. As can be seen, pivotal $k$-means methods are able to  satisfactorily detect
+the true data partition and outperform the alternative approaches in most of the cases. Here below we include the relevant `R` code.
 
 
 ```
 # required packages
-library(mclust)
-library(cluster)
 library(mvtnorm)
 
 # simulate data
@@ -206,10 +202,10 @@ and 500 observations, respectively. \label{fig:example3}](simul1_2019.pdf){width
 
 # Conclusion
 
-The `pivmet` package proposes various methods for identifying pivotal units in datasets with a grouping structure and using them for improving 
+The `pivmet` package proposes various methods for identifying pivotal units in datasets with a grouping structure and uses them for improving 
 inferential conclusions and clustering partitions. The package suits well for both supervised and unsupervised problems, by providing a valid alternative
- to existing functions for similar applications, and keeping low the computational effort. It is of future interest to include additional aspects in the software, 
-such as the estimation of the number of components in the data when this information is latent or unknown and provide more graphical tools to diagnose pivotal selection. 
+ to existing functions for similar applications, and keeping low the computational effort. It is of future interest to include additional functions that may allow to deal with the estimation of the number of components 
+in the data when this information is latent or unknown and provide more graphical tools to diagnose pivotal selection. 
 
 
 # Reproducibility
@@ -220,7 +216,7 @@ The `R` code required to generate the examples is available at
 
 # Acknowledgements
 
-We want to thank Ioannis Ntzoufras and Dimitris Karlis from Athens University of Economics and Business (AUEB) for their valuable suggestions about the package structure.
+The authors thank Ioannis Ntzoufras and Dimitris Karlis from Athens University of Economics and Business (AUEB) for their valuable suggestions about the package structure.
 
 
 
