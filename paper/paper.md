@@ -65,10 +65,9 @@ help simplifying the data pre-processing steps. The advantage of identifying rep
 or *pivots*---chosen in such a way that they are as far as possible from units in the other groups and/or as similar as possible to the units in the same 
 group, is that they may convey relevant information about the group they belong to while saving wasteful operations.  
 Despite the lack of a strict theoretical framework behind their characterization, the pivots may be beneficial in many machine learning frameworks,
-such as clustering, classification, and mixture modelling when the interest is in deriving reliable estimates in mixture models and/or finding a partition of the data points.  
-The theoretical framework concerning the pivotal methods implemented in the `pivmet` package is provided in [@egidi2018relabelling].
+such as clustering, classification, and mixture modelling when the interest is in deriving reliable estimates in mixture models and/or finding a partition of the data points.  The theoretical framework concerning the pivotal methods implemented in the `pivmet` package is provided in [@egidi2018relabelling].
 
-The `pivmet`  package  for `R`is available from the Comprehensive `R`  Archive Network (CRAN) at
+The `pivmet`  package  for `R` is available from the Comprehensive `R`  Archive Network (CRAN) at
 [http://CRAN.R-project.org/package=pivmet](http://CRAN.R-project.org/package=pivmet) [@pivmet] and implements various pivotal selection criteria to 
 deal with, but not limited to: (i) mixture model Bayesian estimation---either via the JAGS software [@rjags] using Gibbs sampling or 
 the Stan [@rstan] software performing Hamiltonian Monte Carlo (HMC)---to tackle the so-called *label switching* problem; 
