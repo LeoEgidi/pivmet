@@ -176,10 +176,9 @@ n3=500
 x=matrix(NA, n,2)
 gruppovero=c( rep(1,n1), rep(2, n2), rep(3, n3))
 
-
-  x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
-  x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
-  x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3, c(6,6), sigma=diag(2))
+x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
+x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
+x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3, c(6,6), sigma=diag(2))
 
 
 kmeans_res <- kmeans(x, centers=k)
@@ -190,7 +189,7 @@ res <- piv_KMeans(x, k, alg.type = "hclust",
 ```
 
 ![Consensus clustering via the `piv_KMeans` function assuming three bivariate Gaussian distributions and three groups with 20, 100 
-and 500 observations, respectively. \label{fig:example3}](figure3.pdf){width=60%}
+and 500 observations, respectively. \label{fig:example3}](figure3.pdf){width=80%}
 
 
 # Conclusion
