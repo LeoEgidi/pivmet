@@ -158,13 +158,12 @@ The recent literature on clustering methods has explored some approaches to comb
 Here, we consider a consensus clustering technique based on $k$-means and pivotal methods used for a careful initial pivotal seeding.
 
 For illustration purposes, we simulate three bivariate Gaussian distributions with 20, 100 and 500 observations, respectively---see \autoref{fig:example3}.
-The plots with titles 'piv KMeans' refer to the pivotal criteria `MUS` (`piv_KMeans[1]`),  `maxsumint` (`piv_KMeans[2]`), and `maxsumdiff` (`piv_KMeans[4]`); moreover, we consider Partitioning Around Medoids (PAM) method via the `pam` function of the `cluster` package and agglomerative hierarchical
+The plots  refer to the pivotal criteria `MUS`,  `maxsumint`, and `maxsumdiff`; moreover, we consider Partitioning Around Medoids (PAM) method via the `pam` function of the `cluster` package and agglomerative hierarchical
 clustering (agnes), with average, single, and complete linkage.  Group centers and pivots are marked via asterisks and triangles symbols, respectively. As can be seen, pivotal $k$-means methods are able to  satisfactorily detect
 the true data partition and outperform the alternative approaches in most of the cases. Here below we include the relevant `R` code.
 
 
 ```
-# required packages
 library(mvtnorm)
 
 # simulate data
@@ -177,26 +176,21 @@ n3=500
 x=matrix(NA, n,2)
 gruppovero=c( rep(1,n1), rep(2, n2), rep(3, n3))
 
-for (i in 1:n1){
-  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))
-}
-for (i in 1:n2){
-  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))
-}
-for (i in 1:n3){
-  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))
-}
+
+  x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
+  x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
+  x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3, c(6,6), sigma=diag(2))
+
 
 kmeans_res <- kmeans(x, centers=k)
 
-# consensus clustering step
-res1 <- piv_KMeans(x, k, alg.type = "hclust",
+res <- piv_KMeans(x, k, alg.type = "hclust",
                    piv.criterion ="maxsumdiff",
                    prec_par=n1)
 ```
 
 ![Consensus clustering via the `piv_KMeans` function assuming three bivariate Gaussian distributions and three groups with 20, 100 
-and 500 observations, respectively. \label{fig:example3}](simul1_2019.pdf){width=60%}
+and 500 observations, respectively. \label{fig:example3}](figure3.pdf){width=60%}
 
 
 # Conclusion

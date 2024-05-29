@@ -32,10 +32,8 @@ cat(res_stan$model)
 # Example 2: consensus clustering
 #######################################################
 
-library(mclust)
-library(cluster)
-library(mvtnorm)
 
+library(mvtnorm)
 
 # simulate data
 set.seed(123)
@@ -47,15 +45,11 @@ n3=500
 x=matrix(NA, n,2)
 gruppovero=c( rep(1,n1), rep(2, n2), rep(3, n3))
 
-for (i in 1:n1){
-  x[i,]=rmvnorm(1, c(1,5), sigma=diag(2))
-}
-for (i in 1:n2){
-  x[n1+i,]=rmvnorm(1, c(4,0), sigma=diag(2))
-}
-for (i in 1:n3){
-  x[n1+n2+i,]=rmvnorm(1, c(6,6), sigma=diag(2))
-}
+
+  x[1:n1,]=rmvnorm(n1, c(1,5), sigma=diag(2))
+  x[(n1+1):(n1+n2),]=rmvnorm(n2, c(4,0), sigma=diag(2))
+  x[(n1+n2+1):(n1+n2+n3),]=rmvnorm(n3, c(6,6), sigma=diag(2))
+
 
 kmeans_res <- kmeans(x, centers=k)
 
@@ -105,6 +99,7 @@ a<-round(adj,3)
 
 # Figure 3
 
+pdf(file ="figure3.pdf", width =10, height = 10 )
 par(mfrow=c(3,3), oma=c(0.1,0.1,0.1,0.1), mar=c(5,4.3,3,1), pty="s")
 colors_cluster=c("grey", "darkolivegreen3", "coral")
 colors_centers=c("black", "darkgreen", "firebrick")
@@ -118,7 +113,7 @@ plot(x, col = colors_cluster[kmeans_res$cluster],
 points(kmeans_res$centers, col = colors_centers[1:k], pch = 8, cex = 2)
 
 plot(x, col = colors_cluster[res4$cluster], bg=colors_cluster[res4$cluster], pch=21, xlab="y[,1]", ylab="y[,2]", cex.lab=1.5,
-     main="(c) piv_KMeans[1]", cex.main=1.5)
+     main="(c) MUS", cex.main=1.5)
 points(x[pivots4[1],1], x[pivots4[1],2], pch=24, col=colors_centers[1],bg=colors_centers[1],   cex=1.5)
 points(x[pivots4[2],1], x[pivots4[2],2], pch=24,  col=colors_centers[2], bg=colors_centers[2], cex=1.5)
 points(x[pivots4[3],1], x[pivots4[3],2], pch=24, col=colors_centers[3], bg=colors_centers[3], cex=1.5)
@@ -126,7 +121,7 @@ points(res4$centers, col = colors_centers[1:k], pch = 8, cex = 2)
 
 
 plot(x, col = colors_cluster[res2$cluster], bg=colors_cluster[res2$cluster], pch=21, xlab="y[,1]", ylab="y[,2]", cex.lab=1.5,
-     main="(d) piv_KMeans[2]", cex.main=1.5)
+     main="(d) maxsumint", cex.main=1.5)
 points(x[pivots2[1],1], x[pivots2[1],2], pch=24, col=colors_centers[1],bg=colors_centers[1],   cex=1.5)
 points(x[pivots2[2],1], x[pivots2[2],2], pch=24,  col=colors_centers[2], bg=colors_centers[2], cex=1.5)
 points(x[pivots2[3],1], x[pivots2[3],2], pch=24, col=colors_centers[3], bg=colors_centers[3], cex=1.5)
@@ -134,7 +129,7 @@ points(res2$centers, col = colors_centers[1:k], pch = 8, cex = 2)
 
 
 plot(x, col = colors_cluster[res1$cluster], bg=colors_cluster[res1$cluster], pch=21, xlab="y[,1]", ylab="y[,2]", cex.lab=1.5,
-     main="(e) piv_KMeans[4]", cex.main=1.5)
+     main="(e) maxsumdiff", cex.main=1.5)
 points(x[pivots1[1],1], x[pivots1[1],2], pch=24, col=colors_centers[1],bg=colors_centers[1],   cex=1.5)
 points(x[pivots1[2],1], x[pivots1[2],2], pch=24,  col=colors_centers[2], bg=colors_centers[2], cex=1.5)
 points(x[pivots1[3],1], x[pivots1[3],2], pch=24, col=colors_centers[3], bg=colors_centers[3], cex=1.5)
@@ -158,7 +153,7 @@ plot(x, col=colors_cluster[cutree(a.sing, 3)], bg = colors_cluster[cutree(a.sing
 plot(x, col=colors_cluster[cutree(a.comp, 3)], bg = colors_cluster[cutree(a.comp, 3)],
      main="(l) Agnes - complete", pch=21, xlab="y[,1]", ylab="y[,2]", cex.lab=1.5,
      cex.main=1.5)
-
+dev.off()
 
 
 
