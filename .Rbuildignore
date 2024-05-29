@@ -9,3 +9,5 @@
 ^CRAN-SUBMISSION$
 ^\.github$
 ^paper$
+^CODE OF CONDUCT\.md$
+^LICENSE\.txt$
