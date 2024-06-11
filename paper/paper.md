@@ -28,8 +28,8 @@ bibliography: paper.bib
 aas-doi: null
 aas-journal: null
 affiliations:
-- name: Department of  Economics, Business, Mathematics, and Statistics *Bruno de
-    Finetti*, University of Trieste
+- name: Department of  Economics, Business, Mathematics, and Statistics 'Bruno de
+    Finetti', University of Trieste
   index: 1
 ---
   
