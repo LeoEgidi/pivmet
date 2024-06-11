@@ -127,14 +127,14 @@ k <- 5
 nMC <- 15000
 
 # fit the mixture model for univariate data and find the pivots
-res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC, software = "rjags")
+res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 7500, software = "rjags")
 
 # relabel the chains: figure 
 rel <- piv_rel(mcmc=res)
 piv_plot(y = y, mcmc = res, rel_est = rel, type="chains")
 
 # use Stan
-res_stan <- piv_MCMC(y = y, k = k, nMC = nMC/3, burn = 0.5*nMC/3, software ="rstan")
+res_stan <- piv_MCMC(y = y, k = k, nMC = 5000, burn = 2500, software ="rstan")
 cat(res_stan$model)
 ```
 
