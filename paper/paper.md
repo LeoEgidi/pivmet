@@ -34,6 +34,7 @@ affiliations:
 ---
   
 # Summary
+
   
 We introduce the `R` package `pivmet`, a software that performs different pivotal methods for identifying, extracting, and using 
 the so-called pivotal units  that are chosen from a partition of data points to represent the groups to which they belong. 
@@ -46,7 +47,7 @@ model-based clustering through sparse finite mixture models (SFMM) [@malsiner201
 which may allow to improve classical clustering techniques---e.g. the classical $k$-means---via a careful seeding; 
 and Dirichlet process mixture models (DPMM) in Bayesian nonparametrics [@ferguson1973bayesian; @escobar1995bayesian; @neal2000markov]. 
 
-## Installation
+# Installation
 
 The stable version of the package can be installed from the [Comprehensive R Archive Network (CRAN)](http://CRAN.R-project.org/package=pivmet):
   
@@ -58,6 +59,7 @@ library(pivmet)
 However, before installing the package, the user should  make sure to download the JAGS program at
 [https://sourceforge.net/projects/mcmc-jags/](https://sourceforge.net/projects/mcmc-jags/).
 
+
 # Statement of need
 
 In the modern *big-data* and *machine learning* age, summarizing some essential information from a dataset is often relevant and can
@@ -65,7 +67,7 @@ help simplifying the data pre-processing steps. The advantage of identifying rep
 or *pivots*---chosen in such a way that they are as far as possible from units in the other groups and/or as similar as possible to the units in the same 
 group, is that they may convey relevant information about the group they belong to while saving wasteful operations.  
 Despite the lack of a strict theoretical framework behind their characterization, the pivots may be beneficial in many machine learning frameworks,
-such as clustering, classification, and mixture modelling when the interest is in deriving reliable estimates in mixture models and/or finding a partition of the data points.  The theoretical framework concerning the pivotal methods implemented in the `pivmet` package is provided in [@egidi2018relabelling].
+such as clustering, classification, and mixture modelling when the interest is in deriving reliable estimates in mixture models and/or finding a partition of the data points.  The theoretical framework concerning the pivotal methods implemented in the `pivmet` package is provided in @egidi2018relabelling.
 
 The `pivmet`  package  for `R` is available from the Comprehensive `R`  Archive Network (CRAN) at
 [http://CRAN.R-project.org/package=pivmet](http://CRAN.R-project.org/package=pivmet) [@pivmet] and implements various pivotal selection criteria to 
@@ -106,8 +108,9 @@ such as the number of consensus partitions.
 
 # Example 1: relabelling for dealing with label switching 
 
+
 The Fishery dataset in the `bayesmix` [@bayesmix] package has been previously used by @titterington1985statistical and @papastamoulis2016label. 
-It consists of 256 snapper length measurements---see left plot of \autoref{fig:example1} for the data histogram, along with an estimated 
+It consists of 256 snapper length measurements---see \autoref{fig:example1} for the data histogram, along with an estimated 
 kernel density. Analogously to some previous works, we assume a Gaussian mixture model  with $k=5$ groups, where $\mu_j$, $\sigma_j$ and $\eta_j$ 
 are respectively the mean, the standard deviation and the weight of group $j = 1, \dots, k$. We fit our model by simulating $15000$ samples from the 
 posterior distribution of $(\mathbf{z}, \boldsymbol{\mu}, \boldsymbol{\sigma}, \boldsymbol{\eta})$, by selecting the default argument `software="rjags"`; 
@@ -141,17 +144,19 @@ cat(res_stan$model)
 
 ![Histograms of the Fishery data. The blue line represents the estimated kernel density. \label{fig:example1}](fish_hist.png)
 
-![Fishery dataset: traceplots of the parameters $(\mathbf{\mu}, \mathbf{\sigma}, \mathbf{\eta})$ obtained via the `rjags` option for the
- `piv_MCMC` function (Gibbs sampling, 15000 MCMC iterations). Top row: Raw MCMC outputs. 
-Bottom row: relabelled MCMC samples. \label{fig:example2}](fish_chains.pdf){width=60%}
 
-
-\autoref{fig:example2} displays the traceplots for the parameters $(\mathbf{\mu}, \mathbf{\sigma}, \mathbf{\eta})$. From the first row 
+\autoref{fig:example2} displays the traceplots for the parameters $(\mu, \sigma, \eta)$. From the first row 
 showing the raw MCMC outputs as given by the Gibbs sampling, we note that label switching clearly occurred. Our algorithm is able to fix label-switching 
 and reorder the means $\mu_j$ and the weights $\eta_j$, for $j=1,\ldots,k$, as emerged from the second row of the plot. 
 
+![Fishery dataset: traceplots of the parameters $(\mu, \sigma, \eta)$ obtained via the `rjags` option for the
+ `piv_MCMC` function (Gibbs sampling, 15000 MCMC iterations). Top row: Raw MCMC outputs. 
+Bottom row: relabelled MCMC samples. \label{fig:example2}](fish_chains.pdf){width=70%}
+
+
 
 # Example 2: consensus clustering
+
 
 As widely known, one of the drawbacks of the $k$-means algorithm is represented by its inefficiency in distinguishing between groups of unbalanced sizes. 
 The recent literature on clustering methods has explored some approaches to combine several partitions via a consensus clustering, which may improve the solution obtained from a single run of a clustering algorithm.  
