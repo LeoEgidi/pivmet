@@ -1,13 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-"
-)
-```
 
 [![R-CMD-check](https://github.com/LeoEgidi/pivmet/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/LeoEgidi/pivmet/actions/workflows/R-CMD-check.yaml)
 
