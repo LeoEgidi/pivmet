@@ -1,0 +1,50 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Egidi
+  given-names: Leonardo
+  orcid: "https://orcid.org/0000-0003-3211-905X"
+- family-names: Pappada
+  given-names: Roberta
+  orcid: "https://orcid.org/0000-0002-4852-0561"
+- family-names: Pauli
+  given-names: Francesco
+  orcid: "https://orcid.org/0000-0002-7982-3514"
+- family-names: Torelli
+  given-names: Nicola
+  orcid: "https://orcid.org/0000-0001-9523-5336"
+contact:
+- family-names: Egidi
+  given-names: Leonardo
+  orcid: "https://orcid.org/0000-0003-3211-905X"
+doi: 10.5281/zenodo.11243277
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Egidi
+    given-names: Leonardo
+    orcid: "https://orcid.org/0000-0003-3211-905X"
+  - family-names: Pappada
+    given-names: Roberta
+    orcid: "https://orcid.org/0000-0002-4852-0561"
+  - family-names: Pauli
+    given-names: Francesco
+    orcid: "https://orcid.org/0000-0002-7982-3514"
+  - family-names: Torelli
+    given-names: Nicola
+    orcid: "https://orcid.org/0000-0001-9523-5336"
+  date-published: 2024-06-12
+  doi: 10.21105/joss.06461
+  issn: 2475-9066
+  issue: 98
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 6461
+  title: "pivmet: an R package proposing pivotal methods for consensus
+    clustering and mixture modelling"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.06461"
+  volume: 9
+title: "pivmet: an `R` package proposing pivotal methods for consensus
+  clustering and mixture modelling"
