@@ -15,6 +15,16 @@ y <- fish[,1]
 k <- 5
 nMC <- 15000
 
+## Figure 1
+
+pdf(file="fishery_hist.pdf", width=10, height=6.5)
+par( mar=c(5,4,2,1))
+hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
+     main ="Fishery data", cex.main =1.7,
+     col="navajowhite1", border="navajowhite1")
+lines(density(y), lty=1, lwd=3, col="blue")
+dev.off()
+
 #fit the mixture model for univariate data and find the pivots
 res <- piv_MCMC(y = y, k = k, nMC = nMC, burn = 0.5*nMC, software = "rjags")
 

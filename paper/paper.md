@@ -142,7 +142,7 @@ cat(res_stan$model)
 ```
 
 
-![Histograms of the Fishery data. The blue line represents the estimated kernel density. \label{fig:example1}](fish_hist.png)
+![Histograms of the Fishery data. The blue line represents the estimated kernel density. \label{fig:example1}](fish_hist.pdf){width=70%}
 
 
 \autoref{fig:example2} displays the traceplots for the parameters $(\mu, \sigma, \eta)$. From the first row 
@@ -151,7 +151,7 @@ and reorder the means $\mu_j$ and the weights $\eta_j$, for $j=1,\ldots,k$, as e
 
 ![Fishery dataset: traceplots of the parameters $(\mu, \sigma, \eta)$ obtained via the `rjags` option for the
  `piv_MCMC` function (Gibbs sampling, 15000 MCMC iterations). Top row: Raw MCMC outputs. 
-Bottom row: relabelled MCMC samples. \label{fig:example2}](fish_chains.pdf){width=70%}
+Bottom row: relabelled MCMC samples. \label{fig:example2}](fish_chains.pdf){width=80%}
 
 
 
