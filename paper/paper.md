@@ -40,6 +40,7 @@ We introduce the `R` package `pivmet`, a software that performs different pivota
 the so-called pivotal units  that are chosen from a partition of data points to represent the groups to which they belong. 
 Such units turn out be very useful in both unsupervised and supervised learning frameworks such as clustering, 
 classification and mixture modelling.  
+
 More specifically, applications of pivotal methods include, among the others: a Markov-Chain Monte Carlo (MCMC) 
 relabelling procedure to deal with the well-known label-switching problem occurring during Bayesian estimation of mixture models [@stephens2000dealing; @richardson1997bayesian; 
 @fruhwirth2001markov; @egidi2018relabelling]; 
