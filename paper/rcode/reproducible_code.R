@@ -17,8 +17,8 @@ nMC <- 15000
 
 ## Figure 1
 
-pdf(file="fishery_hist.pdf", width=10, height=6.5)
-par( mar=c(5,4,2,1))
+pdf(file="fishery_hist.pdf", width= 8, height=6.5)
+par( mar=c(5,5,2,1))
 hist(y, breaks=40, prob = TRUE, cex.lab=1.6,
      main ="Fishery data", cex.main =1.7,
      col="navajowhite1", border="navajowhite1")
