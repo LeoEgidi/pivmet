@@ -1,5 +1,5 @@
 ---
-title: 'pivmet: an `R` package proposing pivotal methods for consensus clustering
+title: 'pivmet: an R package proposing pivotal methods for consensus clustering
   and mixture modelling'
 tags:
 - R
